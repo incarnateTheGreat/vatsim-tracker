@@ -95,5 +95,8 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "devDependencies": {
+    "react-motion": "^0.5.2"
   }
 }
