@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { isMobile } from 'react-device-detect';
 import {
   ComposableMap,
   ZoomableGroup,
@@ -56,6 +57,7 @@ export default class Map extends Component {
   }
 
   handleReset() {
+    console.log(this.state.center);
     this.setState({
       center: [0, 0],
       zoom: 1,
@@ -63,18 +65,17 @@ export default class Map extends Component {
   }
 
   componentDidMount() {
-    let arr = [];
+    let flightDataArr = [];
 
     for (let i = 0; i < FLIGHT_DATA.length; i++) {
-      let clientInterface = {};
-
-      let splitStr = FLIGHT_DATA[i].split(':');
+      let clientInterface = {},
+          clientDataSplit = FLIGHT_DATA[i].split(':');
 
       for (let j = 0; j < CLIENT_LABELS.length; j++) {
-        clientInterface[CLIENT_LABELS[j]] = splitStr[j];
+        clientInterface[CLIENT_LABELS[j]] = clientDataSplit[j];
       }
 
-      arr.push({
+      flightDataArr.push({
         name: clientInterface.realname,
         coordinates: [parseFloat(clientInterface.longitude), parseFloat(clientInterface.latitude)],
         frequency: clientInterface.frequency,
@@ -85,7 +86,7 @@ export default class Map extends Component {
       })
     }
 
-    this.setState({ flights: arr }, () => {
+    this.setState({ flights: flightDataArr }, () => {
       console.log(this.state.flights);
     });
   }
@@ -157,16 +158,16 @@ export default class Map extends Component {
                   ))}
                 </Geographies>
                 <Markers>
-                  {this.state.flights.map((ident, i) => (
+                  {this.state.flights.map((marker, i) => (
                     <Marker
                       key={i}
-                      marker={ident}
+                      marker={marker}
                       onClick={this.handleFlightClick}
                       >
                       <circle
                         cx={0}
                         cy={0}
-                        r={6}
+                        r={isMobile ? 16 : 6}
                         fill="#FF5722"
                         stroke="#DF3702"
                       />
