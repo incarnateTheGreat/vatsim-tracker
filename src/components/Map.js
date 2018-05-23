@@ -28,7 +28,7 @@ export default class Map extends Component {
 
     this.handleZoomIn = this.handleZoomIn.bind(this)
     this.handleZoomOut = this.handleZoomOut.bind(this)
-    this.handleCityClick = this.handleCityClick.bind(this)
+    this.handleFlightClick = this.handleFlightClick.bind(this)
     this.handleReset = this.handleReset.bind(this)
   }
 
@@ -39,15 +39,19 @@ export default class Map extends Component {
   }
 
   handleZoomOut() {
-    this.setState({
-      zoom: this.state.zoom / 2,
-    })
+    if (this.state.zoom > 1) {
+      this.setState({
+        zoom: this.state.zoom / 2,
+      })
+    }
   }
 
-  handleCityClick(city) {
+  handleFlightClick(flight) {
+    console.log(flight);
+
     this.setState({
-      zoom: 2,
-      center: city.coordinates,
+      zoom: 8,
+      center: flight.coordinates,
     })
   }
 
@@ -70,14 +74,21 @@ export default class Map extends Component {
         clientInterface[CLIENT_LABELS[j]] = splitStr[j];
       }
 
-      arr.push({ name: clientInterface.realname, coordinates: [parseFloat(clientInterface.longitude), parseFloat(clientInterface.latitude)] })
+      arr.push({
+        name: clientInterface.realname,
+        coordinates: [parseFloat(clientInterface.longitude), parseFloat(clientInterface.latitude)],
+        frequency: clientInterface.frequency,
+        altitude: clientInterface.altitude,
+        planned_aircraft: clientInterface.planned_aircraft,
+        heading: clientInterface.heading,
+        groundspeed: clientInterface.groundspeed
+      })
     }
 
     this.setState({ flights: arr }, () => {
       console.log(this.state.flights);
     });
   }
-
 
   render() {
     return (
@@ -116,11 +127,12 @@ export default class Map extends Component {
               <ZoomableGroup center={[x,y]} zoom={zoom}>
                 <Geographies geography={mapFile}>
                   {(geographies, projection) =>
-                    geographies.map((geography, i) => geography.id !== "010" && (
+                    geographies.map((geography, i) => (
                       <Geography
                         key={i}
                         geography={geography}
                         projection={projection}
+                        disableoptimization="true"
                         style={{
                           default: {
                             fill: "#ECEFF1",
@@ -129,13 +141,13 @@ export default class Map extends Component {
                             outline: "none",
                           },
                           hover: {
-                            fill: "#CFD8DC",
+                            fill: "#ECEFF1",
                             stroke: "#607D8B",
                             strokeWidth: 0.75,
                             outline: "none",
                           },
                           pressed: {
-                            fill: "#FF5722",
+                            fill: "#ECEFF1",
                             stroke: "#607D8B",
                             strokeWidth: 0.75,
                             outline: "none",
@@ -149,7 +161,7 @@ export default class Map extends Component {
                     <Marker
                       key={i}
                       marker={ident}
-                      onClick={this.handleCityClick}
+                      onClick={this.handleFlightClick}
                       >
                       <circle
                         cx={0}
