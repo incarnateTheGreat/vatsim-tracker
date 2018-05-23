@@ -9,17 +9,7 @@ import {
 } from "react-simple-maps";
 import { Motion, spring } from "react-motion";
 import mapFile from '../maps/world-110m';
-
-// Example data
-const cities = [
-  { name: "Zurich", coordinates: [8.5417,47.3769] },
-  { name: "Singapore", coordinates: [103.8198,1.3521] },
-  { name: "San Francisco", coordinates: [-122.4194,37.7749] },
-  { name: "Sydney", coordinates: [151.2093,-33.8688] },
-  { name: "Lagos", coordinates: [3.3792,6.5244] },
-  { name: "Buenos Aires", coordinates: [-58.3816,-34.6037] },
-  { name: "Shanghai", coordinates: [121.4737,31.2304] },
-];
+import { CLIENT_LABELS, FLIGHT_DATA } from '../constants/constants';
 
 const wrapperStyles = {
   width: "100%",
@@ -33,6 +23,7 @@ export default class Map extends Component {
     this.state = {
       center: [0, 0],
       zoom: 1,
+      flights: []
     };
 
     this.handleZoomIn = this.handleZoomIn.bind(this)
@@ -66,6 +57,28 @@ export default class Map extends Component {
       zoom: 1,
     })
   }
+
+  componentDidMount() {
+    let arr = [];
+
+    for (let i = 0; i < FLIGHT_DATA.length; i++) {
+      let clientInterface = {};
+
+      let splitStr = FLIGHT_DATA[i].split(':');
+
+      for (let j = 0; j < CLIENT_LABELS.length; j++) {
+        clientInterface[CLIENT_LABELS[j]] = splitStr[j];
+      }
+
+      arr.push({ name: clientInterface.realname, coordinates: [parseFloat(clientInterface.longitude), parseFloat(clientInterface.latitude)] })
+    }
+
+    this.setState({ flights: arr }, () => {
+      console.log(this.state.flights);
+    });
+  }
+
+
   render() {
     return (
       <div style={wrapperStyles}>
@@ -132,10 +145,10 @@ export default class Map extends Component {
                   ))}
                 </Geographies>
                 <Markers>
-                  {cities.map((city, i) => (
+                  {this.state.flights.map((ident, i) => (
                     <Marker
                       key={i}
-                      marker={city}
+                      marker={ident}
                       onClick={this.handleCityClick}
                       >
                       <circle
