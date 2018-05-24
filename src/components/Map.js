@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { isMobile } from 'react-device-detect';
+import axios from 'axios';
 import {
   ComposableMap,
   ZoomableGroup,
@@ -10,7 +11,9 @@ import {
 } from "react-simple-maps";
 import { Motion, spring } from "react-motion";
 import mapFile from '../maps/world-110m';
-import { CLIENT_LABELS, FLIGHT_DATA } from '../constants/constants';
+import { CLIENT_LABELS } from '../constants/constants';
+
+// import { geoPath } from "d3-geo"
 
 const wrapperStyles = {
   width: "100%",
@@ -34,8 +37,10 @@ export default class Map extends Component {
   }
 
   handleZoomIn() {
+    console.log(this.state);
     this.setState({
-      zoom: this.state.zoom * 2,
+      // center: [174.33353257621044, -35.002372900345634],
+      zoom: this.state.zoom * 2
     })
   }
 
@@ -51,44 +56,65 @@ export default class Map extends Component {
     console.log(flight);
 
     this.setState({
-      zoom: 8,
       center: flight.coordinates,
+      zoom: 8
     })
   }
 
   handleReset() {
-    console.log(this.state.center);
     this.setState({
       center: [0, 0],
-      zoom: 1,
+      zoom: 1
+    })
+  }
+
+  async getData() {
+    return await axios('http://localhost:8000/api/vatsim-data')
+      .then(res => res.data);
+  }
+
+  getFlightData() {
+    let flightDataArr = [];
+
+    this.getData().then(data => {
+      for (let i = 0; i < data.length; i++) {
+        let clientInterface = {},
+            clientDataSplit = data[i].split(':');
+
+        for (let j = 0; j < CLIENT_LABELS.length; j++) {
+          clientInterface[CLIENT_LABELS[j]] = clientDataSplit[j];
+        }
+
+        flightDataArr.push({
+          name: clientInterface.realname,
+          coordinates: [parseFloat(clientInterface.longitude), parseFloat(clientInterface.latitude)],
+          frequency: clientInterface.frequency,
+          altitude: clientInterface.altitude,
+          planned_aircraft: clientInterface.planned_aircraft,
+          heading: clientInterface.heading,
+          groundspeed: clientInterface.groundspeed,
+          planned_depairport: clientInterface.planned_depairport,
+          planned_destairport: clientInterface.planned_destairport
+        })
+      }
+
+      this.setState({ flights: flightDataArr });
     })
   }
 
   componentDidMount() {
-    let flightDataArr = [];
+    this.getFlightData();
+  }
 
-    for (let i = 0; i < FLIGHT_DATA.length; i++) {
-      let clientInterface = {},
-          clientDataSplit = FLIGHT_DATA[i].split(':');
+  // projection() {
+  //   return geoTimes()
+  //     .translate([this.props.width/2, this.props.height/2])
+  //     .scale(160)
+  // }
 
-      for (let j = 0; j < CLIENT_LABELS.length; j++) {
-        clientInterface[CLIENT_LABELS[j]] = clientDataSplit[j];
-      }
-
-      flightDataArr.push({
-        name: clientInterface.realname,
-        coordinates: [parseFloat(clientInterface.longitude), parseFloat(clientInterface.latitude)],
-        frequency: clientInterface.frequency,
-        altitude: clientInterface.altitude,
-        planned_aircraft: clientInterface.planned_aircraft,
-        heading: clientInterface.heading,
-        groundspeed: clientInterface.groundspeed
-      })
-    }
-
-    this.setState({ flights: flightDataArr }, () => {
-      console.log(this.state.flights);
-    });
+  thing(geo) {
+    const geoArr = geo.geometry.coordinates[0],
+          currentCoordinates = geoArr[0][geoArr.length - 1];
   }
 
   render() {
@@ -116,67 +142,68 @@ export default class Map extends Component {
           }}
           >
           {({zoom,x,y}) => (
-            <ComposableMap
-              projectionConfig={{ scale: 205 }}
-              width={980}
-              height={551}
-              style={{
-                width: "100%",
-                height: "auto",
-              }}
-              >
-              <ZoomableGroup center={[x,y]} zoom={zoom}>
-                <Geographies geography={mapFile}>
-                  {(geographies, projection) =>
-                    geographies.map((geography, i) => (
-                      <Geography
+              <ComposableMap
+                projectionConfig={{ scale: 205 }}
+                width={980}
+                height={551}
+                style={{
+                  width: "100%",
+                  height: "auto",
+                }}
+                >
+                <ZoomableGroup center={[x,y]} zoom={zoom}>
+                  <Geographies geography={mapFile}>
+                    {(geographies, projection) =>
+                      geographies.map((geography, i) => (
+                        <Geography
+                          key={i}
+                          geography={geography}
+                          projection={projection}
+                          disableoptimization="true"
+                          onMouseMove={this.thing}
+                          style={{
+                            default: {
+                              fill: "#ECEFF1",
+                              stroke: "#607D8B",
+                              strokeWidth: 0.75,
+                              outline: "none",
+                            },
+                            hover: {
+                              fill: "#ECEFF1",
+                              stroke: "#607D8B",
+                              strokeWidth: 0.75,
+                              outline: "none",
+                            },
+                            pressed: {
+                              fill: "#ECEFF1",
+                              stroke: "#607D8B",
+                              strokeWidth: 0.75,
+                              outline: "none",
+                            },
+                          }}
+                        />
+                    ))}
+                  </Geographies>
+                  <Markers>
+                    {this.state.flights.map((marker, i) => (
+                      <Marker
                         key={i}
-                        geography={geography}
-                        projection={projection}
-                        disableoptimization="true"
-                        style={{
-                          default: {
-                            fill: "#ECEFF1",
-                            stroke: "#607D8B",
-                            strokeWidth: 0.75,
-                            outline: "none",
-                          },
-                          hover: {
-                            fill: "#ECEFF1",
-                            stroke: "#607D8B",
-                            strokeWidth: 0.75,
-                            outline: "none",
-                          },
-                          pressed: {
-                            fill: "#ECEFF1",
-                            stroke: "#607D8B",
-                            strokeWidth: 0.75,
-                            outline: "none",
-                          },
-                        }}
-                      />
-                  ))}
-                </Geographies>
-                <Markers>
-                  {this.state.flights.map((marker, i) => (
-                    <Marker
-                      key={i}
-                      marker={marker}
-                      onClick={this.handleFlightClick}
-                      >
-                      <circle
-                        cx={0}
-                        cy={0}
-                        r={isMobile ? 16 : 6}
-                        fill="#FF5722"
-                        stroke="#DF3702"
-                      />
-                    </Marker>
-                  ))}
-                </Markers>
-              </ZoomableGroup>
-            </ComposableMap>
-          )}
+                        marker={marker}
+                        onClick={this.handleFlightClick}
+                        >
+                        <circle
+                          cx={0}
+                          cy={0}
+                          r={isMobile ? 16 : 6}
+                          fill="#FF5722"
+                          stroke="#DF3702"
+                        />
+                      </Marker>
+                    ))}
+                  </Markers>
+                </ZoomableGroup>
+              </ComposableMap>
+            )}
         </Motion>
       </div>
     )
