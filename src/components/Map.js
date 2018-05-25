@@ -11,7 +11,7 @@ import {
 } from "react-simple-maps";
 import { Motion, spring } from "react-motion";
 import mapFile from '../maps/world-110m';
-import { CLIENT_LABELS } from '../constants/constants';
+import { CLIENT_LABELS, PLANE_SVG_PTH } from '../constants/constants';
 
 // import { geoPath } from "d3-geo"
 
@@ -85,21 +85,28 @@ export default class Map extends Component {
           clientInterface[CLIENT_LABELS[j]] = clientDataSplit[j];
         }
 
-        flightDataArr.push({
-          name: clientInterface.realname,
-          coordinates: [parseFloat(clientInterface.longitude), parseFloat(clientInterface.latitude)],
-          frequency: clientInterface.frequency,
-          altitude: clientInterface.altitude,
-          planned_aircraft: clientInterface.planned_aircraft,
-          heading: clientInterface.heading,
-          groundspeed: clientInterface.groundspeed,
-          planned_depairport: clientInterface.planned_depairport,
-          planned_destairport: clientInterface.planned_destairport
-        })
+        if (!this.checkFlightPosition(clientInterface)) {
+          flightDataArr.push({
+            name: clientInterface.realname,
+            coordinates: [parseFloat(clientInterface.longitude), parseFloat(clientInterface.latitude)],
+            frequency: clientInterface.frequency,
+            altitude: clientInterface.altitude,
+            planned_aircraft: clientInterface.planned_aircraft,
+            heading: clientInterface.heading,
+            groundspeed: clientInterface.groundspeed,
+            planned_depairport: clientInterface.planned_depairport,
+            planned_destairport: clientInterface.planned_destairport
+          })
+        }
       }
 
       this.setState({ flights: flightDataArr });
     })
+  }
+
+  checkFlightPosition(clientInterface) {
+    return ((isNaN(clientInterface.longitude) || clientInterface.longitude === '') ||
+            (isNaN(clientInterface.latitude) || clientInterface.latitude === ''));
   }
 
   componentDidMount() {
@@ -112,10 +119,10 @@ export default class Map extends Component {
   //     .scale(160)
   // }
 
-  thing(geo) {
-    const geoArr = geo.geometry.coordinates[0],
-          currentCoordinates = geoArr[0][geoArr.length - 1];
-  }
+  // thing(geo) {
+  //   const geoArr = geo.geometry.coordinates[0],
+  //         currentCoordinates = geoArr[0][geoArr.length - 1];
+  // }
 
   render() {
     return (
@@ -160,7 +167,6 @@ export default class Map extends Component {
                           geography={geography}
                           projection={projection}
                           disableoptimization="true"
-                          onMouseMove={this.thing}
                           style={{
                             default: {
                               fill: "#ECEFF1",
@@ -190,14 +196,11 @@ export default class Map extends Component {
                         key={i}
                         marker={marker}
                         onClick={this.handleFlightClick}
-                        >
-                        <circle
-                          cx={0}
-                          cy={0}
-                          r={isMobile ? 16 : 6}
-                          fill="#FF5722"
-                          stroke="#DF3702"
-                        />
+                        rotate={marker.heading}>
+                        <path
+                          d={PLANE_SVG_PTH}
+                          strokeWidth="0"
+                          fill="#73b6e6" />
                       </Marker>
                     ))}
                   </Markers>

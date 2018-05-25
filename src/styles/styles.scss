@@ -1,9 +1,6 @@
-.App {
-  cursor: pointer;
-}
+// Defaults
+@import './_variables';
+@import './_defaults';
 
-header {
-  border-bottom: 1px solid grey;
-
-  padding: 0 20px;
-}
+// Components
+@import './components/map';
