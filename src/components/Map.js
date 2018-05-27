@@ -11,8 +11,8 @@ import {
   Marker
 } from "react-simple-maps";
 import { Motion, spring } from "react-motion";
-import mapFile from '../maps/world-110m';
-import { CLIENT_LABELS, PLANE_SVG_PTH } from '../constants/constants';
+import mapFile from '../maps/world-50m';
+import { CLIENT_LABELS, PLANE_SVG_PTH, CITIES } from '../constants/constants';
 
 // import { geoPath } from "d3-geo"
 
@@ -39,7 +39,8 @@ export default class Map extends Component {
     this.handleFlightClick = this.handleFlightClick.bind(this)
     this.handleReset = this.handleReset.bind(this)
     this.findFlight = this.findFlight.bind(this)
-    this.flightInputChange = this.flightInputChange.bind(this);
+    this.handleCitySelection = this.handleCitySelection.bind(this)
+    this.flightCallsignSearch = this.flightCallsignSearch.bind(this)
   }
 
   handleZoomIn() {
@@ -56,14 +57,28 @@ export default class Map extends Component {
     }
   }
 
-  handleFlightClick(flight) {
+  handleFlightClick(flight, isCity) {
     console.log(flight);
 
-    this.setState({
-      center: flight.coordinates,
-      selectedFlight: flight,
-      zoom: this.state.zoom === 1 ? 50 : this.state.zoom
-    })
+    if (isCity) {
+      this.setState({
+        center: flight.coordinates,
+        zoom: this.state.zoom === 1 ? 50 : this.state.zoom
+      })
+    } else {
+      this.setState({
+        callsign: flight.callsign,
+        center: flight.coordinates,
+        selectedFlight: flight,
+        zoom: this.state.zoom === 1 ? 50 : this.state.zoom
+      })
+    }
+  }
+
+  handleCitySelection(selectedCity) {
+    const city = CITIES.find(e => e.name === selectedCity.target.value);
+
+    this.handleFlightClick(city, true);
   }
 
   handleReset() {
@@ -72,6 +87,16 @@ export default class Map extends Component {
       selectedFlight: '',
       zoom: 1
     })
+  }
+
+  cityDropdown() {
+    const citySelecitons = [];
+
+    for (let x in CITIES) {
+      citySelecitons.push(<option key={CITIES[x].name} value={CITIES[x].name}>{CITIES[x].name}</option>)
+    }
+
+    return citySelecitons;
   }
 
   findFlight() {
@@ -84,7 +109,7 @@ export default class Map extends Component {
     }
   }
 
-  flightInputChange(e) {
+  flightCallsignSearch(e) {
     this.setState({ callsign: e.target.value });
   }
 
@@ -188,12 +213,16 @@ export default class Map extends Component {
         <input
           type="text"
           placeholder="Search for the callsign..."
-          onChange={this.flightInputChange} />
+          onChange={this.flightCallsignSearch} />
         <input
           type="button"
           value="Search"
           onClick={this.findFlight}
         />
+        <label htmlFor="city-picker__select">League:</label>
+        <select name='city-picker__select' id='city-picker__select' onChange={this.handleCitySelection}>
+          {this.cityDropdown()}
+        </select>
         <Motion
           defaultStyle={{
             zoom: 1,
@@ -256,7 +285,7 @@ export default class Map extends Component {
                         <Marker
                           key={i}
                           marker={marker}
-                          onClick={this.handleFlightClick}
+                          onClick={(e) => this.handleFlightClick(e)}
                           rotate={marker.heading}
                           defaultZoomNumerator={isMobile ? "0.50" : "0.35"}>
                           <path
@@ -264,7 +293,6 @@ export default class Map extends Component {
                             d={PLANE_SVG_PTH}
                             strokeWidth="0"
                             fill="#73b6e6" />
-                          <line x1="0" y1="0" x2="200" y2="200" style={{stroke:"rgb(255,0,0)", strokeWidth: "1"}} />
                         </Marker>
                       )
                     })}

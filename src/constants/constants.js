@@ -44,14 +44,41 @@ export const CLIENT_LABELS = [
 ];
 
 // Stub data
-export const cities = [
-  { name: "Zurich", coordinates: [8.5417,47.3769] },
+export const CITIES = [
   { name: "Singapore", coordinates: [103.8198,1.3521] },
   { name: "San Francisco", coordinates: [-122.4194,37.7749] },
   { name: "Sydney", coordinates: [151.2093,-33.8688] },
-  { name: "Lagos", coordinates: [3.3792,6.5244] },
-  { name: "Buenos Aires", coordinates: [-58.3816,-34.6037] },
-  { name: "Shanghai", coordinates: [121.4737,31.2304] },
+  { name: "Zurich", coordinates: [8.5417,47.3769] },
+  { name: "Tokyo", coordinates: [139.6917,35.6895], population: 37843000 },
+  { name: "Jakarta", coordinates: [106.8650,-6.1751], population: 30539000 },
+  { name: "Delhi", coordinates: [77.1025,28.7041], population: 24998000 },
+  { name: "Manila", coordinates: [120.9842,14.5995], population: 24123000 },
+  { name: "Seoul", coordinates: [126.9780,37.5665], population: 23480000 },
+  { name: "Shanghai", coordinates: [121.4737,31.2304], population: 23416000 },
+  { name: "Karachi", coordinates: [67.0099,24.8615], population: 22123000 },
+  { name: "Beijing", coordinates: [116.4074,39.9042], population: 21009000 },
+  { name: "New York", coordinates: [-74.0059,40.7128], population: 20630000 },
+  { name: "Guangzhou", coordinates: [113.2644,23.1291], population: 20597000 },
+  { name: "Sao Paulo", coordinates: [-46.6333,-23.5505], population: 20365000 },
+  { name: "Mexico City", coordinates: [-99.1332,19.4326], population: 20063000 },
+  { name: "Mumbai", coordinates: [72.8777,19.0760], population: 17712000 },
+  { name: "Osaka", coordinates: [135.5022,34.6937], population: 17444000 },
+  { name: "Moscow", coordinates: [37.6173,55.7558], population: 16170000 },
+  { name: "Dhaka", coordinates: [90.4125,23.8103], population: 15669000 },
+  { name: "Cairo", coordinates: [31.2357,30.0444], population: 15600000 },
+  { name: "Los Angeles", coordinates: [-118.2437,34.0522], population: 15058000 },
+  { name: "Bangkok", coordinates: [100.5018,13.7563], population: 14998000 },
+  { name: "Kolkata", coordinates: [88.3639,22.5726], population: 14667000 },
+  { name: "Buenos Aires", coordinates: [-58.3816,-34.6037], population: 14122000 },
+  { name: "Tehran", coordinates: [51.3890,35.6892], population: 13532000 },
+  { name: "Istanbul", coordinates: [28.9784,41.0082], population: 13287000 },
+  { name: "Lagos", coordinates: [3.3792,6.5244], population: 13123000 },
+  { name: "Shenzhen", coordinates: [114.0579,22.5431], population: 12084000 },
+  { name: "Rio de Janeiro", coordinates: [-43.1729,-22.9068], population: 11727000 },
+  { name: "Kinshasa", coordinates: [15.2663,-4.4419], population: 11587000 },
+  { name: "Tianjin", coordinates: [117.3616,39.3434], population: 10920000 },
+  { name: "Paris", coordinates: [2.3522,48.8566], population: 10858000 },
+  { name: "Lima", coordinates: [-77.0428,-12.0464], population: 10750000 }
 ];
 
 export const PLANE_SVG_PTH = "m25.21488,3.93375c-0.44355,0 -0.84275,0.18332 -1.17933,0.51592c-0.33397,0.33267 -0.61055,0.80884 -0.84275,1.40377c-0.45922,1.18911 -0.74362,2.85964 -0.89755,4.86085c-0.15655,1.99729 -0.18263,4.32223 -0.11741,6.81118c-5.51835,2.26427 -16.7116,6.93857 -17.60916,7.98223c-1.19759,1.38937 -0.81143,2.98095 -0.32874,4.03902l18.39971,-3.74549c0.38616,4.88048 0.94192,9.7138 1.42461,13.50099c-1.80032,0.52703 -5.1609,1.56679 -5.85232,2.21255c-0.95496,0.88711 -0.95496,3.75718 -0.95496,3.75718l7.53,-0.61316c0.17743,1.23545 0.28701,1.95767 0.28701,1.95767l0.01304,0.06557l0.06002,0l0.13829,0l0.0574,0l0.01043,-0.06557c0,0 0.11218,-0.72222 0.28961,-1.95767l7.53164,0.61316c0,0 0,-2.87006 -0.95496,-3.75718c-0.69044,-0.64577 -4.05363,-1.68813 -5.85133,-2.21516c0.48009,-3.77545 1.03061,-8.58921 1.42198,-13.45404l18.18207,3.70115c0.48009,-1.05806 0.86881,-2.64965 -0.32617,-4.03902c-0.88969,-1.03062 -11.81147,-5.60054 -17.39409,-7.89352c0.06524,-2.52287 0.04175,-4.88024 -0.1148,-6.89989l0,-0.00476c-0.15655,-1.99844 -0.44094,-3.6683 -0.90277,-4.8561c-0.22699,-0.59493 -0.50356,-1.07111 -0.83754,-1.40377c-0.33658,-0.3326 -0.73578,-0.51592 -1.18194,-0.51592l0,0l-0.00001,0l0,0l0.00002,0.00001z";
