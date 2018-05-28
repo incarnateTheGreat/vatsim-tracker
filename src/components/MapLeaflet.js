@@ -5,6 +5,8 @@ import {
   TileLayer,
   Marker,
   Popup } from 'react-leaflet'
+import MarkerClusterGroup from 'react-leaflet-markercluster'
+import Control from 'react-leaflet-control'
 import { CLIENT_LABELS, CITIES } from '../constants/constants'
 
 export default class MapLeaflet extends Component {
@@ -18,15 +20,16 @@ export default class MapLeaflet extends Component {
   }
 
   interval = null;
+  map = null;
 
-  getViewportSize() {
+  getViewportSize = () => {
     const width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
           height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
     return { width, height }
   }
 
-  setResizeEvent() {
+  setResizeEvent = () => {
     window.addEventListener('resize', () => {
       setTimeout(() => {
         const { width, height } = this.getViewportSize()
@@ -36,13 +39,35 @@ export default class MapLeaflet extends Component {
     })
   }
 
-  startInterval() {
+  startInterval = () => {
 		this.interval = setInterval(() => {
 			this.getFlightData();
 		}, 60000);
 	}
 
-  checkFlightPosition(clientInterface) {
+  handleReset = () => {
+    this.setState({
+      lat: 43.862,
+      lng: -79.369,
+      zoom: 3
+    })
+  }
+
+  getMapZoom = () => {
+    if (this.map) {
+      const { lat, lng } = this.map.leafletElement.getCenter();
+
+      this.setState({
+        lat,
+        lng,
+        zoom: this.map.leafletElement.getZoom()
+      })
+    } else {
+      console.log('ded.', this.state);
+    }
+  }
+
+  checkFlightPosition = (clientInterface) => {
     return ((isNaN(clientInterface.longitude) || clientInterface.longitude === '') ||
             (isNaN(clientInterface.latitude) || clientInterface.latitude === ''));
   }
@@ -52,7 +77,7 @@ export default class MapLeaflet extends Component {
       .then(res => res.data);
   }
 
-  getFlightData() {
+  getFlightData = () => {
     let flightDataArr = [];
 
     this.getData().then(data => {
@@ -87,9 +112,49 @@ export default class MapLeaflet extends Component {
 
   addFlight = (name, lat, lng) => {
     const { flights } = this.state
+
     flights.push({ name: name, coordinates: [lat, lng] })
-    this.setState({ flights }, () => {
-      console.log(this.state);
+
+    this.setState({ flights })
+  }
+
+  buildFlightMarkers = () => {
+    return this.state.flights.map((position, idx) => {
+      const { name,
+              callsign,
+              altitude,
+              heading,
+              groundspeed,
+              transponder,
+              planned_depairport,
+              planned_destairport,
+              planned_aircraft } = position,
+              coords = [position.coordinates[1], position.coordinates[0]]
+
+        let plan = false;
+
+      if (planned_depairport && planned_destairport) {
+        plan = `${planned_depairport} ⟶ ${planned_destairport}`;
+      }
+
+      return (
+        <Marker
+          key={`marker-${idx}`}
+          position={coords}
+        >
+          <Popup>
+            <div>
+              <div><strong>{callsign}</strong></div>
+              <div>{name}</div>
+              <div>{planned_aircraft}</div>
+              <div>{altitude} FT.</div>
+              <div>{groundspeed} KTS</div>
+              <div>{transponder}</div>
+              <div>{plan}</div>
+            </div>
+          </Popup>
+        </Marker>
+      )
     })
   }
 
@@ -112,12 +177,14 @@ export default class MapLeaflet extends Component {
     }, 0);
   }
 
-  render() {
+  render = () => {
     return (
       <div>
         <Map
           center={[this.state.lat, this.state.lng]}
           zoom={this.state.zoom}
+          ref={(ref) => {this.map = ref}}
+          onZoomEnd={this.getMapZoom.bind(this)}
           style={{
             height: this.state.height,
             width: this.state.width
@@ -126,39 +193,14 @@ export default class MapLeaflet extends Component {
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-        {this.state.flights.map((position, idx) => {
-          const { name,
-                  callsign,
-                  altitude,
-                  heading,
-                  groundspeed,
-                  transponder,
-                  planned_depairport,
-                  planned_destairport,
-                  planned_aircraft } = position
-
-          const coords = [position.coordinates[1], position.coordinates[0]]
-
-          return (
-            <Marker
-              key={`marker-${idx}`}
-              position={coords}
-            >
-              <Popup>
-                <div>
-                  <div><strong>{callsign}</strong></div>
-                  <div>{name}</div>
-                  <div>{planned_aircraft}</div>
-                  <div>{altitude} FT.</div>
-                  <div>{groundspeed} KTS</div>
-                  <div>{transponder}</div>
-                  <div>{planned_depairport} -> {planned_destairport}</div>
-                </div>
-              </Popup>
-            </Marker>
-          )
-        })
-        }
+        <MarkerClusterGroup showCoverageOnHover={false}>
+          {this.buildFlightMarkers()}
+        </MarkerClusterGroup>
+        <Control position="topleft" >
+          <button onClick={this.handleReset.bind(this)}>
+            Reset View
+          </button>
+        </Control>
         </Map>
       </div>
     )
