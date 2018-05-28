@@ -45,6 +45,7 @@ export const CLIENT_LABELS = [
 
 // Stub data
 export const CITIES = [
+  { name: "Toronto", coordinates: [-79.369,43.862] },
   { name: "Singapore", coordinates: [103.8198,1.3521] },
   { name: "San Francisco", coordinates: [-122.4194,37.7749] },
   { name: "Sydney", coordinates: [151.2093,-33.8688] },

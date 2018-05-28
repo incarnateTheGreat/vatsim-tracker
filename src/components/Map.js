@@ -96,6 +96,22 @@ export default class Map extends Component {
       citySelecitons.push(<option key={CITIES[x].name} value={CITIES[x].name}>{CITIES[x].name}</option>)
     }
 
+    // Sort alphabetically.
+    citySelecitons.sort((a, b) => {
+      const nameA = a.props.value.toUpperCase(),
+            nameB = b.props.value.toUpperCase();
+
+      if (nameA < nameB) {
+        return -1;
+      }
+
+      if (nameA > nameB) {
+        return 1;
+      }
+
+      return 0;
+    })
+
     return citySelecitons;
   }
 
@@ -219,7 +235,7 @@ export default class Map extends Component {
           value="Search"
           onClick={this.findFlight}
         />
-        <label htmlFor="city-picker__select">League:</label>
+        <label htmlFor="city-picker__select">City:</label>
         <select name='city-picker__select' id='city-picker__select' onChange={this.handleCitySelection}>
           {this.cityDropdown()}
         </select>
@@ -237,7 +253,7 @@ export default class Map extends Component {
           >
           {({zoom,x,y}) => (
               <ComposableMap
-                projectionConfig={{ scale: 205 }}
+                projectionConfig={{ scale: 250 }}
                 width={980}
                 height={800}
                 style={{
