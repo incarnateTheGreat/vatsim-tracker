@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Header from './components/Header';
 import Map from './components/Map';
 import './styles/styles.scss';
 
