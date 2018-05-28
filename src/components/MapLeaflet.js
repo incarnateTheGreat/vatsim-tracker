@@ -4,14 +4,16 @@ import {
   TileLayer,
   Marker,
   Popup } from 'react-leaflet'
+import { CITIES } from '../constants/constants'
 
 export default class MapLeaflet extends Component {
   state = {
-    lat: 51.505,
-    lng: -0.09,
-    zoom: 5,
-    height: 0,
-    width: 0
+    lat: 43.862,
+    lng: -79.369,
+    zoom: 3,
+    height: 1000,
+    width: 500,
+    markers: []
   }
 
   getViewportSize() {
@@ -26,44 +28,58 @@ export default class MapLeaflet extends Component {
       setTimeout(() => {
         const { width, height } = this.getViewportSize()
 
-        this.setState({ width, height }, () => {
-          console.log(this.state.width, this.state.height);
-        })
+        this.setState({ width, height })
       }, 500);
     })
+  }
+
+  addMarker = (lat, lng) => {
+    const { markers } = this.state
+    markers.push([lat, lng])
+    this.setState({ markers })
   }
 
   componentDidMount = () => {
     const { width, height } = this.getViewportSize()
 
-    this.setState({ width, height }, () => {
-      this.setResizeEvent();
-    })
+    for (let x = 0; x < CITIES.length; x++) {
+      this.addMarker(CITIES[x].coordinates[1], CITIES[x].coordinates[0])
+    }
+
+    setTimeout(() => {
+      this.setState({ width, height }, () => {
+        this.setResizeEvent();
+        window.dispatchEvent(new Event('resize'));
+      })
+    }, 0);
   }
 
   render() {
-    const position = [this.state.lat, this.state.lng]
+    // const position = [this.state.lat, this.state.lng]
 
     return (
-      <div id="mapid" style={{
-         height: this.state.height,
-         width: this.state.width
-       }}>
-        <Map center={position}
-             zoom={this.state.zoom}
-             style={{
-                height: this.state.height,
-                width: this.state.width
-              }}>
+      <div id="mapid">
+        <Map
+          center={[this.state.lat, this.state.lng]}
+          zoom={this.state.zoom}
+          style={{
+            height: this.state.height,
+            width: this.state.width
+          }}>
           <TileLayer
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <Marker position={position}>
-            <Popup>
-              A pretty CSS3 popup. <br /> Easily customizable.
-            </Popup>
-          </Marker>
+          {this.state.markers.map((position, idx) =>
+            <Marker
+              key={`marker-${idx}`}
+              position={position}
+            >
+              <Popup>
+                <span>eee</span>
+              </Popup>
+            </Marker>)
+          }
         </Map>
       </div>
     )
