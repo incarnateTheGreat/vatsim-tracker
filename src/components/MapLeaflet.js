@@ -54,6 +54,10 @@ export default class MapLeaflet extends Component {
       lat: 43.862,
       lng: -79.369,
       zoom: 3
+    }, () => {
+      // Clear Search Input.
+      const flightSearchInput = document.getElementsByName('flightSearch')[0];
+      flightSearchInput.value = '';
     })
   }
 
@@ -249,7 +253,6 @@ export default class MapLeaflet extends Component {
             width: this.state.width
           }}>
           <TileLayer
-            attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
         <MarkerClusterGroup
@@ -268,6 +271,7 @@ export default class MapLeaflet extends Component {
             <div>
               <input
                 type="text"
+                name="flightSearch"
                 placeholder="Search for the callsign..."
                 onChange={this.flightCallsignSearch} />
               <input
