@@ -90,6 +90,23 @@ export default class MapLeaflet extends Component {
   handleFlightClick = (flight, isCity) => {
     console.log(flight);
 
+    this.getAirportData(flight.planned_destairport).then(data => {
+      console.log(data);
+    })
+
+    // Draw Line Test
+    // AUA54
+    // create a red polyline from an array of LatLng points
+    // var latlngs = [
+    //     [45.51, -122.68],
+    //     [37.77, -122.43],
+    //     [34.04, -118.2]
+    // ];
+    // var polyline = new Leaflet.polyline(latlngs, {color: 'red'}).addTo(this.map);
+
+    // zoom the map to the polyline
+    // this.map.fitBounds(polyline.getBounds());
+
     if (isCity) {
       this.setState({
         center: flight.coordinates,
@@ -100,10 +117,9 @@ export default class MapLeaflet extends Component {
         callsign: flight.callsign,
         lat: flight.coordinates[1],
         lng: flight.coordinates[0],
-        zoom: 20
+        zoom: 15
       }, () => {
-        const { lat, lng } = this.state,
-              map = this.map;
+        const { lat, lng } = this.state;
 
         // Programmatically open the Data Tooltip.
         this.map.eachLayer(layer => {
@@ -122,6 +138,12 @@ export default class MapLeaflet extends Component {
 
   async getData() {
     return await axios('http://localhost:8000/api/vatsim-data')
+      .then(res => res.data);
+  }
+
+  // TODO: Create service to call Destination ICAO so you can retrieve Coordinates in order to draw line.
+  async getAirportData(destination_icao) {
+    return await axios(`http://localhost:8000/api/get-airports/${destination_icao}`)
       .then(res => res.data);
   }
 
@@ -197,7 +219,7 @@ export default class MapLeaflet extends Component {
       return (
          <RotatedMarker
            position={coords}
-           rotationAngle={parseInt(heading)}
+           rotationAngle={parseInt(heading, 10)}
            rotationOrigin={'center'}
            key={`marker-${idx}`}
            icon={icon}
@@ -231,8 +253,8 @@ export default class MapLeaflet extends Component {
       this.setState({ width, height }, () => {
         if (!this.interval) {
           this.setResizeEvent();
-          this.getFlightData();
           this.startInterval();
+          this.getFlightData();
           window.dispatchEvent(new Event('resize'));
         }
       })
@@ -257,7 +279,7 @@ export default class MapLeaflet extends Component {
           />
         <MarkerClusterGroup
           showCoverageOnHover={false}
-          maxClusterRadius="40"
+          maxClusterRadius="65"
         >
           {this.buildFlightMarkers()}
         </MarkerClusterGroup>

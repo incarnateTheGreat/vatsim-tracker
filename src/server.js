@@ -1,7 +1,8 @@
 const express = require('express'),
 			app = express(),
 			cors = require('cors'),
-			request = require('request');
+			request = require('request'),
+			airports = require('./data/airports.json');
 
 // Enable cross-origin resource sharing.
 app.use(cors());
@@ -31,4 +32,14 @@ app.route('/api/vatsim-data').get((req, res) => {
 
 		res.send(results);
 	});
+});
+
+app.route('/api/get-airports/:icao').get((req, res) => {
+	const destination = req.params['icao'];
+
+	const result = airports.find(airportObj => {
+		return airportObj.icao.toUpperCase() === destination.toUpperCase()
+	});
+
+	res.send(result);
 });
