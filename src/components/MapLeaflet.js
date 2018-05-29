@@ -17,7 +17,7 @@ export default class MapLeaflet extends Component {
     callsign: '',
     lat: 43.862,
     lng: -79.369,
-    zoom: 3,
+    zoom: 2,
     height: 1000,
     width: 500,
     flights: []
@@ -98,9 +98,11 @@ export default class MapLeaflet extends Component {
         lng: flight.coordinates[0],
         zoom: 20
       }, () => {
-        const { lat, lng } = this.state;
+        const { lat, lng } = this.state,
+              map = this.map;
 
-        this.map.eachLayer(function (layer) {
+        // Programmatically open the Data Tooltip.
+        this.map.eachLayer(layer => {
           if (layer._latlng && ((layer._latlng.lat === lat) && (layer._latlng.lng === lng))) {
             layer.openPopup();
           }
