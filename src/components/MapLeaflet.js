@@ -3,14 +3,18 @@ import axios from 'axios'
 import {
   Map,
   TileLayer,
-  Marker,
   Popup } from 'react-leaflet'
+import Leaflet from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-markercluster'
 import Control from 'react-leaflet-control'
-import { CLIENT_LABELS, CITIES } from '../constants/constants'
+import RotatedMarker from 'react-leaflet-rotatedmarker'
+import { CLIENT_LABELS,
+         CITIES,
+         MAX_BOUNDS } from '../constants/constants'
 
 export default class MapLeaflet extends Component {
   state = {
+    callsign: '',
     lat: 43.862,
     lng: -79.369,
     zoom: 3,
@@ -55,15 +59,53 @@ export default class MapLeaflet extends Component {
 
   getMapZoom = () => {
     if (this.map) {
-      const { lat, lng } = this.map.leafletElement.getCenter();
+      const { lat, lng } = this.map.getCenter();
 
       this.setState({
         lat,
         lng,
-        zoom: this.map.leafletElement.getZoom()
+        zoom: this.map.getZoom()
+      })
+    }
+  }
+
+  flightCallsignSearch = (e) => {
+    this.setState({ callsign: e.target.value });
+  }
+
+  findFlight = () => {
+    if (this.state.flights.length > 0) {
+      const flight = this.state.flights.find(flight => {
+        return flight.callsign.toUpperCase() === this.state.callsign.toUpperCase()
+      })
+
+      if (flight) this.handleFlightClick(flight);
+    }
+  }
+
+  handleFlightClick = (flight, isCity) => {
+    console.log(flight);
+
+    if (isCity) {
+      this.setState({
+        center: flight.coordinates,
+        zoom: this.state.zoom === 1 ? 50 : this.state.zoom
       })
     } else {
-      console.log('ded.', this.state);
+      this.setState({
+        callsign: flight.callsign,
+        lat: flight.coordinates[1],
+        lng: flight.coordinates[0],
+        zoom: 20
+      }, () => {
+        const { lat, lng } = this.state;
+
+        this.map.eachLayer(function (layer) {
+          if (layer._latlng && ((layer._latlng.lat === lat) && (layer._latlng.lng === lng))) {
+            layer.openPopup();
+          }
+        });
+      })
     }
   }
 
@@ -125,11 +167,20 @@ export default class MapLeaflet extends Component {
               altitude,
               heading,
               groundspeed,
-              transponder,
               planned_depairport,
               planned_destairport,
               planned_aircraft } = position,
               coords = [position.coordinates[1], position.coordinates[0]]
+
+        const icon = new Leaflet.Icon({
+          iconUrl: require('../images/airplane-icon.png'),
+          iconAnchor: null,
+          shadowUrl: null,
+          shadowSize: null,
+          shadowAnchor: null,
+          iconSize: new Leaflet.Point(30, 30),
+          className: 'airplane-icon'
+        })
 
         let plan = false;
 
@@ -138,10 +189,13 @@ export default class MapLeaflet extends Component {
       }
 
       return (
-        <Marker
-          key={`marker-${idx}`}
-          position={coords}
-        >
+         <RotatedMarker
+           position={coords}
+           rotationAngle={parseInt(heading)}
+           rotationOrigin={'center'}
+           key={`marker-${idx}`}
+           icon={icon}
+         >
           <Popup>
             <div>
               <div><strong>{callsign}</strong></div>
@@ -149,11 +203,11 @@ export default class MapLeaflet extends Component {
               <div>{planned_aircraft}</div>
               <div>{altitude} FT.</div>
               <div>{groundspeed} KTS</div>
-              <div>{transponder}</div>
+              <div>{heading}°</div>
               <div>{plan}</div>
             </div>
           </Popup>
-        </Marker>
+        </RotatedMarker>
       )
     })
   }
@@ -164,6 +218,8 @@ export default class MapLeaflet extends Component {
     // for (let x = 0; x < CITIES.length; x++) {
     //   this.addFlight(CITIES[x].name, CITIES[x].coordinates[1], CITIES[x].coordinates[0])
     // }
+
+    this.map = this.refs.map.leafletElement;
 
     setTimeout(() => {
       this.setState({ width, height }, () => {
@@ -181,9 +237,10 @@ export default class MapLeaflet extends Component {
     return (
       <div>
         <Map
+          ref='map'
           center={[this.state.lat, this.state.lng]}
           zoom={this.state.zoom}
-          ref={(ref) => {this.map = ref}}
+          maxBounds={MAX_BOUNDS}
           onZoomEnd={this.getMapZoom.bind(this)}
           style={{
             height: this.state.height,
@@ -193,13 +250,30 @@ export default class MapLeaflet extends Component {
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-        <MarkerClusterGroup showCoverageOnHover={false}>
+        <MarkerClusterGroup
+          showCoverageOnHover={false}
+          maxClusterRadius="40"
+        >
           {this.buildFlightMarkers()}
         </MarkerClusterGroup>
-        <Control position="topleft" >
-          <button onClick={this.handleReset.bind(this)}>
-            Reset View
-          </button>
+        <Control position="topleft">
+          <div>
+            <div>
+              <button onClick={this.handleReset.bind(this)}>
+                Reset View
+              </button>
+            </div>
+            <div>
+              <input
+                type="text"
+                placeholder="Search for the callsign..."
+                onChange={this.flightCallsignSearch} />
+              <input
+                type="button"
+                value="Search"
+                onClick={this.findFlight} />
+            </div>
+          </div>
         </Control>
         </Map>
       </div>

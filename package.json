@@ -45,6 +45,7 @@
     "react-leaflet": "^1.9.1",
     "react-leaflet-control": "^1.4.1",
     "react-leaflet-markercluster": "^1.1.8",
+    "react-leaflet-rotatedmarker": "^0.1.0",
     "react-simple-maps": "https://github.com/incarnateTheGreat/react-simple-maps.git",
     "resolve": "1.6.0",
     "sass-loader": "^7.0.1",
