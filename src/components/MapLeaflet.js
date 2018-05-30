@@ -20,7 +20,9 @@ export default class MapLeaflet extends Component {
     zoom: 2,
     height: 1000,
     width: 500,
-    flights: []
+    flights: [],
+    selected_flight: null,
+    destination_data: null
   }
 
   interval = null;
@@ -45,7 +47,12 @@ export default class MapLeaflet extends Component {
 
   startInterval = () => {
 		this.interval = setInterval(() => {
-			this.getFlightData();
+			this.getFlightData(() => {
+        if (this.state.selected_flight) {
+          this.clearPolylines();
+          this.drawPolylines(this.state.selected_flight.coordinates, this.state.destination_data);
+        }
+      });
 		}, 60000);
 	}
 
@@ -61,14 +68,15 @@ export default class MapLeaflet extends Component {
 
       // Clear Progress Line
       this.clearPolylines();
+      this.map.closePopup();
     })
   }
 
-  clearPolylines() {
+  clearPolylines = () => {
     const layers = this.map._layers;
 
     for(let i in layers) {
-      if(layers[i]._path != undefined) {
+      if(layers[i]._path !== undefined) {
         try {
           this.map.removeLayer(layers[i]);
         }
@@ -77,6 +85,16 @@ export default class MapLeaflet extends Component {
         }
       }
     }
+  }
+
+  drawPolylines = (coordinates, data) => {
+    const latlngs = [
+      [coordinates[1], coordinates[0]],
+      [parseFloat(data.lat), parseFloat(data.lon)]
+    ],
+    polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map);
+
+    this.map.fitBounds(polyline.getBounds());
   }
 
   getMapZoom = () => {
@@ -91,60 +109,65 @@ export default class MapLeaflet extends Component {
     }
   }
 
-  flightCallsignSearch = (e) => {
-    this.setState({ callsign: e.target.value });
-  }
-
-  findFlight = () => {
+  updateCallsign = (callsign) => {
     if (this.state.flights.length > 0) {
       const flight = this.state.flights.find(flight => {
-        return flight.callsign.toUpperCase() === this.state.callsign.toUpperCase()
+        return flight.callsign.toUpperCase() === callsign.toUpperCase()
       })
 
-      if (flight) this.handleFlightClick(flight);
+      if (flight) {
+        this.setState({ callsign }, () => {
+          this.findFlight(flight);
+        })
+      } else {
+        console.log('Flight does not exist.');
+      }
     }
   }
 
-  handleFlightClick = (flight, isCity) => {
+  searchFlight = () => {
+    const callsign = document.getElementsByName('flightSearch')[0].value;
+
+    this.updateCallsign(callsign);
+  }
+
+  findFlight = (flight, isCity) => {
+    this.clearPolylines();
+    this.map.closePopup();
+
     console.log(flight);
 
-    this.getAirportData(flight.planned_destairport).then(data => {
-      console.log(data);
+    this.setState({ selected_flight: flight }, () => {
+      this.getAirportData(flight.planned_destairport).then(destination_data => {
+        if (destination_data) {
+          this.setState({ destination_data }, () => {
+            this.drawPolylines(flight.coordinates, destination_data);
+          })
+        }
 
-      // Draw Line Test
-      // create a red polyline from an array of LatLng points
-      var latlngs = [
-          [flight.coordinates[1], flight.coordinates[0]],
-          [parseFloat(data.lat), parseFloat(data.lon)]
-      ];
-      var polyline = new Leaflet.polyline(latlngs, {color: 'red'}).addTo(this.map);
+        if (isCity) {
+          this.setState({
+            center: flight.coordinates,
+            zoom: this.state.zoom === 1 ? 50 : this.state.zoom
+          })
+        } else {
+          this.setState({
+            callsign: flight.callsign,
+            lat: flight.coordinates[1],
+            lng: flight.coordinates[0]
+          }, () => {
+            const { lat, lng } = this.state;
 
-      // zoom the map to the polyline
-      this.map.fitBounds(polyline.getBounds());
+            // Programmatically open the Data Tooltip.
+            this.map.eachLayer(layer => {
+              if (layer._latlng && ((layer._latlng.lat === lat) && (layer._latlng.lng === lng))) {
+                layer.openPopup();
+              }
+            });
+          })
+        }
+      })
     })
-
-    if (isCity) {
-      this.setState({
-        center: flight.coordinates,
-        zoom: this.state.zoom === 1 ? 50 : this.state.zoom
-      })
-    } else {
-      this.setState({
-        callsign: flight.callsign,
-        lat: flight.coordinates[1],
-        lng: flight.coordinates[0],
-        // zoom: 15
-      }, () => {
-        const { lat, lng } = this.state;
-
-        // Programmatically open the Data Tooltip.
-        this.map.eachLayer(layer => {
-          if (layer._latlng && ((layer._latlng.lat === lat) && (layer._latlng.lng === lng))) {
-            layer.openPopup();
-          }
-        });
-      })
-    }
   }
 
   checkFlightPosition = (clientInterface) => {
@@ -157,13 +180,12 @@ export default class MapLeaflet extends Component {
       .then(res => res.data);
   }
 
-  // TODO: Create service to call Destination ICAO so you can retrieve Coordinates in order to draw line.
   async getAirportData(destination_icao) {
     return await axios(`http://localhost:8000/api/get-airports/${destination_icao}`)
       .then(res => res.data);
   }
 
-  getFlightData = () => {
+  getFlightData = (callback) => {
     let flightDataArr = [];
 
     this.getData().then(data => {
@@ -192,7 +214,17 @@ export default class MapLeaflet extends Component {
         }
       }
 
-      this.setState({ flights: flightDataArr });
+      this.setState({ flights: flightDataArr }, () => {
+        if (this.state.selected_flight) {
+          const result = this.state.flights.find(flight => {
+            return flight.callsign.toUpperCase() === this.state.selected_flight.callsign.toUpperCase()
+          })
+
+          this.setState({ selected_flight: result })
+        }
+      });
+
+      callback ? callback() : '';
     })
   }
 
@@ -239,8 +271,14 @@ export default class MapLeaflet extends Component {
            rotationOrigin={'center'}
            key={`marker-${idx}`}
            icon={icon}
+           onClick={() => {
+             this.updateCallsign(callsign)
+           }}
          >
-          <Popup>
+          <Popup
+            autoClose={false}
+            closeOnClick={false}
+          >
             <div>
               <div><strong>{callsign}</strong></div>
               <div>{name}</div>
@@ -310,12 +348,11 @@ export default class MapLeaflet extends Component {
               <input
                 type="text"
                 name="flightSearch"
-                placeholder="Search for the callsign..."
-                onChange={this.flightCallsignSearch} />
+                placeholder="Search for the callsign..." />
               <input
                 type="button"
                 value="Search"
-                onClick={this.findFlight} />
+                onClick={this.searchFlight} />
             </div>
           </div>
         </Control>
