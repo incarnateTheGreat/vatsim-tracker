@@ -58,7 +58,25 @@ export default class MapLeaflet extends Component {
       // Clear Search Input.
       const flightSearchInput = document.getElementsByName('flightSearch')[0];
       flightSearchInput.value = '';
+
+      // Clear Progress Line
+      this.clearPolylines();
     })
+  }
+
+  clearPolylines() {
+    const layers = this.map._layers;
+
+    for(let i in layers) {
+      if(layers[i]._path != undefined) {
+        try {
+          this.map.removeLayer(layers[i]);
+        }
+        catch(e) {
+          console.log("problem with " + e + layers[i]);
+        }
+      }
+    }
   }
 
   getMapZoom = () => {
@@ -92,20 +110,18 @@ export default class MapLeaflet extends Component {
 
     this.getAirportData(flight.planned_destairport).then(data => {
       console.log(data);
+
+      // Draw Line Test
+      // create a red polyline from an array of LatLng points
+      var latlngs = [
+          [flight.coordinates[1], flight.coordinates[0]],
+          [parseFloat(data.lat), parseFloat(data.lon)]
+      ];
+      var polyline = new Leaflet.polyline(latlngs, {color: 'red'}).addTo(this.map);
+
+      // zoom the map to the polyline
+      this.map.fitBounds(polyline.getBounds());
     })
-
-    // Draw Line Test
-    // AUA54
-    // create a red polyline from an array of LatLng points
-    // var latlngs = [
-    //     [45.51, -122.68],
-    //     [37.77, -122.43],
-    //     [34.04, -118.2]
-    // ];
-    // var polyline = new Leaflet.polyline(latlngs, {color: 'red'}).addTo(this.map);
-
-    // zoom the map to the polyline
-    // this.map.fitBounds(polyline.getBounds());
 
     if (isCity) {
       this.setState({
@@ -117,7 +133,7 @@ export default class MapLeaflet extends Component {
         callsign: flight.callsign,
         lat: flight.coordinates[1],
         lng: flight.coordinates[0],
-        zoom: 15
+        // zoom: 15
       }, () => {
         const { lat, lng } = this.state;
 
