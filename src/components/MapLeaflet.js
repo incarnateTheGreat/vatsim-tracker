@@ -91,6 +91,7 @@ export default class MapLeaflet extends Component {
           this.map.removeLayer(layers[i]);
         }
         catch(e) {
+          this.errorToastMsg("Could not draw the Flight Path.");
           console.log("problem with " + e + layers[i]);
         }
       }
@@ -149,15 +150,10 @@ export default class MapLeaflet extends Component {
 
     this.getAirportData(flight.planned_destairport).then(destination_data => {
       if (destination_data) {
-        console.log('destination_data exists.');
-
         this.setState({ selected_flight: flight, destination_data }, () => {
           if(!this.isPlaneOnGround(flight.groundspeed)) {
-            console.log('flight is in the air.');
             this.drawPolylines(flight.coordinates, destination_data);
           }
-
-          console.log(this.state);
 
           this.applySelectedFlightData(flight);
         })
@@ -252,7 +248,6 @@ export default class MapLeaflet extends Component {
             callback ? callback() : null;
           })
         } else {
-          console.log(this.state);
           callback ? callback() : null;
         }
       });
