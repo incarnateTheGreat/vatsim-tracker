@@ -1,26 +1,24 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-import {
-  Map,
-  TileLayer,
-  Popup } from 'react-leaflet'
+import { Map, TileLayer, Popup, Tooltip } from 'react-leaflet'
 import Leaflet from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-markercluster'
 import Control from 'react-leaflet-control'
 import RotatedMarker from 'react-leaflet-rotatedmarker'
+import { ToastContainer, toast } from 'react-toastify'
 import { CLIENT_LABELS,
-         CITIES,
          MAX_BOUNDS } from '../constants/constants'
 
 export default class MapLeaflet extends Component {
   state = {
-    callsign: '',
     lat: 43.862,
     lng: -79.369,
     zoom: 2,
     height: 1000,
     width: 500,
     flights: [],
+    controllers: [],
+    callsign: '',
     selected_flight: null,
     destination_data: null
   }
@@ -50,25 +48,37 @@ export default class MapLeaflet extends Component {
 			this.getFlightData(() => {
         if (this.state.selected_flight) {
           this.clearPolylines();
-          this.drawPolylines(this.state.selected_flight.coordinates, this.state.destination_data);
+
+          if (!this.isPlaneOnGround(this.state.selected_flight.groundspeed)) {
+            this.drawPolylines(this.state.selected_flight.coordinates, this.state.destination_data);
+          }
         }
       });
-		}, 60000);
+		}, 30000);
 	}
 
   handleReset = () => {
     this.setState({
       lat: 43.862,
       lng: -79.369,
-      zoom: 3
+      zoom: 3,
+      callsign: '',
+      selected_flight: null,
+      destination_data: null
     }, () => {
       // Clear Search Input.
       const flightSearchInput = document.getElementsByName('flightSearch')[0];
       flightSearchInput.value = '';
 
-      // Clear Progress Line
+      // Clear Progress Line & Popups.
       this.clearPolylines();
-      this.map.closePopup();
+      this.clearPopups();
+    })
+  }
+
+  clearPopups = () => {
+    this.map.eachLayer(layer => {
+      layer.closePopup();
     })
   }
 
@@ -120,7 +130,7 @@ export default class MapLeaflet extends Component {
           this.findFlight(flight);
         })
       } else {
-        console.log('Flight does not exist.');
+        this.errorToastMsg('Flight does not exist.');
       }
     }
   }
@@ -133,40 +143,51 @@ export default class MapLeaflet extends Component {
 
   findFlight = (flight, isCity) => {
     this.clearPolylines();
-    this.map.closePopup();
+    this.clearPopups();
 
     console.log(flight);
 
-    this.setState({ selected_flight: flight }, () => {
-      this.getAirportData(flight.planned_destairport).then(destination_data => {
-        if (destination_data) {
-          this.setState({ destination_data }, () => {
+    this.getAirportData(flight.planned_destairport).then(destination_data => {
+      if (destination_data) {
+        console.log('destination_data exists.');
+
+        this.setState({ selected_flight: flight, destination_data }, () => {
+          if(!this.isPlaneOnGround(flight.groundspeed)) {
+            console.log('flight is in the air.');
             this.drawPolylines(flight.coordinates, destination_data);
-          })
-        }
+          }
 
-        if (isCity) {
-          this.setState({
-            center: flight.coordinates,
-            zoom: this.state.zoom === 1 ? 50 : this.state.zoom
-          })
-        } else {
-          this.setState({
-            callsign: flight.callsign,
-            lat: flight.coordinates[1],
-            lng: flight.coordinates[0]
-          }, () => {
-            const { lat, lng } = this.state;
+          console.log(this.state);
 
-            // Programmatically open the Data Tooltip.
-            this.map.eachLayer(layer => {
-              if (layer._latlng && ((layer._latlng.lat === lat) && (layer._latlng.lng === lng))) {
-                layer.openPopup();
-              }
-            });
-          })
+          this.applySelectedFlightData(flight);
+        })
+      } else {
+        this.applySelectedFlightData(flight);
+      }
+    }).catch(err => {
+      this.errorToastMsg('There\'s no flight data for this.');
+    })
+  }
+
+  isPlaneOnGround = (groundspeed) => {
+    return groundspeed <= 80;
+  }
+
+  applySelectedFlightData = (flight) => {
+    this.setState({
+      callsign: flight.callsign,
+      lat: flight.coordinates[1],
+      lng: flight.coordinates[0],
+      zoom: this.isPlaneOnGround(flight.groundspeed) ? 16 : this.state.zoom
+    }, () => {
+      const { lat, lng } = this.state;
+
+      // Programmatically open the Data Tooltip.
+      this.map.eachLayer(layer => {
+        if (layer._latlng && ((layer._latlng.lat === lat) && (layer._latlng.lng === lng))) {
+          layer.openPopup();
         }
-      })
+      });
     })
   }
 
@@ -175,7 +196,13 @@ export default class MapLeaflet extends Component {
             (isNaN(clientInterface.latitude) || clientInterface.latitude === ''));
   }
 
-  async getData() {
+  errorToastMsg = (errorMessage) => {
+    toast.error(errorMessage, {
+      position: toast.POSITION.TOP_CENTER
+    });
+  }
+
+  async getVatsimData() {
     return await axios('http://localhost:8000/api/vatsim-data')
       .then(res => res.data);
   }
@@ -186,9 +213,9 @@ export default class MapLeaflet extends Component {
   }
 
   getFlightData = (callback) => {
-    let flightDataArr = [];
+    let flights = [];
 
-    this.getData().then(data => {
+    this.getVatsimData().then(data => {
       for (let i = 0; i < data.length; i++) {
         let clientInterface = {},
             clientDataSplit = data[i].split(':');
@@ -198,7 +225,7 @@ export default class MapLeaflet extends Component {
         }
 
         if (!this.checkFlightPosition(clientInterface)) {
-          flightDataArr.push({
+          flights.push({
             name: clientInterface.realname,
             callsign: clientInterface.callsign,
             coordinates: [parseFloat(clientInterface.longitude), parseFloat(clientInterface.latitude)],
@@ -209,22 +236,28 @@ export default class MapLeaflet extends Component {
             groundspeed: clientInterface.groundspeed,
             transponder: clientInterface.transponder,
             planned_depairport: clientInterface.planned_depairport,
-            planned_destairport: clientInterface.planned_destairport
+            planned_destairport: clientInterface.planned_destairport,
+            planned_route: clientInterface.planned_route
           })
         }
       }
 
-      this.setState({ flights: flightDataArr }, () => {
+      const controllers = flights.filter(client => client.frequency !== "")
+
+      this.setState({ flights, controllers }, () => {
         if (this.state.selected_flight) {
           const result = this.state.flights.find(flight => {
             return flight.callsign.toUpperCase() === this.state.selected_flight.callsign.toUpperCase()
           })
 
-          this.setState({ selected_flight: result })
+          this.setState({ selected_flight: result }, () => {
+            callback ? callback() : null;
+          })
+        } else {
+          console.log(this.state);
+          callback ? callback() : null;
         }
       });
-
-      callback ? callback() : '';
     })
   }
 
@@ -289,6 +322,17 @@ export default class MapLeaflet extends Component {
               <div>{plan}</div>
             </div>
           </Popup>
+          <Tooltip direction="top">
+            <div>
+              <div><strong>{callsign}</strong></div>
+              <div>{name}</div>
+              <div>{planned_aircraft}</div>
+              <div>{altitude} FT.</div>
+              <div>{groundspeed} KTS</div>
+              <div>{heading}°</div>
+              <div>{plan}</div>
+            </div>
+          </Tooltip>
         </RotatedMarker>
       )
     })
@@ -318,6 +362,15 @@ export default class MapLeaflet extends Component {
   render = () => {
     return (
       <div>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          draggable
+          pauseOnHover />
         <Map
           ref='map'
           center={[this.state.lat, this.state.lng]}
@@ -332,6 +385,7 @@ export default class MapLeaflet extends Component {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
         <MarkerClusterGroup
+          disableClusteringAtZoom="6"
           showCoverageOnHover={false}
           maxClusterRadius="65"
         >
