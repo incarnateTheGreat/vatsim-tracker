@@ -178,7 +178,7 @@ export default class MapLeaflet extends Component {
     }, () => {
       const { lat, lng } = this.state;
 
-      // Programmatically open the Data Tooltip.
+      // Programmatically open the Data Popup.
       this.map.eachLayer(layer => {
         if (layer._latlng && ((layer._latlng.lat === lat) && (layer._latlng.lng === lng))) {
           layer.openPopup();
@@ -220,6 +220,7 @@ export default class MapLeaflet extends Component {
 
         if (!this.checkFlightPosition(clientInterface)) {
           flights.push({
+            isController: clientInterface.frequency !== "" ? true : false,
             name: clientInterface.realname,
             callsign: clientInterface.callsign,
             coordinates: [parseFloat(clientInterface.longitude), parseFloat(clientInterface.latitude)],
@@ -264,7 +265,8 @@ export default class MapLeaflet extends Component {
 
   buildFlightMarkers = () => {
     return this.state.flights.map((position, idx) => {
-      const { name,
+      const { isController,
+              name,
               callsign,
               altitude,
               heading,
@@ -274,7 +276,21 @@ export default class MapLeaflet extends Component {
               planned_aircraft } = position,
               coords = [position.coordinates[1], position.coordinates[0]]
 
-        const icon = new Leaflet.Icon({
+      let plan = false,
+          icon = null;
+
+      if (isController) {
+        icon = new Leaflet.Icon({
+          iconUrl: require('../images/controller-icon.png'),
+          iconAnchor: null,
+          shadowUrl: null,
+          shadowSize: null,
+          shadowAnchor: null,
+          iconSize: new Leaflet.Point(30, 30),
+          className: 'controller-icon'
+        })
+      } else {
+        icon = new Leaflet.Icon({
           iconUrl: require('../images/airplane-icon.png'),
           iconAnchor: null,
           shadowUrl: null,
@@ -283,8 +299,7 @@ export default class MapLeaflet extends Component {
           iconSize: new Leaflet.Point(30, 30),
           className: 'airplane-icon'
         })
-
-        let plan = false;
+      }
 
       if (planned_depairport && planned_destairport) {
         plan = `${planned_depairport} ⟶ ${planned_destairport}`;
@@ -298,32 +313,22 @@ export default class MapLeaflet extends Component {
            key={`marker-${idx}`}
            icon={icon}
            onClick={() => {
-             this.updateCallsign(callsign)
+             if (!isController) this.updateCallsign(callsign)
            }}
          >
-          <Popup
-            autoClose={false}
-            closeOnClick={false}
-          >
-            <div>
-              <div><strong>{callsign}</strong></div>
-              <div>{name}</div>
-              <div>{planned_aircraft}</div>
-              <div>{altitude} FT.</div>
-              <div>{groundspeed} KTS</div>
-              <div>{heading}°</div>
-              <div>{plan}</div>
-            </div>
-          </Popup>
           <Tooltip direction="auto">
             <div>
               <div><strong>{callsign}</strong></div>
               <div>{name}</div>
-              <div>{planned_aircraft}</div>
-              <div>{altitude} FT.</div>
-              <div>{groundspeed} KTS</div>
-              <div>{heading}°</div>
-              <div>{plan}</div>
+              {!isController && (
+                <div>
+                  <div>{planned_aircraft}</div>
+                  <div>{altitude} FT.</div>
+                  <div>{groundspeed} KTS</div>
+                  <div>{heading}°</div>
+                  <div>{plan}</div>
+                </div>
+              )}
             </div>
           </Tooltip>
         </RotatedMarker>
