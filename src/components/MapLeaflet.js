@@ -197,9 +197,7 @@ export default class MapLeaflet extends Component {
   }
 
   errorToastMsg = (errorMessage) => {
-    toast.error(errorMessage, {
-      position: toast.POSITION.TOP_CENTER
-    });
+    toast.error(errorMessage);
   }
 
   async getVatsimData() {
@@ -322,7 +320,7 @@ export default class MapLeaflet extends Component {
               <div>{plan}</div>
             </div>
           </Popup>
-          <Tooltip direction="top">
+          <Tooltip direction="auto">
             <div>
               <div><strong>{callsign}</strong></div>
               <div>{name}</div>
@@ -363,14 +361,13 @@ export default class MapLeaflet extends Component {
     return (
       <div>
         <ToastContainer
-          position="top-right"
+          position="top-center"
           autoClose={5000}
-          hideProgressBar={false}
+          hideProgressBar={true}
           newestOnTop={false}
           closeOnClick
           rtl={false}
-          draggable
-          pauseOnHover />
+          draggable />
         <Map
           ref='map'
           center={[this.state.lat, this.state.lng]}
