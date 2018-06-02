@@ -9,6 +9,8 @@ import { ToastContainer, toast } from 'react-toastify'
 import { CLIENT_LABELS,
          MAX_BOUNDS } from '../constants/constants'
 
+// import thing from '../data/airac.json'
+
 export default class MapLeaflet extends Component {
   state = {
     lat: 43.862,
@@ -24,7 +26,7 @@ export default class MapLeaflet extends Component {
   }
 
   interval = null;
-  map = null;
+  myRefs = React.createRef();
 
   getViewportSize = () => {
     const width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
@@ -106,6 +108,7 @@ export default class MapLeaflet extends Component {
     polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map);
 
     this.map.fitBounds(polyline.getBounds());
+    console.log('bounds.');
   }
 
   getMapZoom = () => {
@@ -317,19 +320,19 @@ export default class MapLeaflet extends Component {
            }}
          >
           <Tooltip direction="auto">
-            <div>
+            <React.Fragment>
               <div><strong>{callsign}</strong></div>
               <div>{name}</div>
               {!isController && (
-                <div>
+                <React.Fragment>
                   <div>{planned_aircraft}</div>
                   <div>{altitude} FT.</div>
                   <div>{groundspeed} KTS</div>
                   <div>{heading}°</div>
                   <div>{plan}</div>
-                </div>
+                </React.Fragment>
               )}
-            </div>
+            </React.Fragment>
           </Tooltip>
         </RotatedMarker>
       )
@@ -343,7 +346,20 @@ export default class MapLeaflet extends Component {
     //   this.addFlight(CITIES[x].name, CITIES[x].coordinates[1], CITIES[x].coordinates[0])
     // }
 
-    this.map = this.refs.map.leafletElement;
+    this.map = this.myRefs.current.leafletElement;
+
+    const waypoints = ["EGLL", "SID", "DET", "UQ70", "ITVIP", "UL10", "DVR", "UL9", "KONAN", "UL607", "SPI", "UZ112", "RASVO", "T180", "UNOKO", "STAR", "EDDF"];
+
+    // const yeah = thing.FSData.Waypoint.filter(waypoint => {
+      // for (let x in waypoints) {
+      //   for (let y in thing.FSData.Waypoint) {
+      //     console.log(waypoints[x] === thing.FSData.Waypoint[y]._waypointIdent);
+      //     // return waypoint._waypointIdent === waypoints[x]
+      //   }
+      // }
+    // })
+
+    // console.log(yeah);
 
     setTimeout(() => {
       this.setState({ width, height }, () => {
@@ -369,7 +385,7 @@ export default class MapLeaflet extends Component {
           rtl={false}
           draggable />
         <Map
-          ref='map'
+          ref={this.myRefs}
           center={[this.state.lat, this.state.lng]}
           zoom={this.state.zoom}
           maxBounds={MAX_BOUNDS}
@@ -384,6 +400,7 @@ export default class MapLeaflet extends Component {
         <MarkerClusterGroup
           disableClusteringAtZoom="6"
           showCoverageOnHover={false}
+          spiderfyDistanceMultiplier="10"
           maxClusterRadius="65"
         >
           {this.buildFlightMarkers()}
