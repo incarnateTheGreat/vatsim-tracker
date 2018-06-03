@@ -51,8 +51,10 @@ export default class MapLeaflet extends Component {
         if (this.state.selected_flight) {
           this.clearPolylines();
 
-          if (!this.isPlaneOnGround(this.state.selected_flight.groundspeed)) {
+          if (!this.isPlaneOnGround(this.state.selected_flight.groundspeed) && this.state.destination_data) {
             this.drawPolylines(this.state.selected_flight.coordinates, this.state.destination_data);
+          } else {
+            this.map.flyTo([this.state.selected_flight.coordinates[1], this.state.selected_flight.coordinates[0]])
           }
         }
       });
@@ -108,7 +110,6 @@ export default class MapLeaflet extends Component {
     polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map);
 
     this.map.fitBounds(polyline.getBounds());
-    console.log('bounds.');
   }
 
   getMapZoom = () => {
@@ -161,10 +162,11 @@ export default class MapLeaflet extends Component {
           this.applySelectedFlightData(flight);
         })
       } else {
-        this.applySelectedFlightData(flight);
+        this.setState({ selected_flight: flight }, () => {
+          this.map.flyTo([flight.coordinates[1], flight.coordinates[0]])
+          this.applySelectedFlightData(flight);
+        })
       }
-    }).catch(err => {
-      this.errorToastMsg('There\'s no flight data for this.');
     })
   }
 
@@ -400,7 +402,6 @@ export default class MapLeaflet extends Component {
         <MarkerClusterGroup
           disableClusteringAtZoom="6"
           showCoverageOnHover={false}
-          spiderfyDistanceMultiplier="10"
           maxClusterRadius="65"
         >
           {this.buildFlightMarkers()}
