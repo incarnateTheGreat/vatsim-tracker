@@ -109,7 +109,9 @@ export default class MapLeaflet extends Component {
     ],
     polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map);
 
-    this.map.fitBounds(polyline.getBounds());
+    setTimeout(() => {
+      this.map.fitBounds(polyline.getBounds());
+    }, 500)
   }
 
   getMapZoom = () => {
@@ -179,7 +181,7 @@ export default class MapLeaflet extends Component {
       callsign: flight.callsign,
       lat: flight.coordinates[1],
       lng: flight.coordinates[0],
-      zoom: this.isPlaneOnGround(flight.groundspeed) ? 16 : this.state.zoom
+      zoom: this.isPlaneOnGround(flight.groundspeed) ? 16 : 10
     }, () => {
       const { lat, lng } = this.state;
 
