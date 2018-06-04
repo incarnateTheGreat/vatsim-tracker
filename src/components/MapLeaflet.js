@@ -1,32 +1,48 @@
 import React, { Component } from 'react'
+import { ScaleLoader } from 'react-spinners';
 import axios from 'axios'
-import { Map, TileLayer, Popup, Tooltip } from 'react-leaflet'
+import { Map, TileLayer } from 'react-leaflet'
 import Leaflet from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-markercluster'
 import Control from 'react-leaflet-control'
-import RotatedMarker from 'react-leaflet-rotatedmarker'
+
 import { ToastContainer, toast } from 'react-toastify'
+import { Markers } from './Markers';
 import { CLIENT_LABELS,
          MAX_BOUNDS } from '../constants/constants'
 
-// import thing from '../data/airac.json'
-
 export default class MapLeaflet extends Component {
   state = {
+    callsign: '',
+    controllers: [],
+    destination_data: null,
+    flights: [],
+    height: 1000,
+    isLoading: true,
     lat: 43.862,
     lng: -79.369,
-    zoom: 2,
-    height: 1000,
-    width: 500,
-    flights: [],
-    controllers: [],
-    callsign: '',
     selected_flight: null,
-    destination_data: null
+    width: 500,
+    zoom: 2,
   }
 
+  clusterRef = React.createRef();
+  mapRef = React.createRef();
   interval = null;
-  myRefs = React.createRef();
+
+  // Getters & Setters
+
+  getMapZoom = () => {
+    if (this.map) {
+      const { lat, lng } = this.map.getCenter();
+
+      this.setState({
+        lat,
+        lng,
+        zoom: this.map.getZoom()
+      })
+    }
+  }
 
   getViewportSize = () => {
     const width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
@@ -61,29 +77,42 @@ export default class MapLeaflet extends Component {
 		}, 30000);
 	}
 
-  handleReset = () => {
-    this.setState({
-      lat: 43.862,
-      lng: -79.369,
-      zoom: 3,
-      callsign: '',
-      selected_flight: null,
-      destination_data: null
-    }, () => {
-      // Clear Search Input.
-      const flightSearchInput = document.getElementsByName('flightSearch')[0];
-      flightSearchInput.value = '';
+  // Handlers & Functionality
 
-      // Clear Progress Line & Popups.
-      this.clearPolylines();
-      this.clearPopups();
+  addFlight = (name, lat, lng) => {
+    const { flights } = this.state
+
+    flights.push({ name: name, coordinates: [lat, lng] })
+
+    this.setState({ flights })
+  }
+
+  applySelectedFlightData = (flight) => {
+    this.setState({
+      callsign: flight.callsign,
+      lat: flight.coordinates[1],
+      lng: flight.coordinates[0],
+      zoom: this.isPlaneOnGround(flight.groundspeed) ? 16 : this.state.zoom
+    }, () => {
+      const { lat, lng } = this.state;
+
+      // Programmatically open the Data Popup.
+      this.map.eachLayer(layer => {
+        if (layer._latlng && ((layer._latlng.lat === lat) && (layer._latlng.lng === lng))) {
+          // Remove layer from MarkerClusterGroup
+          // console.log(layer);
+        }
+      });
     })
   }
 
+  checkFlightPosition = (clientInterface) => {
+    return ((isNaN(clientInterface.longitude) || clientInterface.longitude === '') ||
+            (isNaN(clientInterface.latitude) || clientInterface.latitude === ''));
+  }
+
   clearPopups = () => {
-    this.map.eachLayer(layer => {
-      layer.closePopup();
-    })
+    this.map.eachLayer(layer => layer.closePopup())
   }
 
   clearPolylines = () => {
@@ -112,38 +141,8 @@ export default class MapLeaflet extends Component {
     this.map.fitBounds(polyline.getBounds());
   }
 
-  getMapZoom = () => {
-    if (this.map) {
-      const { lat, lng } = this.map.getCenter();
-
-      this.setState({
-        lat,
-        lng,
-        zoom: this.map.getZoom()
-      })
-    }
-  }
-
-  updateCallsign = (callsign) => {
-    if (this.state.flights.length > 0) {
-      const flight = this.state.flights.find(flight => {
-        return flight.callsign.toUpperCase() === callsign.toUpperCase()
-      })
-
-      if (flight) {
-        this.setState({ callsign }, () => {
-          this.findFlight(flight);
-        })
-      } else {
-        this.errorToastMsg('Flight does not exist.');
-      }
-    }
-  }
-
-  searchFlight = () => {
-    const callsign = document.getElementsByName('flightSearch')[0].value;
-
-    this.updateCallsign(callsign);
+  errorToastMsg = (errorMessage) => {
+    toast.error(errorMessage);
   }
 
   findFlight = (flight, isCity) => {
@@ -167,48 +166,28 @@ export default class MapLeaflet extends Component {
           this.applySelectedFlightData(flight);
         })
       }
+    }).catch(err => {
+      this.errorToastMsg('There is no destination data for this flight.');
     })
   }
 
-  isPlaneOnGround = (groundspeed) => {
-    return groundspeed <= 80;
-  }
-
-  applySelectedFlightData = (flight) => {
+  handleReset = () => {
     this.setState({
-      callsign: flight.callsign,
-      lat: flight.coordinates[1],
-      lng: flight.coordinates[0],
-      zoom: this.isPlaneOnGround(flight.groundspeed) ? 16 : this.state.zoom
+      lat: 43.862,
+      lng: -79.369,
+      zoom: 3,
+      callsign: '',
+      selected_flight: null,
+      destination_data: null
     }, () => {
-      const { lat, lng } = this.state;
+      // Clear Search Input.
+      const flightSearchInput = document.getElementsByName('flightSearch')[0];
+      flightSearchInput.value = '';
 
-      // Programmatically open the Data Popup.
-      this.map.eachLayer(layer => {
-        if (layer._latlng && ((layer._latlng.lat === lat) && (layer._latlng.lng === lng))) {
-          layer.openPopup();
-        }
-      });
+      // Clear Progress Line & Popups.
+      this.clearPolylines();
+      this.clearPopups();
     })
-  }
-
-  checkFlightPosition = (clientInterface) => {
-    return ((isNaN(clientInterface.longitude) || clientInterface.longitude === '') ||
-            (isNaN(clientInterface.latitude) || clientInterface.latitude === ''));
-  }
-
-  errorToastMsg = (errorMessage) => {
-    toast.error(errorMessage);
-  }
-
-  async getVatsimData() {
-    return await axios('http://localhost:8000/api/vatsim-data')
-      .then(res => res.data);
-  }
-
-  async getAirportData(destination_icao) {
-    return await axios(`http://localhost:8000/api/get-airports/${destination_icao}`)
-      .then(res => res.data);
   }
 
   getFlightData = (callback) => {
@@ -260,86 +239,45 @@ export default class MapLeaflet extends Component {
     })
   }
 
-  addFlight = (name, lat, lng) => {
-    const { flights } = this.state
-
-    flights.push({ name: name, coordinates: [lat, lng] })
-
-    this.setState({ flights })
+  isPlaneOnGround = (groundspeed) => {
+    return groundspeed <= 80;
   }
 
-  buildFlightMarkers = () => {
-    return this.state.flights.map((position, idx) => {
-      const { isController,
-              name,
-              callsign,
-              altitude,
-              heading,
-              groundspeed,
-              planned_depairport,
-              planned_destairport,
-              planned_aircraft } = position,
-              coords = [position.coordinates[1], position.coordinates[0]]
+  searchFlight = () => {
+    const callsign = document.getElementsByName('flightSearch')[0].value;
 
-      let plan = false,
-          icon = null;
+    this.updateCallsign(callsign);
+  }
 
-      if (isController) {
-        icon = new Leaflet.Icon({
-          iconUrl: require('../images/controller-icon.png'),
-          iconAnchor: null,
-          shadowUrl: null,
-          shadowSize: null,
-          shadowAnchor: null,
-          iconSize: new Leaflet.Point(30, 30),
-          className: 'controller-icon'
+  updateCallsign = (callsign) => {
+    if (this.state.flights.length > 0) {
+      const flight = this.state.flights.find(flight => {
+        return flight.callsign.toUpperCase() === callsign.toUpperCase()
+      })
+
+      if (flight) {
+        this.setState({ callsign }, () => {
+          this.findFlight(flight);
         })
       } else {
-        icon = new Leaflet.Icon({
-          iconUrl: require('../images/airplane-icon.png'),
-          iconAnchor: null,
-          shadowUrl: null,
-          shadowSize: null,
-          shadowAnchor: null,
-          iconSize: new Leaflet.Point(30, 30),
-          className: 'airplane-icon'
-        })
+        this.errorToastMsg('Flight does not exist.');
       }
-
-      if (planned_depairport && planned_destairport) {
-        plan = `${planned_depairport} ⟶ ${planned_destairport}`;
-      }
-
-      return (
-         <RotatedMarker
-           position={coords}
-           rotationAngle={parseInt(heading, 10)}
-           rotationOrigin={'center'}
-           key={`marker-${idx}`}
-           icon={icon}
-           onClick={() => {
-             if (!isController) this.updateCallsign(callsign)
-           }}
-         >
-          <Tooltip direction="auto">
-            <React.Fragment>
-              <div><strong>{callsign}</strong></div>
-              <div>{name}</div>
-              {!isController && (
-                <React.Fragment>
-                  <div>{planned_aircraft}</div>
-                  <div>{altitude} FT.</div>
-                  <div>{groundspeed} KTS</div>
-                  <div>{heading}°</div>
-                  <div>{plan}</div>
-                </React.Fragment>
-              )}
-            </React.Fragment>
-          </Tooltip>
-        </RotatedMarker>
-      )
-    })
+    }
   }
+
+  // Data Fetchers
+
+  async getVatsimData() {
+    return await axios('http://localhost:8000/api/vatsim-data')
+      .then(res => res.data);
+  }
+
+  async getAirportData(destination_icao) {
+    return await axios(`http://localhost:8000/api/get-airports/${destination_icao}`)
+      .then(res => res.data);
+  }
+
+  // React Lifecycle Hooks
 
   componentDidMount = () => {
     const { width, height } = this.getViewportSize()
@@ -348,7 +286,7 @@ export default class MapLeaflet extends Component {
     //   this.addFlight(CITIES[x].name, CITIES[x].coordinates[1], CITIES[x].coordinates[0])
     // }
 
-    this.map = this.myRefs.current.leafletElement;
+    this.map = this.mapRef.current.leafletElement;
 
     const waypoints = ["EGLL", "SID", "DET", "UQ70", "ITVIP", "UL10", "DVR", "UL9", "KONAN", "UL607", "SPI", "UZ112", "RASVO", "T180", "UNOKO", "STAR", "EDDF"];
 
@@ -368,7 +306,9 @@ export default class MapLeaflet extends Component {
         if (!this.interval) {
           this.setResizeEvent();
           this.startInterval();
-          this.getFlightData();
+          this.getFlightData(() => {
+            this.setState({ isLoading: false })
+          });
           window.dispatchEvent(new Event('resize'));
         }
       })
@@ -377,7 +317,13 @@ export default class MapLeaflet extends Component {
 
   render = () => {
     return (
-      <div>
+      <React.Fragment>
+        <div className={'loading-spinner ' + (this.state.isLoading ? null : '--hide-loader')}>
+          <ScaleLoader
+            color={'#123abc'}
+            loading={this.state.isLoading}
+          />
+        </div>
         <ToastContainer
           position="top-center"
           autoClose={5000}
@@ -387,7 +333,7 @@ export default class MapLeaflet extends Component {
           rtl={false}
           draggable />
         <Map
-          ref={this.myRefs}
+          ref={this.mapRef}
           center={[this.state.lat, this.state.lng]}
           zoom={this.state.zoom}
           maxBounds={MAX_BOUNDS}
@@ -400,14 +346,18 @@ export default class MapLeaflet extends Component {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
         <MarkerClusterGroup
+          ref={this.clusterRef}
           disableClusteringAtZoom="6"
           showCoverageOnHover={false}
           maxClusterRadius="65"
         >
-          {this.buildFlightMarkers()}
+          <Markers
+            flights={this.state.flights}
+            updateCallsign={this.updateCallsign.bind(this)}
+          />
         </MarkerClusterGroup>
         <Control position="topleft">
-          <div>
+          <React.Fragment>
             <div>
               <button onClick={this.handleReset.bind(this)}>
                 Reset View
@@ -423,10 +373,10 @@ export default class MapLeaflet extends Component {
                 value="Search"
                 onClick={this.searchFlight} />
             </div>
-          </div>
+          </React.Fragment>
         </Control>
         </Map>
-      </div>
+      </React.Fragment>
     )
   }
 }

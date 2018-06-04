@@ -16,17 +16,7 @@ header {
 	justify-content: center;
 	position: absolute;
 	width: 100%;
-
-	&.--fixtures {
-		width: inherit;
-	}
-
-	&.--statistics {
-		background-color: transparent;
-		height: auto;
-		position: relative;
-		width: auto;
-	}
+  z-index: 1000;
 
 	&.--hide-loader {
 		background-color: transparent;
