@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
-import { ScaleLoader } from 'react-spinners';
+import { ScaleLoader } from 'react-spinners'
 import axios from 'axios'
 import { Map, TileLayer } from 'react-leaflet'
 import Leaflet from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-markercluster'
 import Control from 'react-leaflet-control'
-
 import { ToastContainer, toast } from 'react-toastify'
-import { Markers } from './Markers';
+import { Markers } from './Markers'
 import { CLIENT_LABELS,
          MAX_BOUNDS } from '../constants/constants'
 
@@ -21,6 +20,7 @@ export default class MapLeaflet extends Component {
     isLoading: true,
     lat: 43.862,
     lng: -79.369,
+    search_value: '',
     selected_flight: null,
     width: 500,
     zoom: 2,
@@ -94,15 +94,32 @@ export default class MapLeaflet extends Component {
       lng: flight.coordinates[0],
       zoom: this.isPlaneOnGround(flight.groundspeed) ? 16 : this.state.zoom
     }, () => {
-      const { lat, lng } = this.state;
+      const { lat, lng } = this.state,
+            cluster = this.clusterRef.current.leafletElement;
 
-      // Programmatically open the Data Popup.
-      this.map.eachLayer(layer => {
+      let thing = null;
+
+      // Remove layer from MarkerClusterGroup
+      cluster.eachLayer(layer => {
+        // Narrow down the selected Cluster group.
         if (layer._latlng && ((layer._latlng.lat === lat) && (layer._latlng.lng === lng))) {
-          // Remove layer from MarkerClusterGroup
-          // console.log(layer);
+          const markers = layer.__parent._markers;
+
+          // Find the matching LatLng of the selected Flight that's in the Cluster.
+          for (let i in markers) {
+            if (markers[i]._latlng.lat === layer._latlng.lat &&
+                markers[i]._latlng.lng === layer._latlng.lng) {
+              thing = markers[i];
+
+              break;
+            }
+          }
         }
-      });
+      })
+
+      // console.log(thing);
+      //
+      // cluster.removeLayer(thing)
     })
   }
 
@@ -175,12 +192,12 @@ export default class MapLeaflet extends Component {
 
   handleReset = () => {
     this.setState({
+      callsign: '',
+      destination_data: null,
       lat: 43.862,
       lng: -79.369,
-      zoom: 3,
-      callsign: '',
       selected_flight: null,
-      destination_data: null
+      zoom: 2
     }, () => {
       // Clear Search Input.
       const flightSearchInput = document.getElementsByName('flightSearch')[0];
@@ -333,7 +350,8 @@ export default class MapLeaflet extends Component {
           newestOnTop={false}
           closeOnClick
           rtl={false}
-          draggable />
+          draggable
+        />
         <Map
           ref={this.mapRef}
           center={[this.state.lat, this.state.lng]}
@@ -347,36 +365,36 @@ export default class MapLeaflet extends Component {
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-        <MarkerClusterGroup
-          ref={this.clusterRef}
-          disableClusteringAtZoom="6"
-          showCoverageOnHover={false}
-          maxClusterRadius="65"
-        >
-          <Markers
-            flights={this.state.flights}
-            updateCallsign={this.updateCallsign.bind(this)}
-          />
-        </MarkerClusterGroup>
-        <Control position="topleft">
-          <React.Fragment>
-            <div>
-              <button onClick={this.handleReset.bind(this)}>
-                Reset View
-              </button>
-            </div>
-            <div>
-              <input
-                type="text"
-                name="flightSearch"
-                placeholder="Search for the callsign..." />
-              <input
-                type="button"
-                value="Search"
-                onClick={this.searchFlight} />
-            </div>
-          </React.Fragment>
-        </Control>
+          <MarkerClusterGroup
+            ref={this.clusterRef}
+            disableClusteringAtZoom="6"
+            showCoverageOnHover={false}
+            maxClusterRadius="65"
+          >
+            <Markers
+              flights={this.state.flights}
+              updateCallsign={this.updateCallsign.bind(this)}
+            />
+          </MarkerClusterGroup>
+          <Control position="topleft">
+            <React.Fragment>
+              <div>
+                <button onClick={this.handleReset.bind(this)}>
+                  Reset View
+                </button>
+              </div>
+              <div>
+                <input
+                  type="text"
+                  name="flightSearch"
+                  placeholder="Search for the callsign..." />
+                <input
+                  type="button"
+                  value="Search"
+                  onClick={this.searchFlight} />
+              </div>
+            </React.Fragment>
+          </Control>
         </Map>
       </React.Fragment>
     )
