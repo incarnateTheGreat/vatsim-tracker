@@ -256,6 +256,15 @@ export default class MapLeaflet extends Component {
         }
       });
     })
+    .catch(err => {
+      this.setState({ isLoading: false }, () => {
+        this.errorToastMsg('No connection.')
+      })
+    })
+  }
+
+  handleEnterKey = (e) => {
+    if (e.key === 'Enter') this.searchFlight()
   }
 
   isPlaneOnGround = (groundspeed) => {
@@ -288,12 +297,12 @@ export default class MapLeaflet extends Component {
 
   async getVatsimData() {
     return await axios('http://localhost:8000/api/vatsim-data')
-      .then(res => res.data);
+      .then(res => res.data)
   }
 
   async getAirportData(destination_icao) {
     return await axios(`http://localhost:8000/api/get-airports/${destination_icao}`)
-      .then(res => res.data);
+      .then(res => res.data)
   }
 
   // React Lifecycle Hooks
@@ -387,6 +396,7 @@ export default class MapLeaflet extends Component {
                 <input
                   type="text"
                   name="flightSearch"
+                  onKeyPress={this.handleEnterKey}
                   placeholder="Search for the callsign..." />
                 <input
                   type="button"
