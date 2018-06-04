@@ -138,7 +138,9 @@ export default class MapLeaflet extends Component {
     ],
     polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map);
 
-    this.map.fitBounds(polyline.getBounds());
+    setTimeout(() => {
+      this.map.fitBounds(polyline.getBounds());
+    }, 500)
   }
 
   errorToastMsg = (errorMessage) => {
