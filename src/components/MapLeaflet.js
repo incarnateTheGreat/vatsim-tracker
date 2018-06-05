@@ -5,7 +5,7 @@ import { Map, TileLayer } from 'react-leaflet'
 import Leaflet from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-markercluster'
 import Control from 'react-leaflet-control'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer, toast, Flip } from 'react-toastify'
 import { Markers } from './Markers'
 import { CLIENT_LABELS,
          MAX_BOUNDS } from '../constants/constants'
@@ -29,6 +29,7 @@ export default class MapLeaflet extends Component {
   clusterRef = React.createRef();
   mapRef = React.createRef();
   interval = null;
+  toastId = null;
 
   // Getters & Setters
 
@@ -94,6 +95,7 @@ export default class MapLeaflet extends Component {
       lng: flight.coordinates[0],
       zoom: this.isPlaneOnGround(flight.groundspeed) ? 16 : this.state.zoom
     }, () => {
+      /*
       const { lat, lng } = this.state,
             cluster = this.clusterRef.current.leafletElement;
 
@@ -117,9 +119,9 @@ export default class MapLeaflet extends Component {
         }
       })
 
-      // console.log(thing);
-      //
-      // cluster.removeLayer(thing)
+      console.log(thing);
+      cluster.removeLayer(thing)
+      */
     })
   }
 
@@ -160,8 +162,15 @@ export default class MapLeaflet extends Component {
     }, 500)
   }
 
-  errorToastMsg = (errorMessage) => {
-    toast.error(errorMessage);
+  errorToastMsg = (msg) => {
+    if (!toast.isActive(this.toastId)) {
+      this.toastId = toast(msg,
+        { autoClose: false,
+          hideProgressBar: true,
+          position: toast.POSITION.TOP_CENTER,
+          type: toast.TYPE.ERROR
+        });
+    }
   }
 
   findFlight = (flight, isCity) => {
@@ -213,6 +222,10 @@ export default class MapLeaflet extends Component {
     let flights = [];
 
     this.getVatsimData().then(data => {
+      if (toast.isActive(this.toastId)) {
+        this.successToastMsg('Connected.')
+      }
+
       for (let i = 0; i < data.length; i++) {
         let clientInterface = {},
             clientDataSplit = data[i].split(':');
@@ -275,6 +288,17 @@ export default class MapLeaflet extends Component {
     const callsign = document.getElementsByName('flightSearch')[0].value;
 
     this.updateCallsign(callsign);
+  }
+
+  successToastMsg = (msg) => {
+    toast.update(this.toastId,
+      { autoClose: 5000,
+        hideProgressBar: true,
+        position: toast.POSITION.TOP_CENTER,
+        render: msg,
+        transition: Flip,
+        type: toast.TYPE.SUCCESS
+      });
   }
 
   updateCallsign = (callsign) => {
@@ -352,36 +376,29 @@ export default class MapLeaflet extends Component {
             loading={this.state.isLoading}
           />
         </div>
-        <ToastContainer
-          position="top-center"
-          autoClose={5000}
-          hideProgressBar={true}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          draggable
-        />
+        <ToastContainer />
         <Map
-          ref={this.mapRef}
           center={[this.state.lat, this.state.lng]}
-          zoom={this.state.zoom}
           maxBounds={MAX_BOUNDS}
           onZoomEnd={this.getMapZoom.bind(this)}
+          ref={this.mapRef}
           style={{
             height: this.state.height,
             width: this.state.width
-          }}>
+          }}
+          zoom={this.state.zoom}>
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <MarkerClusterGroup
-            ref={this.clusterRef}
             disableClusteringAtZoom="6"
-            showCoverageOnHover={false}
             maxClusterRadius="65"
+            ref={this.clusterRef}
+            showCoverageOnHover={false}
           >
             <Markers
               flights={this.state.flights}
+              selectedFlight={this.state.selected_flight}
               updateCallsign={this.updateCallsign.bind(this)}
             />
           </MarkerClusterGroup>
@@ -394,14 +411,14 @@ export default class MapLeaflet extends Component {
               </div>
               <div>
                 <input
-                  type="text"
                   name="flightSearch"
                   onKeyPress={this.handleEnterKey}
+                  type="text"
                   placeholder="Search for the callsign..." />
                 <input
+                  onClick={this.searchFlight}
                   type="button"
-                  value="Search"
-                  onClick={this.searchFlight} />
+                  value="Search" />
               </div>
             </React.Fragment>
           </Control>

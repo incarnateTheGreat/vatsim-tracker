@@ -5,43 +5,43 @@ import { Tooltip } from 'react-leaflet'
 
 export class Markers extends Component {
   render() {
-		const { flights, updateCallsign } = this.props;
+		const { flights, selected_flight, updateCallsign } = this.props;
 
     return (
 			flights.map((position, idx) => {
-	      const { isController,
-	              name,
-	              callsign,
-	              altitude,
-	              heading,
-	              groundspeed,
-	              planned_depairport,
-	              planned_destairport,
-	              planned_aircraft } = position,
-	              coords = [position.coordinates[1], position.coordinates[0]]
+	      const { altitude,
+								callsign,
+								groundspeed,
+								isController,
+								name,
+								heading,
+								planned_aircraft,
+								planned_depairport,
+								planned_destairport } = position,
+								coords = [position.coordinates[1], position.coordinates[0]]
 
-	      let plan = false,
-	          icon = null;
+	      let icon = null,
+						plan = false;
 
 	      if (isController) {
 	        icon = new Leaflet.Icon({
+						className: 'controller-icon',
+						iconAnchor: null,
+						iconSize: new Leaflet.Point(30, 30),
 	          iconUrl: require('../images/controller-icon.png'),
-	          iconAnchor: null,
-	          shadowUrl: null,
-	          shadowSize: null,
-	          shadowAnchor: null,
-	          iconSize: new Leaflet.Point(30, 30),
-	          className: 'controller-icon'
+						shadowUrl: null,
+						shadowAnchor: null,
+						shadowSize: null
 	        })
 	      } else {
 	        icon = new Leaflet.Icon({
-	          iconUrl: require('../images/airplane-icon.png'),
-	          iconAnchor: null,
-	          shadowUrl: null,
-	          shadowSize: null,
-	          shadowAnchor: null,
-	          iconSize: new Leaflet.Point(30, 30),
-	          className: 'airplane-icon'
+						className: 'airplane-icon',
+						iconAnchor: null,
+						iconSize: new Leaflet.Point(30, 30),
+						iconUrl: require('../images/airplane-icon.png'),
+						shadowUrl: null,
+						shadowAnchor: null,
+						shadowSize: null
 	        })
 	      }
 
