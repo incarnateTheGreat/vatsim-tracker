@@ -11,6 +11,7 @@ export class Markers extends Component {
 			flights.map((position, idx) => {
 	      const { altitude,
 								callsign,
+								frequency,
 								groundspeed,
 								isController,
 								name,
@@ -64,6 +65,9 @@ export class Markers extends Component {
 	            <React.Fragment>
 	              <div><strong>{callsign}</strong></div>
 	              <div>{name}</div>
+								{isController && (
+									<div>{frequency}</div>
+								)}
 	              {!isController && (
 	                <React.Fragment>
 	                  <div>{planned_aircraft}</div>

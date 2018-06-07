@@ -8,7 +8,8 @@ import Control from 'react-leaflet-control'
 import { ToastContainer, toast, Flip } from 'react-toastify'
 import { Markers } from './Markers'
 import { CLIENT_LABELS,
-         MAX_BOUNDS } from '../constants/constants'
+         MAX_BOUNDS,
+         REFRESH_TIME } from '../constants/constants'
 
 export default class MapLeaflet extends Component {
   state = {
@@ -71,16 +72,19 @@ export default class MapLeaflet extends Component {
           if (!this.isPlaneOnGround(this.state.selected_flight.groundspeed) && this.state.destination_data) {
             this.drawPolylines(this.state.selected_flight.coordinates, this.state.destination_data);
           } else {
-            this.map.flyTo([this.state.selected_flight.coordinates[1], this.state.selected_flight.coordinates[0]])
+            this.map.panTo(
+              [this.state.selected_flight.coordinates[1], this.state.selected_flight.coordinates[0]],
+              { animate: true, duration: 1.0, easeLinearity: 0.10 }
+            )
           }
         }
       });
-		}, 30000);
+		}, REFRESH_TIME);
 	}
 
   // Handlers & Functionality
 
-  addFlight = (name, lat, lng) => {
+  addAirport = (name, lat, lng) => {
     const { flights } = this.state
 
     flights.push({ name: name, coordinates: [lat, lng] })
@@ -144,7 +148,6 @@ export default class MapLeaflet extends Component {
         }
         catch(e) {
           this.errorToastMsg("Could not draw the Flight Path.");
-          console.log("problem with " + e + layers[i]);
         }
       }
     }
@@ -158,19 +161,17 @@ export default class MapLeaflet extends Component {
     polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map);
 
     setTimeout(() => {
-      this.map.fitBounds(polyline.getBounds());
+      this.map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
     }, 500)
   }
 
   errorToastMsg = (msg) => {
-    if (!toast.isActive(this.toastId)) {
-      this.toastId = toast(msg,
-        { autoClose: false,
-          hideProgressBar: true,
-          position: toast.POSITION.TOP_CENTER,
-          type: toast.TYPE.ERROR
-        });
-    }
+    this.toastId = toast(msg,
+      { autoClose: 5000,
+        hideProgressBar: true,
+        position: toast.POSITION.TOP_CENTER,
+        type: toast.TYPE.ERROR
+      });
   }
 
   findFlight = (flight, isCity) => {
@@ -190,7 +191,7 @@ export default class MapLeaflet extends Component {
         })
       } else {
         this.setState({ selected_flight: flight }, () => {
-          this.map.flyTo([flight.coordinates[1], flight.coordinates[0]])
+          // this.map.flyTo([flight.coordinates[1], flight.coordinates[0]])
           this.applySelectedFlightData(flight);
         })
       }
@@ -223,7 +224,7 @@ export default class MapLeaflet extends Component {
 
     this.getVatsimData().then(data => {
       if (toast.isActive(this.toastId)) {
-        this.successToastMsg('Connected.')
+        this.serverToastMsg('Connected.', true)
       }
 
       for (let i = 0; i < data.length; i++) {
@@ -271,7 +272,7 @@ export default class MapLeaflet extends Component {
     })
     .catch(err => {
       this.setState({ isLoading: false }, () => {
-        this.errorToastMsg('No connection.')
+        this.serverToastMsg('No connection.', false)
       })
     })
   }
@@ -290,15 +291,26 @@ export default class MapLeaflet extends Component {
     this.updateCallsign(callsign);
   }
 
-  successToastMsg = (msg) => {
-    toast.update(this.toastId,
-      { autoClose: 5000,
-        hideProgressBar: true,
-        position: toast.POSITION.TOP_CENTER,
-        render: msg,
-        transition: Flip,
-        type: toast.TYPE.SUCCESS
-      });
+  serverToastMsg = (msg, isConnected) => {
+    if (!toast.isActive(this.toastId)) {
+      this.toastId = toast(
+        msg,
+        { autoClose: isConnected ? 5000 : false,
+          hideProgressBar: true,
+          position: toast.POSITION.TOP_CENTER,
+          type: isConnected ? toast.TYPE.SUCCESS : toast.TYPE.ERROR
+        });
+    } else {
+      toast.update(
+        this.toastId,
+        { autoClose: isConnected ? 5000 : false,
+          hideProgressBar: true,
+          position: toast.POSITION.TOP_CENTER,
+          render: msg,
+          transition: Flip,
+          type: isConnected ? toast.TYPE.SUCCESS : toast.TYPE.ERROR
+        });
+    }
   }
 
   updateCallsign = (callsign) => {
@@ -312,7 +324,7 @@ export default class MapLeaflet extends Component {
           this.findFlight(flight);
         })
       } else {
-        this.errorToastMsg('Flight does not exist.');
+        this.errorToastMsg(`${callsign} does not exist.`);
       }
     }
   }
@@ -335,12 +347,12 @@ export default class MapLeaflet extends Component {
     const { width, height } = this.getViewportSize()
 
     // for (let x = 0; x < CITIES.length; x++) {
-    //   this.addFlight(CITIES[x].name, CITIES[x].coordinates[1], CITIES[x].coordinates[0])
+    //   this.addAirport(CITIES[x].name, CITIES[x].coordinates[1], CITIES[x].coordinates[0])
     // }
 
     this.map = this.mapRef.current.leafletElement;
 
-    const waypoints = ["EGLL", "SID", "DET", "UQ70", "ITVIP", "UL10", "DVR", "UL9", "KONAN", "UL607", "SPI", "UZ112", "RASVO", "T180", "UNOKO", "STAR", "EDDF"];
+    // const waypoints = ["EGLL", "SID", "DET", "UQ70", "ITVIP", "UL10", "DVR", "UL9", "KONAN", "UL607", "SPI", "UZ112", "RASVO", "T180", "UNOKO", "STAR", "EDDF"];
 
     // const yeah = thing.FSData.Waypoint.filter(waypoint => {
       // for (let x in waypoints) {

@@ -34160,6 +34160,20 @@
     "carriers": "105"
   },
   {
+    "code": "LGW",
+    "lat": "51.148056",
+    "lon": "-0.190278",
+    "name": "London Gatwick",
+    "city": "Crawley",
+    "state": "England",
+    "country": "United Kingdom",
+    "tz": "Europe\/London",
+    "type": "Airports",
+    "email": "",
+    "elev": "203",
+    "icao": "EGKK"
+  },
+  {
     "code": "LHW",
     "lat": "36.0167",
     "lon": "103.75",
