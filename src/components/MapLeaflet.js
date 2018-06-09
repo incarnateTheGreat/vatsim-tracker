@@ -6,6 +6,7 @@ import Leaflet from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-markercluster'
 import Control from 'react-leaflet-control'
 import { ToastContainer, toast, Flip } from 'react-toastify'
+import Autocomplete from './Autocomplete'
 import { Markers } from './Markers'
 import { CLIENT_LABELS,
          MAX_BOUNDS,
@@ -21,7 +22,6 @@ export default class MapLeaflet extends Component {
     isLoading: true,
     lat: 43.862,
     lng: -79.369,
-    search_value: '',
     selected_flight: null,
     width: 500,
     zoom: 2,
@@ -209,10 +209,6 @@ export default class MapLeaflet extends Component {
       selected_flight: null,
       zoom: 2
     }, () => {
-      // Clear Search Input.
-      const flightSearchInput = document.getElementsByName('flightSearch')[0];
-      flightSearchInput.value = '';
-
       // Clear Progress Line & Popups.
       this.clearPolylines();
       this.clearPopups();
@@ -421,17 +417,12 @@ export default class MapLeaflet extends Component {
                   Reset View
                 </button>
               </div>
-              <div>
-                <input
-                  name="flightSearch"
-                  onKeyPress={this.handleEnterKey}
-                  type="text"
-                  placeholder="Search for the callsign..." />
-                <input
-                  onClick={this.searchFlight}
-                  type="button"
-                  value="Search" />
-              </div>
+              <Autocomplete
+                items={this.state.flights}
+                onSelect={callsign => this.updateCallsign(callsign)}
+                placeholder="Search for the callsign..."
+                searchCompareValue="callsign"
+              />
             </React.Fragment>
           </Control>
         </Map>

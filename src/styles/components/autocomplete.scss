@@ -1,0 +1,15 @@
+.autocomplete {
+	&__results {
+		background: $white;
+	}
+
+	&__result {
+		display: flex;
+		cursor: pointer;
+		padding: 2px 5px;
+
+		&:hover {
+			background-color: $dark-grey;
+		}
+	}
+}
