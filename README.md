@@ -34,7 +34,7 @@ In order to gather VATSIM and Aiport data, you need to have an Express Server ru
 
 2) Run `node server.js`.
 
-3) Should `Server Started!`
+3) Should prompt `Server Started!` shortly afterwards.
 
 ## Tech Stack
 
