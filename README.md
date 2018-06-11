@@ -2,7 +2,7 @@
 
 This application utilizes Leaflet to display live VATSIM data. You can search for Callsigns or click on Aircraft to see where they are in the (virtual) world.
 
-![VATSIM Tracker](https://github.com/incarnateTheGreat/vatsim/blob/master/vatsimTracker.png)
+![VATSIM Tracker](https://github.com/incarnateTheGreat/vatsim/blob/master/vatsimTracker.png?raw=true)
 
 ## Installation
 
