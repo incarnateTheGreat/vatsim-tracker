@@ -42,13 +42,29 @@ export default class Autocomplete extends Component {
 		this.props.onSelect(value)
 	}
 
-	selectItem = (e) => {
-		document.getElementsByName('autocompleteValue')[0].value = e.target.innerHTML;
-		this.onSelect(e.target.innerHTML)
+	selectItem = (e, isTextInput) => {
+		let textInput = null;
+
+		if (isTextInput) {
+			textInput = e;
+		} else {
+			document.getElementsByName('autocomplete_value')[0].value = e.target.innerHTML;
+			textInput = e.target.innerHTML;
+		}
+
+		this.onSelect(textInput)
 		this.setState({ sortedResult: [] })
 	}
 
 	sortItems = (e) => {
+		const query = document.getElementsByName('autocomplete_value')[0].value;
+
+		// Manual text input with Enter control.
+		if (e.key === 'Enter' && query.length > 0) {
+			this.selectItem(query, true);
+			return;
+		}
+
 		// Set first result of list elements as focused to allow for arrow key navigation.
 		if (this.state.sortedResult.length > 0 && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
 			if (!document.activeElement.className) {
@@ -58,13 +74,14 @@ export default class Autocomplete extends Component {
 			return;
 		}
 
-		const query = document.getElementsByName('autocompleteValue')[0].value,
-					sortedResult = this.state.items.filter(item => {
-						const regex = new RegExp(query, 'gi');
-						return item[this.state.searchCompareValue].match(regex)
-					})
+		if (query.length > 0) {
+			const sortedResult = this.state.items.filter(item => {
+				const regex = new RegExp(query, 'gi');
+				return item[this.state.searchCompareValue].match(regex)
+			})
 
-		this.setState({ sortedResult })
+			this.setState({ sortedResult })
+		}
 	}
 
 	static getDerivedStateFromProps(nextProps, prevState) {
@@ -80,7 +97,7 @@ export default class Autocomplete extends Component {
 			<div className='autocomplete'>
 				<input
 					onKeyUp={this.sortItems}
-					name='autocompleteValue'
+					name='autocomplete_value'
 					placeholder={this.props.placeholder}
 					type='search'
 				/>
