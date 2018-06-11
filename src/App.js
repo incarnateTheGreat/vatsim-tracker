@@ -1,5 +1,5 @@
 import React, { Component, StrictMode } from 'react';
-import MapLeaflet from './components/MapLeaflet';
+import VatsimMap from './components/VatsimMap';
 import './styles/styles.scss';
 
 class App extends Component {
@@ -7,7 +7,7 @@ class App extends Component {
     return (
       <StrictMode>
         <div className='App'>
-          <MapLeaflet />
+          <VatsimMap />
         </div>
       </StrictMode>
     );

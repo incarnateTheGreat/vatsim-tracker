@@ -1,6 +1,6 @@
 {
   "name": "vatsim",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "autoprefixer": "7.1.6",
@@ -46,7 +46,6 @@
     "react-leaflet-control": "^1.4.1",
     "react-leaflet-markercluster": "^1.1.8",
     "react-leaflet-rotatedmarker": "^0.1.0",
-    "react-simple-maps": "https://github.com/incarnateTheGreat/react-simple-maps.git",
     "react-spinners": "^0.3.2",
     "react-toastify": "^4.0.1",
     "resolve": "1.6.0",

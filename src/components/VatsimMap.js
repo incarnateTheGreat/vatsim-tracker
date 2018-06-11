@@ -12,7 +12,7 @@ import { CLIENT_LABELS,
          MAX_BOUNDS,
          REFRESH_TIME } from '../constants/constants'
 
-export default class MapLeaflet extends Component {
+export default class VatsimMap extends Component {
   state = {
     callsign: '',
     controllers: [],
