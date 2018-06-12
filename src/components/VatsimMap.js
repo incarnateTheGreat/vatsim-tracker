@@ -8,6 +8,7 @@ import Control from 'react-leaflet-control'
 import { ToastContainer, toast, Flip } from 'react-toastify'
 import Autocomplete from './Autocomplete'
 import { Markers } from './Markers'
+import Modal from './Modal'
 import { MAX_BOUNDS, REFRESH_TIME } from '../constants/constants'
 
 export default class VatsimMap extends Component {
@@ -18,6 +19,7 @@ export default class VatsimMap extends Component {
     flights: [],
     height: 1000,
     isLoading: true,
+    isModalOpen: false,
     lat: 43.862,
     lng: -79.369,
     selected_flight: null,
@@ -27,6 +29,7 @@ export default class VatsimMap extends Component {
 
   clusterRef = React.createRef();
   mapRef = React.createRef();
+  modalRef = React.createRef();
   interval = null;
   toastId = null;
 
@@ -192,21 +195,6 @@ export default class VatsimMap extends Component {
     })
   }
 
-  handleReset = () => {
-    this.setState({
-      callsign: '',
-      destination_data: null,
-      lat: 43.862,
-      lng: -79.369,
-      selected_flight: null,
-      zoom: 2
-    }, () => {
-      // Clear Progress Line & Popups.
-      this.clearPolylines();
-      this.clearPopups();
-    })
-  }
-
   getFlightData = (callback) => {
     this.getVatsimData().then(data => {
       const { flights, controllers } = data;
@@ -236,12 +224,31 @@ export default class VatsimMap extends Component {
     })
   }
 
+  handleReset = () => {
+    this.setState({
+      callsign: '',
+      destination_data: null,
+      lat: 43.862,
+      lng: -79.369,
+      selected_flight: null,
+      zoom: 2
+    }, () => {
+      // Clear Progress Line & Popups.
+      this.clearPolylines();
+      this.clearPopups();
+    })
+  }
+
   handleEnterKey = (e) => {
     if (e.key === 'Enter') this.searchFlight()
   }
 
   isPlaneOnGround = (groundspeed) => {
     return groundspeed <= 80;
+  }
+
+  openModal = () => {
+    this.modalRef.current.toggleModal()
   }
 
   searchFlight = () => {
@@ -348,6 +355,10 @@ export default class VatsimMap extends Component {
           />
         </div>
         <ToastContainer />
+        <Modal
+          ref={this.modalRef}
+          toggleModal={this.state.isModalOpen}
+        />
         <Map
           center={[this.state.lat, this.state.lng]}
           maxBounds={MAX_BOUNDS}
@@ -378,6 +389,9 @@ export default class VatsimMap extends Component {
               <div>
                 <button onClick={this.handleReset.bind(this)}>
                   Reset View
+                </button>
+                <button onClick={this.openModal.bind(this)}>
+                  Open Modal
                 </button>
               </div>
               <Autocomplete

@@ -70,6 +70,7 @@ app.route('/api/vatsim-data').get((req, res) => {
 	});
 });
 
+// TODO: Create a DB and use GraphQL to query data.
 app.route('/api/get-airports/:icao').get((req, res) => {
 	const destination = req.params['icao'];
 
