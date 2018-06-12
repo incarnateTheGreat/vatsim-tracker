@@ -8,9 +8,7 @@ import Control from 'react-leaflet-control'
 import { ToastContainer, toast, Flip } from 'react-toastify'
 import Autocomplete from './Autocomplete'
 import { Markers } from './Markers'
-import { CLIENT_LABELS,
-         MAX_BOUNDS,
-         REFRESH_TIME } from '../constants/constants'
+import { MAX_BOUNDS, REFRESH_TIME } from '../constants/constants'
 
 export default class VatsimMap extends Component {
   state = {
@@ -129,11 +127,6 @@ export default class VatsimMap extends Component {
     })
   }
 
-  checkFlightPosition = (clientInterface) => {
-    return ((isNaN(clientInterface.longitude) || clientInterface.longitude === '') ||
-            (isNaN(clientInterface.latitude) || clientInterface.latitude === ''));
-  }
-
   clearPopups = () => {
     this.map.eachLayer(layer => layer.closePopup())
   }
@@ -170,8 +163,8 @@ export default class VatsimMap extends Component {
       { autoClose: 5000,
         hideProgressBar: true,
         position: toast.POSITION.TOP_CENTER,
-        type: toast.TYPE.ERROR
-      });
+        type: toast.TYPE.ERROR }
+    );
   }
 
   findFlight = (flight, isCity) => {
@@ -191,7 +184,6 @@ export default class VatsimMap extends Component {
         })
       } else {
         this.setState({ selected_flight: flight }, () => {
-          // this.map.flyTo([flight.coordinates[1], flight.coordinates[0]])
           this.applySelectedFlightData(flight);
         })
       }
@@ -216,41 +208,12 @@ export default class VatsimMap extends Component {
   }
 
   getFlightData = (callback) => {
-    let flights = [];
-
     this.getVatsimData().then(data => {
+      const { flights, controllers } = data;
+
       if (toast.isActive(this.toastId)) {
         this.serverToastMsg('Connected.', true)
       }
-
-      for (let i = 0; i < data.length; i++) {
-        let clientInterface = {},
-            clientDataSplit = data[i].split(':');
-
-        for (let j = 0; j < CLIENT_LABELS.length; j++) {
-          clientInterface[CLIENT_LABELS[j]] = clientDataSplit[j];
-        }
-
-        if (!this.checkFlightPosition(clientInterface)) {
-          flights.push({
-            isController: clientInterface.frequency !== "" ? true : false,
-            name: clientInterface.realname,
-            callsign: clientInterface.callsign,
-            coordinates: [parseFloat(clientInterface.longitude), parseFloat(clientInterface.latitude)],
-            frequency: clientInterface.frequency,
-            altitude: clientInterface.altitude,
-            planned_aircraft: clientInterface.planned_aircraft,
-            heading: clientInterface.heading,
-            groundspeed: clientInterface.groundspeed,
-            transponder: clientInterface.transponder,
-            planned_depairport: clientInterface.planned_depairport,
-            planned_destairport: clientInterface.planned_destairport,
-            planned_route: clientInterface.planned_route
-          })
-        }
-      }
-
-      const controllers = flights.filter(client => client.frequency !== "")
 
       this.setState({ flights, controllers }, () => {
         if (this.state.selected_flight) {

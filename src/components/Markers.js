@@ -5,7 +5,7 @@ import { Tooltip } from 'react-leaflet'
 
 export class Markers extends Component {
   render() {
-		const { flights, selected_flight, updateCallsign } = this.props;
+		const { flights, updateCallsign } = this.props;
 
     return (
 			flights.map((position, idx) => {
