@@ -1,4 +1,4 @@
-import React, { Component, StrictMode } from 'react'
+import React, { Component } from 'react'
 import classNames from 'classnames'
 
 class Modal extends Component {
@@ -14,6 +14,14 @@ class Modal extends Component {
 		this.setState({ isModalOpen: (this.state.isModalOpen ? false : true) })
 	}
 
+	componentDidMount = () => {
+		const modal = document.getElementById('Modal')
+
+		window.onclick = (e) => {
+			if (e.target === modal) this.closeModal()
+		}
+	}
+
 	render() {
 		const modalClasses = classNames(
 			'Modal',
@@ -21,7 +29,7 @@ class Modal extends Component {
 		)
 
 		return (
-			<div className={modalClasses}>
+			<div id='Modal' className={modalClasses}>
 				<div className='Modal__container'>
 					<header>
 						<h1>(Airport ICAO)</h1>

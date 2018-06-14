@@ -197,7 +197,7 @@ export default class VatsimMap extends Component {
 
   getFlightData = (callback) => {
     this.getVatsimData().then(data => {
-      const { flights, controllers } = data;
+      const { flights, controllers, destinations } = data;
 
       if (toast.isActive(this.toastId)) {
         this.serverToastMsg('Connected.', true)
@@ -218,6 +218,7 @@ export default class VatsimMap extends Component {
       });
     })
     .catch(err => {
+      console.log(err);
       this.setState({ isLoading: false }, () => {
         this.serverToastMsg('No connection.', false)
       })
