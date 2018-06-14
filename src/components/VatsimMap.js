@@ -16,6 +16,8 @@ export default class VatsimMap extends Component {
     callsign: '',
     controllers: [],
     destination_data: null,
+    destination_objects: null,
+    destination_icaos: null,
     flights: [],
     height: 1000,
     isLoading: true,
@@ -197,13 +199,19 @@ export default class VatsimMap extends Component {
 
   getFlightData = (callback) => {
     this.getVatsimData().then(data => {
-      const { flights, controllers, destinations } = data;
+      const { flights,
+              controllers,
+              destination_objects,
+              destination_icaos } = data;
 
       if (toast.isActive(this.toastId)) {
         this.serverToastMsg('Connected.', true)
       }
 
-      this.setState({ flights, controllers }, () => {
+      this.setState({ flights,
+                      controllers,
+                      destination_objects,
+                      destination_icaos }, () => {
         if (this.state.selected_flight) {
           const result = this.state.flights.find(flight => {
             return flight.callsign.toUpperCase() === this.state.selected_flight.callsign.toUpperCase()
@@ -400,6 +408,14 @@ export default class VatsimMap extends Component {
                 onSelect={callsign => this.updateCallsign(callsign)}
                 placeholder="Search for the callsign..."
                 searchCompareValue="callsign"
+              />
+              <Autocomplete
+                items={this.state.destination_icaos}
+                onSelect={e => {
+                  console.log(e)
+                }}
+                placeholder="Search for the ICAO..."
+                searchCompareValue="planned_destairport"
               />
             </React.Fragment>
           </Control>

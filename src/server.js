@@ -71,17 +71,24 @@ app.route('/api/vatsim-data').get((req, res) => {
 
 		// Separate the Controllers & Destinations from the Flights.
 		const controllers = flights.filter(client => client.frequency !== ''),
-					destinations = flights.reduce((r, a) => {
-						const icao = a.planned_destairport.toUpperCase()
+					destination_icaos = [];
 
-						if (icao !== '') {
-							r[icao] = r[icao] || []
-							r[icao].push(a)
-						}
-						return r
-					}, {})
+		// Create Destinations Object.
+		const destinations_temp = flights.reduce((r, a) => {
+			const icao = a.planned_destairport.toUpperCase()
 
-		res.send({flights, controllers, destinations})
+			if (icao !== '') {
+				r[icao] = r[icao] || []
+				r[icao].push(a)
+			}
+			return r
+		}, {})
+
+		// Put Destination ICAOs into Array.
+		// TODO: Put Departures in, as well.
+		for (let key in destinations_temp) destination_icaos.push(key)
+
+		res.send({flights, controllers, destination_icaos})
 	})
 })
 

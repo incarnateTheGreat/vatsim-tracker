@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 export default class Autocomplete extends Component {
 	state = {
@@ -7,19 +7,22 @@ export default class Autocomplete extends Component {
 		sortedResult: []
 	}
 
+	inputRef = React.createRef()
+	resultRef = React.createRef()
+
 	// Navigate through results using Up/Down Keys.
 	navigateItems = (e) => {
 		if (this.state.sortedResult.length > 0 && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
-			const listElemsLength = document.getElementsByClassName('autocomplete__result').length,
-						listElem = document.getElementsByClassName('autocomplete__result');
+			const listElemsLength = this.resultRef.current.children.length,
+						listElem = this.resultRef.current.children
 
 			function checkBoundary(index) {
 				if (index === listElemsLength) {
-					return index - 1;
+					return index - 1
 				} else if (index < 0) {
-					return index + 1;
+					return index + 1
 				} else {
-					return index;
+					return index
 				}
 			}
 
@@ -43,13 +46,13 @@ export default class Autocomplete extends Component {
 	}
 
 	selectItem = (e, isTextInput) => {
-		let textInput = null;
+		let textInput = null
 
 		if (isTextInput) {
-			textInput = e;
+			textInput = e
 		} else {
-			document.getElementsByName('autocomplete_value')[0].value = e.target.innerHTML;
-			textInput = e.target.innerHTML;
+			this.inputRef.current.value = e.target.innerHTML
+			textInput = e.target.innerHTML
 		}
 
 		this.onSelect(textInput)
@@ -57,28 +60,41 @@ export default class Autocomplete extends Component {
 	}
 
 	sortItems = (e) => {
-		const query = document.getElementsByName('autocomplete_value')[0].value;
+		const query = this.inputRef.current.value.toUpperCase()
 
 		// Manual text input with Enter control.
 		if (e.key === 'Enter' && query.length > 0) {
-			this.selectItem(query, true);
-			return;
+			this.selectItem(query, true)
+			return
 		}
 
 		// Set first result of list elements as focused to allow for arrow key navigation.
 		if (this.state.sortedResult.length > 0 && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
 			if (!document.activeElement.className) {
-				document.getElementsByClassName('autocomplete__result')[0].focus();
+				this.resultRef.current.children[0].focus()
 			}
 
-			return;
+			return
 		}
 
 		if (query.length > 0) {
-			const sortedResult = this.state.items.filter(item => {
-				const regex = new RegExp(query, 'gi');
-				return item[this.state.searchCompareValue].match(regex)
-			})
+			let sortedResult = null;
+
+			// If the Items' children are objects, then filter and map out results.
+			// Otherwise, treat the Items as a one-dimensional Array.
+			if (typeof this.state.items[0] === 'object') {
+				sortedResult = this.state.items
+					.filter(item => {
+						const regex = new RegExp(query, 'gi')
+						return item[this.state.searchCompareValue].match(regex)
+					})
+					.map(obj => obj[this.state.searchCompareValue])
+			} else {
+				sortedResult = this.state.items.filter(item => {
+					const regex = new RegExp(query, 'gi')
+					return item.match(regex)
+				})
+			}
 
 			this.setState({ sortedResult })
 		}
@@ -89,7 +105,7 @@ export default class Autocomplete extends Component {
 		return {
 			items: nextProps.items,
 			searchCompareValue: nextProps.searchCompareValue
-		};
+		}
 	}
 
 	render = () => {
@@ -97,19 +113,19 @@ export default class Autocomplete extends Component {
 			<div className='autocomplete'>
 				<input
 					onKeyUp={this.sortItems}
-					name='autocomplete_value'
 					placeholder={this.props.placeholder}
+					ref={this.inputRef}
 					type='search'
 				/>
 				{this.state.sortedResult && (
-					<div className='autocomplete__results'>
+					<div className='autocomplete__results' ref={this.resultRef}>
 						{this.state.sortedResult.map((item, i) =>
 							<span
-								onKeyUp={this.navigateItems}
 								className='autocomplete__result'
+								onKeyUp={this.navigateItems}
 								onClick={this.selectItem}
 								key={i}
-								tabIndex={i}>{item.callsign}</span>
+								tabIndex={i}>{item}</span>
 						)}
 				</div>
 			)}

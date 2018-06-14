@@ -34614,6 +34614,16 @@
     "carriers": "7"
   },
   {
+    "code": "LKPR",
+    "icao": "LKPR",
+    "lat": "50.100833",
+    "lon": "14.26",
+    "name": "Václav Havel Airport Prague",
+    "city": "Prague",
+    "country": "Czech Republic",
+    "type": "Airports"
+  },
+  {
     "code": "LLA",
     "lat": "65.549",
     "lon": "22.1233",
