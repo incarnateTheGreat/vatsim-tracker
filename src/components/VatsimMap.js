@@ -16,15 +16,17 @@ export default class VatsimMap extends Component {
     callsign: '',
     controllers: [],
     destination_data: null,
-    destination_objects: null,
-    destination_icaos: null,
     flights: [],
     height: 1000,
+    icaos: null,
+    icao_destinations: null,
+    icao_departures: null,
     isLoading: true,
     isModalOpen: false,
     lat: 43.862,
     lng: -79.369,
     selected_flight: null,
+    selected_icao: null,
     width: 500,
     zoom: 2,
   }
@@ -201,8 +203,9 @@ export default class VatsimMap extends Component {
     this.getVatsimData().then(data => {
       const { flights,
               controllers,
-              destination_objects,
-              destination_icaos } = data;
+              icaos } = data;
+
+              // console.log(icaos);
 
       if (toast.isActive(this.toastId)) {
         this.serverToastMsg('Connected.', true)
@@ -210,8 +213,7 @@ export default class VatsimMap extends Component {
 
       this.setState({ flights,
                       controllers,
-                      destination_objects,
-                      destination_icaos }, () => {
+                      icaos }, () => {
         if (this.state.selected_flight) {
           const result = this.state.flights.find(flight => {
             return flight.callsign.toUpperCase() === this.state.selected_flight.callsign.toUpperCase()
@@ -256,8 +258,16 @@ export default class VatsimMap extends Component {
     return groundspeed <= 80;
   }
 
-  openModal = () => {
-    this.modalRef.current.toggleModal()
+  openModal = (selected_icao) => {
+    if (this.state.icaos.includes(selected_icao)) {
+      const icao_departures = this.state.flights.filter(flight => selected_icao === flight.planned_depairport),
+            icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport)
+
+      this.setState({ icao_departures, icao_destinations, selected_icao },
+        () => { this.modalRef.current.toggleModal() })
+    } else {
+      this.errorToastMsg('This ICAO is not listed.')
+    }
   }
 
   searchFlight = () => {
@@ -321,24 +331,7 @@ export default class VatsimMap extends Component {
   componentDidMount = () => {
     const { width, height } = this.getViewportSize()
 
-    // for (let x = 0; x < CITIES.length; x++) {
-    //   this.addAirport(CITIES[x].name, CITIES[x].coordinates[1], CITIES[x].coordinates[0])
-    // }
-
     this.map = this.mapRef.current.leafletElement;
-
-    // const waypoints = ["EGLL", "SID", "DET", "UQ70", "ITVIP", "UL10", "DVR", "UL9", "KONAN", "UL607", "SPI", "UZ112", "RASVO", "T180", "UNOKO", "STAR", "EDDF"];
-
-    // const yeah = thing.FSData.Waypoint.filter(waypoint => {
-      // for (let x in waypoints) {
-      //   for (let y in thing.FSData.Waypoint) {
-      //     console.log(waypoints[x] === thing.FSData.Waypoint[y]._waypointIdent);
-      //     // return waypoint._waypointIdent === waypoints[x]
-      //   }
-      // }
-    // })
-
-    // console.log(yeah);
 
     setTimeout(() => {
       this.setState({ width, height }, () => {
@@ -365,6 +358,8 @@ export default class VatsimMap extends Component {
         </div>
         <ToastContainer />
         <Modal
+          icao={this.state.selected_icao}
+          items={[this.state.icao_departures, this.state.icao_destinations]}
           ref={this.modalRef}
           toggleModal={this.state.isModalOpen}
         />
@@ -399,9 +394,6 @@ export default class VatsimMap extends Component {
                 <button onClick={this.handleReset.bind(this)}>
                   Reset View
                 </button>
-                <button onClick={this.openModal.bind(this)}>
-                  Open Modal
-                </button>
               </div>
               <Autocomplete
                 items={this.state.flights}
@@ -410,10 +402,8 @@ export default class VatsimMap extends Component {
                 searchCompareValue="callsign"
               />
               <Autocomplete
-                items={this.state.destination_icaos}
-                onSelect={e => {
-                  console.log(e)
-                }}
+                items={this.state.icaos}
+                onSelect={e => this.openModal(e)}
                 placeholder="Search for the ICAO..."
                 searchCompareValue="planned_destairport"
               />

@@ -101,7 +101,6 @@ export default class Autocomplete extends Component {
 	}
 
 	static getDerivedStateFromProps(nextProps, prevState) {
-		// The object you return from this function will be merged with the current state.
 		return {
 			items: nextProps.items,
 			searchCompareValue: nextProps.searchCompareValue

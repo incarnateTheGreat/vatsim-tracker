@@ -3,7 +3,9 @@ import classNames from 'classnames'
 
 class Modal extends Component {
 	state = {
-		isModalOpen: false
+		isModalOpen: false,
+		items: null,
+		icao: null
 	}
 
 	closeModal = () => {
@@ -22,6 +24,13 @@ class Modal extends Component {
 		}
 	}
 
+	static getDerivedStateFromProps(nextProps, prevState) {
+		return {
+			items: nextProps.items,
+			icao: nextProps.icao
+		}
+	}
+
 	render() {
 		const modalClasses = classNames(
 			'Modal',
@@ -32,7 +41,7 @@ class Modal extends Component {
 			<div id='Modal' className={modalClasses}>
 				<div className='Modal__container'>
 					<header>
-						<h1>(Airport ICAO)</h1>
+						<h1>{this.state.icao}</h1>
 						<span
 							onClick={this.closeModal.bind(this)}
 							className='close'>X
@@ -41,27 +50,23 @@ class Modal extends Component {
 					<div className='Modal__sections'>
 						<section className='Modal__section'>
 							<h2>Departures</h2>
-							<ul>
-								<li>(departure)</li>
-								<li>(departure)</li>
-								<li>(departure)</li>
-								<li>(departure)</li>
-								<li>(departure)</li>
-								<li>(departure)</li>
-								<li>(departure)</li>
-							</ul>
+								{this.state.items[0] && (
+									<ul>
+										{this.state.items[0].map((obj, i) =>
+											<li key={i}>{obj.callsign}</li>
+										)}
+									</ul>
+								)}
 						</section>
 						<section className='Modal__section'>
 							<h2>Arrivals</h2>
-							<ul>
-								<li>(arrival)</li>
-								<li>(arrival)</li>
-								<li>(arrival)</li>
-								<li>(arrival)</li>
-								<li>(arrival)</li>
-								<li>(arrival)</li>
-								<li>(arrival)</li>
-							</ul>
+								{this.state.items[1] && (
+									<ul>
+										{this.state.items[1].map((obj, i) =>
+											<li key={i}>{obj.callsign}</li>
+										)}
+									</ul>
+								)}
 						</section>
 					</div>
 				</div>
