@@ -12,14 +12,14 @@ class Modal extends Component {
 		this.setState({ isModalOpen: false })
 	}
 
+	toggleModal = () => {
+		this.setState({ isModalOpen: (this.state.isModalOpen ? false : true) })
+	}
+
 	returnData = (e) => {
 		const value = e.target.innerHTML || e.target.innerText
 		this.closeModal()
 		this.props.returnData(value)
-	}
-
-	toggleModal = () => {
-		this.setState({ isModalOpen: (this.state.isModalOpen ? false : true) })
 	}
 
 	componentDidMount = () => {
@@ -28,6 +28,10 @@ class Modal extends Component {
 		window.onclick = (e) => {
 			if (e.target === modal) this.closeModal()
 		}
+
+		document.addEventListener("keydown", (e) => {
+			if (e.key === 'Escape') this.closeModal()
+		}, false);
 	}
 
 	static getDerivedStateFromProps(nextProps, prevState) {
@@ -58,13 +62,13 @@ class Modal extends Component {
 							<h2>Departures</h2>
 								{this.state.items[0] && (
 									<ul>
-										{this.state.items[0].map((obj, i) =>
+										{this.state.items[0].length > 0 ? this.state.items[0].map((obj, i) =>
 											<li
 												key={i}
 												onClick={this.returnData.bind(this)}>
 												<span className='Modal__link'>{obj.callsign}</span>
 											</li>
-										)}
+										) : (<li><span>None</span></li>)}
 									</ul>
 								)}
 						</section>
@@ -72,13 +76,13 @@ class Modal extends Component {
 							<h2>Arrivals</h2>
 								{this.state.items[1] && (
 									<ul>
-										{this.state.items[1].map((obj, i) =>
+										{this.state.items[1].length > 0 ? this.state.items[1].map((obj, i) =>
 											<li
 												key={i}
 												onClick={this.returnData.bind(this)}>
 												<span className='Modal__link'>{obj.callsign}</span>
 											</li>
-										)}
+										) : (<li><span>None</span></li>)}
 									</ul>
 								)}
 						</section>

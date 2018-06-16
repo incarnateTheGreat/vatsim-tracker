@@ -52,14 +52,12 @@ export class Markers extends Component {
 
 	      return (
 	         <RotatedMarker
+             icon={icon}
+             key={`marker-${idx}`}
+             onClick={() => { if (!isController) updateCallsign(callsign)} }
 	           position={coords}
 	           rotationAngle={parseInt(heading, 10)}
 	           rotationOrigin={'center'}
-	           key={`marker-${idx}`}
-	           icon={icon}
-	           onClick={() => {
-	             if (!isController) updateCallsign(callsign)
-	           }}
 	         >
 	          <Tooltip direction="auto">
 	            <React.Fragment>
