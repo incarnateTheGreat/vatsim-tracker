@@ -32,6 +32,8 @@ export default class VatsimMap extends Component {
   }
 
   clusterRef = React.createRef();
+  flightRef = React.createRef();
+  icaoRef = React.createRef();
   mapRef = React.createRef();
   modalRef = React.createRef();
   interval = null;
@@ -244,9 +246,11 @@ export default class VatsimMap extends Component {
       selected_flight: null,
       zoom: 2
     }, () => {
-      // Clear Progress Line & Popups.
+      // Clear Progress Line, Popups, and Inputs.
       this.clearPolylines();
       this.clearPopups();
+      this.flightRef.current.inputRef.current.value = ''
+      this.icaoRef.current.inputRef.current.value = ''
     })
   }
 
@@ -360,6 +364,7 @@ export default class VatsimMap extends Component {
         <Modal
           icao={this.state.selected_icao}
           items={[this.state.icao_departures, this.state.icao_destinations]}
+          returnData={callsign => this.updateCallsign(callsign)}
           ref={this.modalRef}
           toggleModal={this.state.isModalOpen}
         />
@@ -399,12 +404,14 @@ export default class VatsimMap extends Component {
                 items={this.state.flights}
                 onSelect={callsign => this.updateCallsign(callsign)}
                 placeholder="Search for the callsign..."
+                ref={this.flightRef}
                 searchCompareValue="callsign"
               />
               <Autocomplete
                 items={this.state.icaos}
-                onSelect={e => this.openModal(e)}
+                onSelect={icao => this.openModal(icao)}
                 placeholder="Search for the ICAO..."
+                ref={this.icaoRef}
                 searchCompareValue="planned_destairport"
               />
             </React.Fragment>

@@ -12,6 +12,12 @@ class Modal extends Component {
 		this.setState({ isModalOpen: false })
 	}
 
+	returnData = (e) => {
+		const value = e.target.innerHTML || e.target.innerText
+		this.closeModal()
+		this.props.returnData(value)
+	}
+
 	toggleModal = () => {
 		this.setState({ isModalOpen: (this.state.isModalOpen ? false : true) })
 	}
@@ -53,7 +59,11 @@ class Modal extends Component {
 								{this.state.items[0] && (
 									<ul>
 										{this.state.items[0].map((obj, i) =>
-											<li key={i}>{obj.callsign}</li>
+											<li
+												key={i}
+												onClick={this.returnData.bind(this)}>
+												<span className='Modal__link'>{obj.callsign}</span>
+											</li>
 										)}
 									</ul>
 								)}
@@ -63,7 +73,11 @@ class Modal extends Component {
 								{this.state.items[1] && (
 									<ul>
 										{this.state.items[1].map((obj, i) =>
-											<li key={i}>{obj.callsign}</li>
+											<li
+												key={i}
+												onClick={this.returnData.bind(this)}>
+												<span className='Modal__link'>{obj.callsign}</span>
+											</li>
 										)}
 									</ul>
 								)}
