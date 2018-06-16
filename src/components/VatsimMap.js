@@ -158,9 +158,15 @@ export default class VatsimMap extends Component {
   drawPolylines = (coordinates, data) => {
     const latlngs = [
       [coordinates[1], coordinates[0]],
-      [parseFloat(data.lat), parseFloat(data.lon)]
-    ],
-    polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map);
+      [parseFloat(data.lat), parseFloat(data.lon)]],
+      polyline = new Leaflet.polyline(
+        latlngs,
+        { color: 'red' }
+      ).addTo(this.map),
+      circle = new Leaflet.circle(
+        [parseFloat(data.lat), parseFloat(data.lon)],
+        { color: 'red' }
+      ).addTo(this.map)
 
     setTimeout(() => {
       this.map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
