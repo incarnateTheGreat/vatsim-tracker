@@ -2,8 +2,10 @@ const express = require('express'),
 			app = express(),
 			cors = require('cors'),
 			request = require('request'),
-			airports = require('./data/airports.json'),
-			CONSTANTS = require('./constants/constants.js'),
+			graphqlHTTP = require('express-graphql'),
+			schema = require('./schema/schema')
+			airports = require('../data/airports.json'),
+			CONSTANTS = require('../constants/constants.js'),
 			{ CLIENT_LABELS } = CONSTANTS
 
 function checkFlightPosition(clientInterface) {
@@ -97,6 +99,11 @@ app.route('/api/vatsim-data').get((req, res) => {
 		res.send({flights, controllers, icaos})
 	})
 })
+
+app.use('/graphql', graphqlHTTP({
+	schema,
+	graphiql: true
+}))
 
 // TODO: Create a DB and use GraphQL to query data.
 app.route('/api/get-airports/:icao').get((req, res) => {
