@@ -1,12 +1,20 @@
 const express = require('express'),
 			app = express(),
+      path = require('path'),
 			cors = require('cors'),
 			request = require('request'),
+      DataLoader = require('dataloader'),
+      graphql = require('graphql'),
 			graphqlHTTP = require('express-graphql'),
-			schema = require('./schema/schema')
-			airports = require('../data/airports.json'),
+			schema = require('./schema/schema'),
+      // TODO: Try to implement the airports.json data in to MongoDB or maybe Firebase?
+      // mongoose = require('mongoose'),
+      // mongodb = require('mongodb'),
+      // airportsSchema = require('../schema/airportsSchema.js'),
 			CONSTANTS = require('../constants/constants.js'),
 			{ CLIENT_LABELS } = CONSTANTS
+
+require('dotenv').config()
 
 function checkFlightPosition(clientInterface) {
 	return ((isNaN(clientInterface.longitude) || clientInterface.longitude === '') ||
@@ -16,7 +24,16 @@ function checkFlightPosition(clientInterface) {
 // Enable cross-origin resource sharing.
 app.use(cors())
 
-app.listen(8000, () => console.log('Server started!') )
+app.listen(8000, () => {
+  console.log('Express & GraphQL servers started!')
+  // mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`)
+})
+
+// const db = mongoose.connection
+// db.on('error', console.error.bind(console, 'connection error:'));
+// db.once('open', () => {
+//   console.log('Mongoose connected.')
+// });
 
 // Connect to the VATSIM Data, render all Flights/Controllers, and thend dispatch to the front-end.
 app.route('/api/vatsim-data').get((req, res) => {
@@ -100,18 +117,9 @@ app.route('/api/vatsim-data').get((req, res) => {
 	})
 })
 
-app.use('/graphql', graphqlHTTP({
-	schema,
-	graphiql: true
-}))
-
-// TODO: Create a DB and use GraphQL to query data.
-app.route('/api/get-airports/:icao').get((req, res) => {
-	const destination = req.params['icao']
-
-	const result = airports.find(airportObj => {
-		return airportObj.icao.toUpperCase() === destination.toUpperCase()
-	})
-
-	res.send(result)
-})
+// Use GraphQL to retrieve Coordinates data for selected Destination.
+app.use('/graphql', graphqlHTTP((req, res, graphQLParams) => ({
+  schema,
+  rootValue: graphQLParams,
+  graphiql: true
+})));

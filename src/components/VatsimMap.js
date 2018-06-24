@@ -156,6 +156,7 @@ export default class VatsimMap extends Component {
   }
 
   drawPolylines = (coordinates, data) => {
+    console.log(coordinates);
     const latlngs = [
       [coordinates[1], coordinates[0]],
       [parseFloat(data.lat), parseFloat(data.lon)]],
@@ -332,8 +333,9 @@ export default class VatsimMap extends Component {
   }
 
   async getAirportData(destination_icao) {
-    return await axios(`http://localhost:8000/api/get-airports/${destination_icao}`)
-      .then(res => res.data)
+    return await axios(`http://localhost:8000/graphql?query={icao(icao:"${destination_icao}"){lat,lon}}`)
+      .then(res => res.data.data.icao)
+      .catch(err => this.errorToastMsg('There was a problem retrieving the Destination Airport Data.'))
   }
 
   // React Lifecycle Hooks

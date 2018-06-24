@@ -16,19 +16,20 @@ const IcaoType = new GraphQLObjectType({
 	})
 })
 
-const RootQuery = new GraphQLObjectType({
-	name: 'RootQueryType',
-	fields: {
-		icao: {
-			type: IcaoType,
-			args: { icao: { type: GraphQLString }},
-			resolve (parent, args) {
-				return icaoArr.find(icaoObj => icaoObj.icao === args.icao.toUpperCase())
-			}
-		}
-	}
+const RootQuery = new GraphQLSchema({
+  query: new GraphQLObjectType({
+  	name: 'RootQueryType',
+    description: 'This is a Description that we can add to later.',
+  	fields: {
+  		icao: {
+  			type: IcaoType,
+  			args: { icao: { type: GraphQLString }},
+  			resolve (parent, args) {
+  				return icaoArr.find(icaoObj => icaoObj.icao === args.icao.toUpperCase())
+  			}
+  		}
+  	}
+  })
 })
 
-module.exports = new GraphQLSchema({
-	query: RootQuery
-})
+module.exports = RootQuery
