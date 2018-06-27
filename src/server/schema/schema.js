@@ -1,9 +1,12 @@
 const graphql = require('graphql'),
+      mongoose = require('mongoose'),
+      airportsSchema = require('./airportsSchema'),
 			icaoArr = require('../../data/airports.json')
 
 const { GraphQLObjectType,
 				GraphQLString,
-				GraphQLSchema } = graphql
+				GraphQLSchema } = graphql,
+        db = mongoose.connection
 
 const IcaoType = new GraphQLObjectType({
 	name: 'icao',
@@ -19,13 +22,19 @@ const IcaoType = new GraphQLObjectType({
 const RootQuery = new GraphQLSchema({
   query: new GraphQLObjectType({
   	name: 'RootQueryType',
-    description: 'This is a Description that we can add to later.',
+    description: 'Airport ICAO data',
   	fields: {
   		icao: {
   			type: IcaoType,
   			args: { icao: { type: GraphQLString }},
   			resolve (parent, args) {
-  				return icaoArr.find(icaoObj => icaoObj.icao === args.icao.toUpperCase())
+          // Return results to GraphQL.
+          if (db.readyState === 1) {
+            return airportsSchema.findOne({ icao: args.icao.toUpperCase() })
+              .then(res => res)
+          } else {
+            console.log('Error: not connected to the database.')
+          }
   			}
   		}
   	}

@@ -7,11 +7,8 @@ const express = require('express'),
       graphql = require('graphql'),
 			graphqlHTTP = require('express-graphql'),
 			schema = require('./schema/schema'),
-      // TODO: Try to implement the airports.json data in to MongoDB or maybe Firebase?
-      // mongoose = require('mongoose'),
-      // mongodb = require('mongodb'),
-      // airportsSchema = require('../schema/airportsSchema.js'),
-			CONSTANTS = require('../constants/constants.js'),
+      mongoose = require('mongoose'),
+			CONSTANTS = require('../constants/constants'),
 			{ CLIENT_LABELS } = CONSTANTS
 
 require('dotenv').config()
@@ -26,23 +23,22 @@ app.use(cors())
 
 app.listen(8000, () => {
   console.log('Express & GraphQL servers started!')
-  // mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`)
+  mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`)
 })
-
-// const db = mongoose.connection
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', () => {
-//   console.log('Mongoose connected.')
-// });
 
 // Connect to the VATSIM Data, render all Flights/Controllers, and thend dispatch to the front-end.
 app.route('/api/vatsim-data').get((req, res) => {
+  console.log('------------------------------------------------------------');
+  console.log('Get VATSIM Data...');
+
 	request('http://info.vroute.net/vatsim-data.txt', (error, response, body) => {
 		const lines = body.split('\n')
 					results = []
 
 		let isRecording = false,
 				flights = []
+
+    console.log('Number of Lines:', lines.length);
 
 		// Go line by line to find CLIENTS data.
 		for(let line = 0; line < lines.length; line++) {
@@ -58,6 +54,8 @@ app.route('/api/vatsim-data').get((req, res) => {
 				results.push(lines[line]);
 			}
 		}
+
+    console.log('Number of results:', results.length);
 
 		for (let i = 0; i < results.length; i++) {
 			let clientInterface = {},
@@ -110,16 +108,30 @@ app.route('/api/vatsim-data').get((req, res) => {
 			return r
 		}, {})
 
+    console.log('Push ICAOS...');
+
 		// Put Departure & Destination ICAOs into Array.
 		for (let key in icaos_temp) icaos.push(key)
+
+    console.log('Number of ICAOS:', icaos.length);
 
 		res.send({flights, controllers, icaos})
 	})
 })
 
 // Use GraphQL to retrieve Coordinates data for selected Destination.
-app.use('/graphql', graphqlHTTP((req, res, graphQLParams) => ({
-  schema,
-  rootValue: graphQLParams,
-  graphiql: true
-})));
+app.use('/graphql', graphqlHTTP((req, res, graphQLParams) => {
+  const icao = req.url.replace(/\//g, ''),
+        query = `{icao(icao:"${icao}"){lat,lon}}`
+
+  // Assemble query string and put it into the graphQLParams object for insertion
+  // in to GraphQL Schema, which will then contact MongoDB via Mongoose and then
+  // return results.
+  graphQLParams.query = query
+
+  return ({
+    schema,
+    rootValue: query,
+    graphiql: true
+  })
+}));
