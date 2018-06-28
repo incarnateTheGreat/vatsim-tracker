@@ -119,6 +119,14 @@ app.route('/api/vatsim-data').get((req, res) => {
 	})
 })
 
+app.use('/api/metar/:metar', (req, res) => {
+  const metar = req.params['metar'].toUpperCase()
+
+  request(`http://metar.vatsim.net/metar.php?id=${metar}`, (error, response, body) => {
+    res.send(body)
+  })
+})
+
 // Use GraphQL to retrieve Coordinates data for selected Destination.
 app.use('/graphql', graphqlHTTP((req, res, graphQLParams) => {
   const icao = req.url.replace(/\//g, ''),

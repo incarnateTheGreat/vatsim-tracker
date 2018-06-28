@@ -8,8 +8,9 @@ import Control from 'react-leaflet-control'
 import { ToastContainer, toast, Flip } from 'react-toastify'
 import Autocomplete from './Autocomplete'
 import { Markers } from './Markers'
-import Modal from './Modal'
-import { MAX_BOUNDS, REFRESH_TIME } from '../constants/constants'
+import ModalIcao from './ModalIcao'
+import ModalMetar from './ModalMetar'
+import { MAX_BOUNDS, REFRESH_TIME, SERVER_PATH } from '../constants/constants'
 
 export default class VatsimMap extends Component {
   state = {
@@ -22,28 +23,33 @@ export default class VatsimMap extends Component {
     icao_destinations: null,
     icao_departures: null,
     isLoading: true,
-    isModalOpen: false,
+    isModalIcaoOpen: false,
+    isModalMetarOpen: false,
     lat: 43.862,
     lng: -79.369,
+    metar: null,
     selected_flight: null,
     selected_icao: null,
+    selected_metar_icao: null,
     width: 500,
     zoom: 2,
   }
 
-  clusterRef = React.createRef();
-  flightRef = React.createRef();
-  icaoRef = React.createRef();
-  mapRef = React.createRef();
-  modalRef = React.createRef();
-  interval = null;
-  toastId = null;
+  clusterRef = React.createRef()
+  flightRef = React.createRef()
+  icaoRef = React.createRef()
+  mapRef = React.createRef()
+  metarRef = React.createRef()
+  modalIcaoRef = React.createRef()
+  modalMetarRef = React.createRef()
+  interval = null
+  toastId = null
 
   // Getters & Setters
 
   getMapZoom = () => {
     if (this.map) {
-      const { lat, lng } = this.map.getCenter();
+      const { lat, lng } = this.map.getCenter()
 
       this.setState({
         lat,
@@ -55,7 +61,7 @@ export default class VatsimMap extends Component {
 
   getViewportSize = () => {
     const width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
-          height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+          height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 
     return { width, height }
   }
@@ -66,7 +72,7 @@ export default class VatsimMap extends Component {
         const { width, height } = this.getViewportSize()
 
         this.setState({ width, height })
-      }, 500);
+      }, 500)
     })
   }
 
@@ -74,10 +80,10 @@ export default class VatsimMap extends Component {
 		this.interval = setInterval(() => {
 			this.getFlightData(() => {
         if (this.state.selected_flight) {
-          this.clearPolylines();
+          this.clearPolylines()
 
           if (!this.isPlaneOnGround(this.state.selected_flight.groundspeed) && this.state.destination_data) {
-            this.drawPolylines(this.state.selected_flight.coordinates, this.state.destination_data);
+            this.drawPolylines(this.state.selected_flight.coordinates, this.state.destination_data)
           } else {
             this.map.panTo(
               [this.state.selected_flight.coordinates[1], this.state.selected_flight.coordinates[0]],
@@ -85,8 +91,8 @@ export default class VatsimMap extends Component {
             )
           }
         }
-      });
-		}, REFRESH_TIME);
+      })
+		}, REFRESH_TIME)
 	}
 
   // Handlers & Functionality
@@ -108,29 +114,29 @@ export default class VatsimMap extends Component {
     }, () => {
       /*
       const { lat, lng } = this.state,
-            cluster = this.clusterRef.current.leafletElement;
+            cluster = this.clusterRef.current.leafletElement
 
-      let thing = null;
+      let thing = null
 
       // Remove layer from MarkerClusterGroup
       cluster.eachLayer(layer => {
         // Narrow down the selected Cluster group.
         if (layer._latlng && ((layer._latlng.lat === lat) && (layer._latlng.lng === lng))) {
-          const markers = layer.__parent._markers;
+          const markers = layer.__parent._markers
 
           // Find the matching LatLng of the selected Flight that's in the Cluster.
           for (let i in markers) {
             if (markers[i]._latlng.lat === layer._latlng.lat &&
                 markers[i]._latlng.lng === layer._latlng.lng) {
-              thing = markers[i];
+              thing = markers[i]
 
-              break;
+              break
             }
           }
         }
       })
 
-      console.log(thing);
+      console.log(thing)
       cluster.removeLayer(thing)
       */
     })
@@ -141,15 +147,15 @@ export default class VatsimMap extends Component {
   }
 
   clearPolylines = () => {
-    const layers = this.map._layers;
+    const layers = this.map._layers
 
     for(let i in layers) {
       if(layers[i]._path !== undefined) {
         try {
-          this.map.removeLayer(layers[i]);
+          this.map.removeLayer(layers[i])
         }
         catch(e) {
-          this.errorToastMsg("Could not draw the Flight Path.");
+          this.errorToastMsg("Could not draw the Flight Path.")
         }
       }
     }
@@ -169,7 +175,7 @@ export default class VatsimMap extends Component {
       ).addTo(this.map)
 
     setTimeout(() => {
-      this.map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
+      this.map.fitBounds(polyline.getBounds(), { padding: [50, 50] })
     }, 500)
   }
 
@@ -179,31 +185,31 @@ export default class VatsimMap extends Component {
         hideProgressBar: true,
         position: toast.POSITION.TOP_CENTER,
         type: toast.TYPE.ERROR }
-    );
+    )
   }
 
   findFlight = (flight, isCity) => {
-    this.clearPolylines();
-    this.clearPopups();
+    this.clearPolylines()
+    this.clearPopups()
 
-    console.log(flight);
+    console.log(flight)
 
     this.getAirportData(flight.planned_destairport).then(destination_data => {
       if (destination_data) {
         this.setState({ selected_flight: flight, destination_data }, () => {
           if(!this.isPlaneOnGround(flight.groundspeed)) {
-            this.drawPolylines(flight.coordinates, destination_data);
+            this.drawPolylines(flight.coordinates, destination_data)
           }
 
-          this.applySelectedFlightData(flight);
+          this.applySelectedFlightData(flight)
         })
       } else {
         this.setState({ selected_flight: flight }, () => {
-          this.applySelectedFlightData(flight);
+          this.applySelectedFlightData(flight)
         })
       }
     }).catch(err => {
-      this.errorToastMsg('There is no destination data for this flight.');
+      this.errorToastMsg('There is no destination data for this flight.')
     })
   }
 
@@ -211,9 +217,9 @@ export default class VatsimMap extends Component {
     this.getVatsimData().then(data => {
       const { flights,
               controllers,
-              icaos } = data;
+              icaos } = data
 
-              // console.log(icaos);
+              // console.log(icaos)
 
       if (toast.isActive(this.toastId)) {
         this.serverToastMsg('Connected.', true)
@@ -228,15 +234,15 @@ export default class VatsimMap extends Component {
           })
 
           this.setState({ selected_flight: result }, () => {
-            callback ? callback() : null;
+            callback ? callback() : null
           })
         } else {
-          callback ? callback() : null;
+          callback ? callback() : null
         }
-      });
+      })
     })
     .catch(err => {
-      console.log(err);
+      console.log(err)
       this.setState({ isLoading: false }, () => {
         this.serverToastMsg('No connection.', false)
       })
@@ -253,10 +259,11 @@ export default class VatsimMap extends Component {
       zoom: 2
     }, () => {
       // Clear Progress Line, Popups, and Inputs.
-      this.clearPolylines();
-      this.clearPopups();
+      this.clearPolylines()
+      this.clearPopups()
       this.flightRef.current.inputRef.current.value = ''
       this.icaoRef.current.inputRef.current.value = ''
+      this.metarRef.current.value = ''
     })
   }
 
@@ -265,25 +272,35 @@ export default class VatsimMap extends Component {
   }
 
   isPlaneOnGround = (groundspeed) => {
-    return groundspeed <= 80;
+    return groundspeed <= 80
   }
 
-  openModal = (selected_icao) => {
+  openIcaoModal = (selected_icao) => {
     if (this.state.icaos.includes(selected_icao)) {
       const icao_departures = this.state.flights.filter(flight => selected_icao === flight.planned_depairport),
             icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport)
 
       this.setState({ icao_departures, icao_destinations, selected_icao },
-        () => { this.modalRef.current.toggleModal() })
+        () => { this.modalIcaoRef.current.toggleModal() })
     } else {
       this.errorToastMsg('This ICAO is not listed.')
     }
   }
 
-  searchFlight = () => {
-    const callsign = document.getElementsByName('flightSearch')[0].value;
+  openMetarModal = (selected_metar) => {
+    this.getMetarData(selected_metar).then(metar => {
+      if (metar) {
+        this.setState({ metar, selected_metar_icao: selected_metar }, () => {
+          this.modalMetarRef.current.toggleModal()
+        })
+      }
+    })
+  }
 
-    this.updateCallsign(callsign);
+  searchFlight = () => {
+    const callsign = document.getElementsByName('flightSearch')[0].value
+
+    this.updateCallsign(callsign)
   }
 
   serverToastMsg = (msg, isConnected) => {
@@ -294,7 +311,7 @@ export default class VatsimMap extends Component {
           hideProgressBar: true,
           position: toast.POSITION.TOP_CENTER,
           type: isConnected ? toast.TYPE.SUCCESS : toast.TYPE.ERROR
-        });
+        })
     } else {
       toast.update(
         this.toastId,
@@ -304,7 +321,7 @@ export default class VatsimMap extends Component {
           render: msg,
           transition: Flip,
           type: isConnected ? toast.TYPE.SUCCESS : toast.TYPE.ERROR
-        });
+        })
     }
   }
 
@@ -316,10 +333,10 @@ export default class VatsimMap extends Component {
 
       if (flight) {
         this.setState({ callsign }, () => {
-          this.findFlight(flight);
+          this.findFlight(flight)
         })
       } else {
-        this.errorToastMsg(`${callsign} does not exist.`);
+        this.errorToastMsg(`${callsign} does not exist.`)
       }
     }
   }
@@ -327,14 +344,19 @@ export default class VatsimMap extends Component {
   // Data Fetchers
 
   async getVatsimData() {
-    return await axios('http://localhost:8000/api/vatsim-data')
+    return await axios(`${SERVER_PATH}/api/vatsim-data`)
       .then(res => res.data)
   }
 
   async getAirportData(destination_icao) {
-    return await axios(`http://localhost:8000/graphql/${destination_icao}`)
+    return await axios(`${SERVER_PATH}/graphql/${destination_icao}`)
       .then(res => res.data.data.icao)
       .catch(err => this.errorToastMsg('There was a problem retrieving the Destination Airport Data.'))
+  }
+
+  async getMetarData(metar) {
+    return await axios(`${SERVER_PATH}/api/metar/${metar}`)
+      .then(res => res.data)
   }
 
   // React Lifecycle Hooks
@@ -342,20 +364,20 @@ export default class VatsimMap extends Component {
   componentDidMount = () => {
     const { width, height } = this.getViewportSize()
 
-    this.map = this.mapRef.current.leafletElement;
+    this.map = this.mapRef.current.leafletElement
 
     setTimeout(() => {
       this.setState({ width, height }, () => {
         if (!this.interval) {
-          this.setResizeEvent();
-          this.startInterval();
+          this.setResizeEvent()
+          this.startInterval()
           this.getFlightData(() => {
             this.setState({ isLoading: false })
-          });
-          window.dispatchEvent(new Event('resize'));
+          })
+          window.dispatchEvent(new Event('resize'))
         }
       })
-    }, 0);
+    }, 0)
   }
 
   render = () => {
@@ -368,12 +390,18 @@ export default class VatsimMap extends Component {
           />
         </div>
         <ToastContainer />
-        <Modal
+        <ModalIcao
           icao={this.state.selected_icao}
           items={[this.state.icao_departures, this.state.icao_destinations]}
           returnData={callsign => this.updateCallsign(callsign)}
-          ref={this.modalRef}
-          toggleModal={this.state.isModalOpen}
+          ref={this.modalIcaoRef}
+          toggleModal={this.state.isModalIcaoOpen}
+        />
+        <ModalMetar
+          icao={this.state.selected_metar_icao}
+          metar={this.state.metar}
+          ref={this.modalMetarRef}
+          toggleModal={this.state.isModalMetarOpen}
         />
         <Map
           center={[this.state.lat, this.state.lng]}
@@ -416,10 +444,19 @@ export default class VatsimMap extends Component {
               />
               <Autocomplete
                 items={this.state.icaos}
-                onSelect={icao => this.openModal(icao)}
+                onSelect={icao => this.openIcaoModal(icao)}
                 placeholder="Search for the ICAO..."
                 ref={this.icaoRef}
                 searchCompareValue="planned_destairport"
+              />
+              <input
+                onKeyPress={event => {
+                  if (event.key === 'Enter') this.openMetarModal(event.target.value)
+                }}
+                name='metar'
+                ref={this.metarRef}
+                placeholder='Search for the METAR...'
+                type='search'
               />
             </React.Fragment>
           </Control>

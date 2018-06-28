@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
 
-class Modal extends Component {
+class ModalIcao extends Component {
 	state = {
 		isModalOpen: false,
 		items: null,
@@ -23,13 +23,13 @@ class Modal extends Component {
 	}
 
 	componentDidMount = () => {
-		const modal = document.getElementById('Modal')
+		const modal = document.getElementById('Modal_Icao')
 
-		window.onclick = (e) => {
-			if (e.target === modal) this.closeModal()
-		}
+    modal.addEventListener('click', (e) => {
+      if (e.target.id === 'Modal_Icao') this.closeModal()
+    })
 
-		document.addEventListener("keydown", (e) => {
+		document.addEventListener('keydown', e => {
 			if (e.key === 'Escape') this.closeModal()
 		}, false);
 	}
@@ -48,7 +48,7 @@ class Modal extends Component {
 		)
 
 		return (
-			<div id='Modal' className={modalClasses}>
+			<div id='Modal_Icao' className={modalClasses}>
 				<div className='Modal__container'>
 					<header>
 						<h1>{this.state.icao}</h1>
@@ -62,11 +62,11 @@ class Modal extends Component {
 							<h2>Departures</h2>
 								{this.state.items[0] && (
 									<ul>
-										{this.state.items[0].length > 0 ? this.state.items[0].map((obj, i) =>
+										{this.state.items[0].length > 0 ? this.state.items[0].map((departureData, i) =>
 											<li
 												key={i}
 												onClick={this.returnData.bind(this)}>
-												<span className='Modal__link'>{obj.callsign}</span>
+												<span className='Modal__link'>{departureData.callsign}</span>
 											</li>
 										) : (<li><span>None</span></li>)}
 									</ul>
@@ -76,11 +76,11 @@ class Modal extends Component {
 							<h2>Arrivals</h2>
 								{this.state.items[1] && (
 									<ul>
-										{this.state.items[1].length > 0 ? this.state.items[1].map((obj, i) =>
+										{this.state.items[1].length > 0 ? this.state.items[1].map((arrivalData, i) =>
 											<li
 												key={i}
 												onClick={this.returnData.bind(this)}>
-												<span className='Modal__link'>{obj.callsign}</span>
+												<span className='Modal__link'>{arrivalData.callsign}</span>
 											</li>
 										) : (<li><span>None</span></li>)}
 									</ul>
@@ -93,4 +93,4 @@ class Modal extends Component {
 	}
 }
 
-export default Modal;
+export default ModalIcao;
