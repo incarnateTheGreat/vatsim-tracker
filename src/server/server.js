@@ -123,7 +123,11 @@ app.use('/api/metar/:metar', (req, res) => {
   const metar = req.params['metar'].toUpperCase()
 
   request(`http://metar.vatsim.net/metar.php?id=${metar}`, (error, response, body) => {
-    res.send(body)
+    if (body.includes('No METAR available')) {
+      res.send(null)
+    } else {
+      res.send(body)
+    }
   })
 })
 

@@ -10,3 +10,17 @@
 // Dependencies
 @import '../../node_modules/react-leaflet-markercluster/dist/styles.min.css';
 @import '../../node_modules/react-toastify/dist/ReactToastify.min.css';
+@import '../../node_modules/weathericons/css/weather-icons.min.css';
+@import '../../node_modules/weathericons/css/weather-icons-wind.min.css';
+
+@font-face {
+  font-family: 'WeatherIcons';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../../node_modules/weathericons/font/weathericons-regular-webfont.eot');
+  src: url('../../node_modules/weathericons/font/weathericons-regular-webfont.eot?#iefix') format('embedded-opentype'),
+       url('../../node_modules/weathericons/font/weathericons-regular-webfont.woff2') format('woff2'),
+       url('../../node_modules/weathericons/font/weathericons-regular-webfont.woff') format('woff'),
+       url('../../node_modules/weathericons/font/weathericons-regular-webfont.ttf') format('truetype'),
+       url('../../node_modules/weathericons/font/weathericons-regular-webfont.svg') format('svg');
+}

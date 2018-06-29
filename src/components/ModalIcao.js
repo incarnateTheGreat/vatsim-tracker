@@ -58,7 +58,7 @@ class ModalIcao extends Component {
 						</span>
 					</header>
 					<div className='Modal__sections'>
-						<section className='Modal__section'>
+						<section className='Modal__section departures'>
 							<h2>Departures</h2>
 								{this.state.items[0] && (
 									<ul>
@@ -72,7 +72,7 @@ class ModalIcao extends Component {
 									</ul>
 								)}
 						</section>
-						<section className='Modal__section'>
+						<section className='Modal__section arrivals'>
 							<h2>Arrivals</h2>
 								{this.state.items[1] && (
 									<ul>

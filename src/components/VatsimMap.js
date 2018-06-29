@@ -289,10 +289,13 @@ export default class VatsimMap extends Component {
 
   openMetarModal = (selected_metar) => {
     this.getMetarData(selected_metar).then(metar => {
+      console.log(metar);
       if (metar) {
         this.setState({ metar, selected_metar_icao: selected_metar }, () => {
           this.modalMetarRef.current.toggleModal()
         })
+      } else {
+        this.errorToastMsg('There is no METAR for this ICAO.')
       }
     })
   }
