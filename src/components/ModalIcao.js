@@ -29,7 +29,7 @@ class ModalIcao extends Component {
       if (e.target.id === 'Modal_Icao') this.closeModal()
     })
 
-		document.addEventListener('keydown', e => {
+		document.addEventListener('keydown', (e) => {
 			if (e.key === 'Escape') this.closeModal()
 		}, false);
 	}
@@ -63,10 +63,10 @@ class ModalIcao extends Component {
 								{this.state.items[0] && (
 									<ul>
 										{this.state.items[0].length > 0 ? this.state.items[0].map((departureData, i) =>
-											<li
-												key={i}
-												onClick={this.returnData.bind(this)}>
-												<span className='Modal__link'>{departureData.callsign}</span>
+											<li key={i}>
+												<span
+                          className='Modal__link'
+                          onClick={this.returnData.bind(this)}>{departureData.callsign}</span>
 											</li>
 										) : (<li><span>None</span></li>)}
 									</ul>
@@ -77,10 +77,10 @@ class ModalIcao extends Component {
 								{this.state.items[1] && (
 									<ul>
 										{this.state.items[1].length > 0 ? this.state.items[1].map((arrivalData, i) =>
-											<li
-												key={i}
-												onClick={this.returnData.bind(this)}>
-												<span className='Modal__link'>{arrivalData.callsign}</span>
+											<li key={i}>
+												<span
+                          className='Modal__link'
+                          onClick={this.returnData.bind(this)}>{arrivalData.callsign}</span>
 											</li>
 										) : (<li><span>None</span></li>)}
 									</ul>
