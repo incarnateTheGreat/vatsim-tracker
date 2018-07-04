@@ -97,7 +97,10 @@ export default class Autocomplete extends Component {
 			}
 
 			this.setState({ sortedResult })
-		}
+		} else {
+      // Clears Autocomplete results when the input is blank.
+      this.setState({ sortedResult: [] })
+    }
 	}
 
 	static getDerivedStateFromProps(nextProps, prevState) {

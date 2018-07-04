@@ -57,11 +57,13 @@
 
 		&.departures {
 			border-width: 0 1px 1px 0;
+      overflow: auto;
       width: 50%;
 		}
 
 		&.arrivals {
 			border-width: 0 0 1px;
+      overflow: auto;
       width: 50%;
 		}
 
