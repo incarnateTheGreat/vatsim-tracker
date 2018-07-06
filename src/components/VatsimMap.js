@@ -6,11 +6,14 @@ import Leaflet from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-markercluster'
 import Control from 'react-leaflet-control'
 import { ToastContainer, toast, Flip } from 'react-toastify'
+// import * as OWM from 'openweathermap'
 import Autocomplete from './Autocomplete'
 import { Markers } from './Markers'
 import ModalIcao from './ModalIcao'
 import ModalMetar from './ModalMetar'
 import { MAX_BOUNDS, REFRESH_TIME, SERVER_PATH } from '../constants/constants'
+
+const OWM = require('../openweather.js');
 
 export default class VatsimMap extends Component {
   state = {
@@ -20,6 +23,7 @@ export default class VatsimMap extends Component {
     flights: [],
     height: 1000,
     icaos: null,
+    icao_controllers: null,
     icao_destinations: null,
     icao_departures: null,
     isLoading: true,
@@ -219,8 +223,6 @@ export default class VatsimMap extends Component {
               controllers,
               icaos } = data
 
-              // console.log(icaos)
-
       if (toast.isActive(this.toastId)) {
         this.serverToastMsg('Connected.', true)
       }
@@ -278,9 +280,10 @@ export default class VatsimMap extends Component {
   openIcaoModal = (selected_icao) => {
     if (this.state.icaos.includes(selected_icao)) {
       const icao_departures = this.state.flights.filter(flight => selected_icao === flight.planned_depairport),
-            icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport)
+            icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport),
+            icao_controllers = this.state.controllers.filter(controller => controller.callsign.indexOf(selected_icao) > -1)
 
-      this.setState({ icao_departures, icao_destinations, selected_icao },
+      this.setState({ icao_departures, icao_destinations, icao_controllers, selected_icao },
         () => { this.modalIcaoRef.current.toggleModal() })
     } else {
       this.errorToastMsg('This ICAO is not listed.')
@@ -369,6 +372,10 @@ export default class VatsimMap extends Component {
 
     this.map = this.mapRef.current.leafletElement
 
+    // OWM.daily('a22e7429bbe086045388e31142cd915f', (err, json) => {
+    //   console.log(json);
+    // })
+
     setTimeout(() => {
       this.setState({ width, height }, () => {
         if (!this.interval) {
@@ -395,7 +402,7 @@ export default class VatsimMap extends Component {
         <ToastContainer />
         <ModalIcao
           icao={this.state.selected_icao}
-          items={[this.state.icao_departures, this.state.icao_destinations]}
+          items={[this.state.icao_departures, this.state.icao_destinations, this.state.icao_controllers]}
           returnData={callsign => this.updateCallsign(callsign)}
           ref={this.modalIcaoRef}
           toggleModal={this.state.isModalIcaoOpen}

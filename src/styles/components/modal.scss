@@ -39,8 +39,7 @@
 		background-color: $light-grey;
 		display: flex;
 		flex-direction: column;
-
-		height: 75%;
+		height: 85%;
 		width: 75%;
 	}
 
@@ -67,10 +66,24 @@
       width: 50%;
 		}
 
+    &.atc {
+      flex: 1;
+      overflow: auto;
+    }
+
     &.weather {
       display: flex;
       flex-direction: column;
       width: 100%;
+    }
+
+    .icao__list {
+      list-style: none;
+      padding: 0;
+
+      &__child {
+        padding: 0 0 10px;
+      }
     }
 	}
 

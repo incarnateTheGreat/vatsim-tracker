@@ -10435,7 +10435,7 @@
     "url": "",
     "runway_length": "6824",
     "elev": "18",
-    "icao": "KCFS",
+    "icao": "YCFS",
     "direct_flights": "4",
     "carriers": "4"
   },
@@ -15675,7 +15675,7 @@
     "url": "",
     "runway_length": "8202",
     "elev": "88",
-    "icao": "KDVO",
+    "icao": "RPMD",
     "direct_flights": "7",
     "carriers": "5"
   },
@@ -19680,6 +19680,18 @@
     "carriers": "2"
   },
   {
+    "code": "JER",
+    "lat": "49.208056",
+    "lon": "-2.195278",
+    "name": "Jersey Airport",
+    "city": "St. Peter",
+    "state": "Channel Islands",
+    "country": "United Kingdom",
+    "tz": "Europe\/London",
+    "type": "Airports",
+    "icao": "EGJJ"
+  },
+  {
     "code": "GCK",
     "lat": "37.9267",
     "lon": "-100.719",
@@ -20195,7 +20207,7 @@
     "url": "",
     "runway_length": "6004",
     "elev": "15",
-    "icao": "",
+    "icao": "LXGB",
     "direct_flights": "3",
     "carriers": "4"
   },
@@ -23375,7 +23387,7 @@
     "url": "http:\/\/www.tokyo-airport-bldg.co.jp\/",
     "runway_length": null,
     "elev": null,
-    "icao": "KHND",
+    "icao": "RJTT",
     "direct_flights": "55",
     "carriers": "19"
   },
@@ -27755,7 +27767,7 @@
     "url": "http:\/\/www.airports.co.za\/home.asp?pid=1147",
     "runway_length": "14495",
     "elev": "5512",
-    "icao": "FAJS",
+    "icao": "FAOR",
     "direct_flights": "89",
     "carriers": "63"
   },
@@ -31395,7 +31407,7 @@
     "url": "",
     "runway_length": "6000",
     "elev": "6",
-    "icao": "",
+    "icao": "PTSA",
     "direct_flights": "2",
     "carriers": "1"
   },
@@ -32795,7 +32807,7 @@
     "url": "",
     "runway_length": "12139",
     "elev": "243",
-    "icao": "",
+    "icao": "FNLU",
     "direct_flights": "29",
     "carriers": "13"
   },
@@ -36759,7 +36771,7 @@
     "url": "",
     "runway_length": "7900",
     "elev": "6",
-    "icao": "",
+    "icao": "PKMJ",
     "direct_flights": "4",
     "carriers": "2"
   },
@@ -49379,7 +49391,7 @@
     "url": "",
     "runway_length": null,
     "elev": null,
-    "icao": "KPVG",
+    "icao": "ZSPD",
     "direct_flights": "131",
     "carriers": "76"
   },

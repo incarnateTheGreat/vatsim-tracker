@@ -87,6 +87,24 @@ class ModalIcao extends Component {
 								)}
 						</section>
 					</div>
+          <div className='Modal__sections'>
+            <section className='Modal__section atc'>
+							<h2>Controllers</h2>
+								{this.state.items[2] && (
+									<ul className='icao__list'>
+										{this.state.items[2].length > 0 ? this.state.items[2].map((controllerData, i) =>
+											<li className='icao__list__child' key={i}>
+                        <ul>
+                          <li><span>{controllerData.name}</span></li>
+                          <li><span>{controllerData.callsign}</span></li>
+                          <li><span>{controllerData.frequency}</span></li>
+                        </ul>
+											</li>
+										) : (<li><span>None</span></li>)}
+									</ul>
+								)}
+						</section>
+          </div>
 				</div>
 			</div>
 		);

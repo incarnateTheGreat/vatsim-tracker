@@ -15,7 +15,17 @@ class ModalMetar extends Component {
 	}
 
   convertSMtoKM = (sm) => {
-    return Math.round(1.609344 * sm) + ' KM'
+    const conversion = Math.round(1.609344 * sm)
+
+    return `${conversion} KM`
+  }
+
+  getQNH = () => {
+    const keys = Object.keys(this.state.metar),
+          altimeter = keys.find((key, i) => key.includes('altimeterIn')),
+          altimeterType = altimeter.includes('Hpa') ? 'Hpa' : 'Hg'
+
+    return `${this.state.metar[altimeter]} ${altimeterType}` || 'unavailable'
   }
 
   getWeather = () => {
@@ -107,6 +117,8 @@ class ModalMetar extends Component {
         icao: nextProps.icao.toUpperCase(),
         metar: Metar(nextProps.metar)
   		}
+    } else {
+      return null
     }
 	}
 
@@ -124,7 +136,7 @@ class ModalMetar extends Component {
         this.getWeather()
       )
 
-      console.log(this.state.metar);
+      // console.log(this.state.metar);
     }
 
 		return (
@@ -169,6 +181,10 @@ class ModalMetar extends Component {
                         )}
                       </ul>
                     </div>
+                  </div>
+                  <div className='Modal__weatherContainer'>
+                    <div>QNH</div>
+                    <div>{this.getQNH()}</div>
                   </div>
                   <div className='Modal__weatherContainer'>
                     <div>Weather</div>
