@@ -13,7 +13,7 @@ import ModalIcao from './ModalIcao'
 import ModalMetar from './ModalMetar'
 import { MAX_BOUNDS, REFRESH_TIME, SERVER_PATH } from '../constants/constants'
 
-const OWM = require('../openweather.js');
+// const OWM = require('../openweather.js');
 
 export default class VatsimMap extends Component {
   state = {
