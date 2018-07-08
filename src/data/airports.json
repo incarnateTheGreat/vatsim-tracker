@@ -20127,7 +20127,7 @@
     "url": "",
     "runway_length": "5000",
     "elev": "5",
-    "icao": "",
+    "icao": "MYEF",
     "direct_flights": "6",
     "carriers": "6"
   },
@@ -62231,7 +62231,7 @@
     "url": "http:\/\/iserit.greennet.gl\/bgbw",
     "runway_length": "6004",
     "elev": "112",
-    "icao": "",
+    "icao": "BGBW",
     "direct_flights": "8",
     "carriers": "3"
   },
