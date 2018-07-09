@@ -1,6 +1,6 @@
 {
-  "name": "vatsim",
-  "version": "1.0.0",
+  "name": "vatsim-tracker",
+  "version": "1.0.1",
   "private": true,
   "dependencies": {
     "autoprefixer": "7.1.6",
