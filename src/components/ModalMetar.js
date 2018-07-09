@@ -140,8 +140,6 @@ class ModalMetar extends Component {
         'wi',
         this.getWeather()
       )
-
-      console.log(this.state.metar);
     }
 
 		return (
