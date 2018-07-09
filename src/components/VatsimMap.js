@@ -355,9 +355,13 @@ export default class VatsimMap extends Component {
   }
 
   async getAirportData(destination_icao) {
-    return await axios(`${SERVER_PATH}/graphql/${destination_icao}`)
-      .then(res => res.data.data.icao)
-      .catch(err => this.errorToastMsg('There was a problem retrieving the Destination Airport Data.'))
+    if (destination_icao === '' || !destination_icao) {
+      return null
+    } else {
+      return await axios(`${SERVER_PATH}/graphql/${destination_icao}`)
+        .then(res => res.data.data.icao)
+        .catch(err => this.errorToastMsg('There was a problem retrieving the Destination Airport Data.'))
+    }
   }
 
   async getMetarData(metar) {

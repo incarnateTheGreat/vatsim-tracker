@@ -33,21 +33,26 @@ class ModalMetar extends Component {
           clouds = this.state.metar['clouds']
 
     if (weather) {
-      return this.getWeatherIcon(weather[weather.length - 1])
-    } else if (this.state.metar['clouds']) {
-      return this.getWeatherIcon(clouds[0])
+      return this.getWeatherIcon(weather[weather.length - 1].meaning)
+    } else if (clouds) {
+      if (clouds[0].abbreviation === 'NCD') {
+        return this.getWeatherIcon('clear-day')
+      } else {
+        return this.getWeatherIcon(clouds[0].meaning)
+      }
     } else {
-      return ''
+      return this.getWeatherIcon()
     }
   }
 
   getWeatherIcon = (icon) => {
-    switch (icon.meaning) {
+    switch (icon) {
 			case 'clear-night':
 				return 'wi-night-clear';
       case 'few':
         return 'wi-day-cloudy'
       case 'scattered':
+      case 'broken':
         return 'wi-day-sunny-overcast'
 			case 'cloudy':
 				return 'wi-cloudy';
@@ -64,7 +69,7 @@ class ModalMetar extends Component {
       case 'partly-cloudy-night':
         return 'wi-night-partly-cloudy'
       default:
-        return null;
+        return 'wi-na';
     }
   }
 
@@ -136,7 +141,7 @@ class ModalMetar extends Component {
         this.getWeather()
       )
 
-      // console.log(this.state.metar);
+      console.log(this.state.metar);
     }
 
 		return (
@@ -189,7 +194,7 @@ class ModalMetar extends Component {
                   <div className='Modal__weatherContainer'>
                     <div>Weather</div>
                     <div>
-                      <ul>
+                      <ul className='Modal__weatherContainer__list'>
                         {this.state.metar['weather'] ? this.state.metar['weather'].map((weatherData, i) =>
                           <li key={i}>{weatherData['meaning']}</li>
                         ) : (<span>Nothing to report.</span>)}
