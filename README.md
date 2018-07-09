@@ -19,9 +19,9 @@ In order for the application to function, three functions need to be active:
 Run the following from the Command Line:
 
 ```
-git clone https://github.com/incarnateTheGreat/vatsim
+git clone https://github.com/incarnateTheGreat/vatsim-tracker
 
-cd vatsim
+cd vatsim-tracker
 ```
 
 Once the above steps are complete, download the latest dependencies by running:
