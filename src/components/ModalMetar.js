@@ -192,7 +192,7 @@ class ModalMetar extends Component {
                       <ul>
                         {this.state.metar['weather'] ? this.state.metar['weather'].map((weatherData, i) =>
                           <li key={i}>{weatherData['meaning']}</li>
-                        ) : (<span>Currently unavailable.</span>)}
+                        ) : (<span>Nothing to report.</span>)}
                       </ul>
                     </div>
                   </div>
