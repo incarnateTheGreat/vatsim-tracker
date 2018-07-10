@@ -30192,6 +30192,19 @@
     "carriers": "3"
   },
   {
+    "code": "",
+    "lat": "61.181667",
+    "lon": "-149.966389",
+    "name": "Lake Hood Strip",
+    "city": "Lake Hood Strip",
+    "state": "Alaska",
+    "country": "United States",
+    "tz": "America\/Anchorage",
+    "phone": "",
+    "type": "Airports",
+    "icao": "PALH"
+  },
+  {
     "code": "KLH",
     "lat": "16.6667",
     "lon": "74.3333",
@@ -32027,7 +32040,7 @@
     "url": "",
     "runway_length": "3904",
     "elev": "112",
-    "icao": "",
+    "icao": "BGKK",
     "direct_flights": "5",
     "carriers": "2"
   },

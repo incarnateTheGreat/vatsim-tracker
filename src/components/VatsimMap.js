@@ -45,6 +45,8 @@ export default class VatsimMap extends Component {
   metarRef = React.createRef()
   modalIcaoRef = React.createRef()
   modalMetarRef = React.createRef()
+  unfollowBtnRef = React.createRef()
+
   interval = null
   toastId = null
 
@@ -117,6 +119,7 @@ export default class VatsimMap extends Component {
       lng: flight.coordinates[0],
       zoom: this.isPlaneOnGround(flight.groundspeed) ? 16 : this.state.zoom
     }, () => {
+      this.unfollowBtnRef.current.disabled = false
       /*
       const { lat, lng } = this.state,
             cluster = this.clusterRef.current.leafletElement
@@ -270,6 +273,10 @@ export default class VatsimMap extends Component {
     console.log('get Weather');
   }
 
+  handleEnterKey = (e) => {
+    if (e.key === 'Enter') this.searchFlight()
+  }
+
   handleReset = () => {
     this.setState({
       callsign: '',
@@ -288,8 +295,18 @@ export default class VatsimMap extends Component {
     })
   }
 
-  handleEnterKey = (e) => {
-    if (e.key === 'Enter') this.searchFlight()
+  handleUnfollow = () => {
+    this.setState({
+      callsign: '',
+      destination_data: null,
+      selected_flight: null
+    }, () => {
+      // Clear Progress Line, Popups, and Inputs.
+      this.clearPolylines()
+      this.clearPopups()
+      this.flightRef.current.inputRef.current.value = ''
+      this.unfollowBtnRef.current.disabled = true
+    })
   }
 
   isPlaneOnGround = (groundspeed) => {
@@ -402,7 +419,7 @@ export default class VatsimMap extends Component {
           this.startInterval()
           this.getFlightData(() => {
             this.getWeather()
-            this.setState({ isLoading: false })
+            this.setState({ isLoading: false }, () => this.unfollowBtnRef.current.disabled = true)
           })
           window.dispatchEvent(new Event('resize'))
         }
@@ -470,6 +487,10 @@ export default class VatsimMap extends Component {
               <div>
                 <button onClick={this.handleReset.bind(this)}>
                   Reset View
+                </button>
+                <button
+                  ref={this.unfollowBtnRef}
+                  onClick={this.handleUnfollow.bind(this)}>Unfollow
                 </button>
               </div>
               <Autocomplete
