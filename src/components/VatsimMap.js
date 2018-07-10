@@ -6,14 +6,13 @@ import Leaflet from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-markercluster'
 import Control from 'react-leaflet-control'
 import { ToastContainer, toast, Flip } from 'react-toastify'
-// import * as OWM from 'openweathermap'
 import Autocomplete from './Autocomplete'
 import { Markers } from './Markers'
 import ModalIcao from './ModalIcao'
 import ModalMetar from './ModalMetar'
 import { MAX_BOUNDS, REFRESH_TIME, SERVER_PATH } from '../constants/constants'
 
-// const OWM = require('../openweather.js');
+import './leaflet-openweathermap'
 
 export default class VatsimMap extends Component {
   state = {
@@ -96,6 +95,8 @@ export default class VatsimMap extends Component {
           }
         }
       })
+
+      // this.getWeather();
 		}, REFRESH_TIME)
 	}
 
@@ -251,6 +252,24 @@ export default class VatsimMap extends Component {
     })
   }
 
+  getWeather = () => {
+    const options = { opacity: 0.4 },
+          osm = Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
+          rain = Leaflet.OWM.rain(options),
+          clouds = Leaflet.OWM.clouds(options),
+          precipitation = Leaflet.OWM.precipitation(options),
+          wind = Leaflet.OWM.wind(options),
+          overlayMaps = {
+            'Rain': rain,
+            'Clouds': clouds,
+            'Precipitation': precipitation,
+            'Wind': wind },
+          baseMaps = { "OSM Standard": osm };
+
+    const layerControl = Leaflet.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(this.map);
+    console.log('get Weather');
+  }
+
   handleReset = () => {
     this.setState({
       callsign: '',
@@ -376,22 +395,26 @@ export default class VatsimMap extends Component {
 
     this.map = this.mapRef.current.leafletElement
 
-    // OWM.daily('a22e7429bbe086045388e31142cd915f', (err, json) => {
-    //   console.log(json);
-    // })
-
     setTimeout(() => {
       this.setState({ width, height }, () => {
         if (!this.interval) {
           this.setResizeEvent()
           this.startInterval()
           this.getFlightData(() => {
+            this.getWeather()
             this.setState({ isLoading: false })
           })
           window.dispatchEvent(new Event('resize'))
         }
       })
     }, 0)
+  }
+
+  myWindroseMarker = (data) => {
+  	const content = '<canvas id="id_' + data.id + '" width="50" height="50"></canvas>',
+          icon = Leaflet.divIcon({html: content, iconSize: [50,50], className: 'owm-div-windrose'});
+
+  	return Leaflet.marker([data.coord.Lat, data.coord.Lon], {icon: icon, clickable: false});
   }
 
   render = () => {
