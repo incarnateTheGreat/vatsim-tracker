@@ -17,7 +17,7 @@ class ModalIcao extends Component {
 	}
 
 	returnData = (e) => {
-		const value = e.target.innerHTML || e.target.innerText
+    const value = e.target.dataset.icao
 		this.closeModal()
 		this.props.returnData(value)
 	}
@@ -66,7 +66,10 @@ class ModalIcao extends Component {
 											<li key={i}>
 												<span
                           className='Modal__link'
-                          onClick={this.returnData.bind(this)}>{departureData.callsign}</span>
+                          data-icao={departureData.callsign}
+                          onClick={this.returnData.bind(this)}>
+                          {departureData.callsign}: {departureData.name}
+                        </span>
 											</li>
 										) : (<li><span>None</span></li>)}
 									</ul>
@@ -80,7 +83,10 @@ class ModalIcao extends Component {
 											<li key={i}>
 												<span
                           className='Modal__link'
-                          onClick={this.returnData.bind(this)}>{arrivalData.callsign}</span>
+                          data-icao={arrivalData.callsign}
+                          onClick={this.returnData.bind(this)}>
+                          {arrivalData.callsign}: {arrivalData.name}
+                        </span>
 											</li>
 										) : (<li><span>None</span></li>)}
 									</ul>
