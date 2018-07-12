@@ -256,7 +256,7 @@ export default class VatsimMap extends Component {
   }
 
   getWeather = () => {
-    const options = { opacity: 0.4 },
+    const options = { opacity: 0.5 },
           osm = Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
           rain = Leaflet.OWM.rain(options),
           clouds = Leaflet.OWM.clouds(options),
@@ -267,7 +267,7 @@ export default class VatsimMap extends Component {
             'Clouds': clouds,
             'Precipitation': precipitation,
             'Wind': wind },
-          baseMaps = { "OSM Standard": osm };
+          baseMaps = {};
 
     const layerControl = Leaflet.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(this.map);
     console.log('get Weather');
@@ -419,7 +419,7 @@ export default class VatsimMap extends Component {
           this.startInterval()
           this.getFlightData(() => {
             this.getWeather()
-            this.setState({ isLoading: false }, () => this.unfollowBtnRef.current.disabled = true)
+            this.setState({ isLoading: false }, () => this.unfollowBtnRef.current.disabled = true )
           })
           window.dispatchEvent(new Event('resize'))
         }
@@ -471,10 +471,11 @@ export default class VatsimMap extends Component {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <MarkerClusterGroup
-            disableClusteringAtZoom="6"
+            disableClusteringAtZoom="13"
             maxClusterRadius="65"
             ref={this.clusterRef}
             showCoverageOnHover={false}
+            spiderfyOnMaxZoom={false}
           >
             <Markers
               flights={this.state.flights}
