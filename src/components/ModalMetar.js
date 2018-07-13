@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import Metar from 'metar'
-import { DEGREES_KEY } from '../constants/constants';
+import { DEGREES_KEY, CURRENTLY_UNAVAILABLE } from '../constants/constants';
 
 class ModalMetar extends Component {
 	state = {
@@ -22,10 +22,20 @@ class ModalMetar extends Component {
 
   getQNH = () => {
     const keys = Object.keys(this.state.metar),
-          altimeter = keys.find((key, i) => key.includes('altimeterIn')),
-          altimeterType = altimeter.includes('Hpa') ? 'Hpa' : 'Hg'
+          altimeter = keys.find((key, i) => key.includes('altimeterIn'))
 
-    return `${this.state.metar[altimeter]} ${altimeterType}` || 'unavailable'
+    let altimeterType = null
+
+    if (altimeter) {
+      altimeterType = altimeter.includes('Hpa') ? 'Hpa' : 'Hg'
+      return `${this.state.metar[altimeter]} ${altimeterType}` || 'unavailable'
+    } else {
+      return CURRENTLY_UNAVAILABLE
+    }
+  }
+
+  getTemperature = (temperature) => {
+    return temperature ? `${temperature}${String.fromCodePoint(176)}` : CURRENTLY_UNAVAILABLE
   }
 
   getWeather = () => {
@@ -89,6 +99,8 @@ class ModalMetar extends Component {
   getVisibility = (visibility) => {
     if (visibility === 9999) {
       return 9999
+    } else if (!visibility) {
+      return 'Unavailable'
     } else {
       return `${visibility} SM (${this.convertSMtoKM(visibility)})`
     }
@@ -153,7 +165,7 @@ class ModalMetar extends Component {
 						</span>
 					</header>
 					<div className='Modal__sections'>
-						<section className='Modal__section weather'>
+						<section className='Modal__section --weather'>
               {this.state.metar && (
                 <React.Fragment>
                   <div className='Modal__weatherIcon'>
@@ -161,7 +173,7 @@ class ModalMetar extends Component {
                   </div>
                   <div className='Modal__weatherContainer'>
                     <div>Temperature</div>
-                    <div>{this.state.metar['temperature']}&#176;</div>
+                    <div>{this.getTemperature(this.state.metar['temperature'])}</div>
                   </div>
                   <div className='Modal__weatherContainer'>
                     <div>Wind</div>
@@ -176,12 +188,12 @@ class ModalMetar extends Component {
                   <div className='Modal__weatherContainer'>
                     <div>Clouds</div>
                     <div>
-                      <ul>
-                        {this.state.metar['clouds'] && this.state.metar['clouds'].map((metarData, i) =>
+                      <ul className='Modal__weatherContainer__list'>
+                        {this.state.metar['clouds'] ? this.state.metar['clouds'].map((metarData, i) =>
                           metarData['abbreviation'] === 'NCD' ?
                             <li key={i}>{metarData['meaning']}</li> :
                             <li key={i}>{metarData['meaning']} at {metarData['altitude']} FT.</li>
-                        )}
+                        ) : (<li>{CURRENTLY_UNAVAILABLE}</li>)}
                       </ul>
                     </div>
                   </div>

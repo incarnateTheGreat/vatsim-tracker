@@ -119,9 +119,12 @@ const FLIGHT_DATA = ["OKRTR:1300515:Ramon van Voorst EHAM:PILOT::49.78295:12.920
 
 const SERVER_PATH = 'http://localhost:8000';
 
+const CURRENTLY_UNAVAILABLE = 'Currently Unavailable'
+
 module.exports = {
   CLIENT_LABELS,
   CITIES,
+  CURRENTLY_UNAVAILABLE,
   DEGREES_KEY,
   FLIGHT_DATA,
   MAX_BOUNDS,
