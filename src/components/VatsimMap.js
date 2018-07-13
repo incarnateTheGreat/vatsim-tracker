@@ -270,7 +270,6 @@ export default class VatsimMap extends Component {
           baseMaps = {};
 
     const layerControl = Leaflet.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(this.map);
-    console.log('get Weather');
   }
 
   handleEnterKey = (e) => {
