@@ -31365,6 +31365,19 @@
     "carriers": "10"
   },
   {
+    "code" : "ENC",
+    "lat" : "48.692222",
+    "lon" : "6.226111",
+    "name" : "Nancy-Essey Airport",
+    "city" : "Nancy",
+    "country" : "France",
+    "tz" : "Europe/Paris",
+    "phone" : "",
+    "type" : "Airports",
+    "email" : "",
+    "icao" : "LFSN"
+  },
+  {
     "code": "KRT",
     "lat": "15.5917",
     "lon": "32.5533",
@@ -36847,6 +36860,19 @@
     "icao": "EGCC",
     "direct_flights": "129",
     "carriers": "79"
+  },
+  {
+    "code" : "",
+    "lat" : "53.784167",
+    "lon" : "-1.217778",
+    "name" : "Sherburn-in-Elmet Airfield",
+    "city" : "Sherburn",
+    "state" : "England",
+    "country" : "United Kingdom",
+    "tz" : "Europe/London",
+    "type" : "Airports",
+    "email" : "",
+    "icao" : "EGCJ"
   },
   {
     "code": "MAO",
@@ -44389,6 +44415,18 @@
     "carriers": "1"
   },
   {
+    "code" : "",
+    "lat" : "29.346667",
+    "lon" : "47.520556",
+    "name" : "Ali Al Salem Air Base",
+    "city" : "",
+    "country" : "Kuwait",
+    "tz" : "Asia/Kuwait",
+    "phone" : "",
+    "type" : "Airports",
+    "icao" : "OKAS"
+  },
+  {
     "code": "OLA",
     "lat": "63.696",
     "lon": "9.60463",
@@ -49087,6 +49125,19 @@
     "icao": "PAPH",
     "direct_flights": "2",
     "carriers": "2"
+  },
+  {
+    "code" : "SBH",
+    "lat" : "17.904444",
+    "lon" : "-62.843889",
+    "name" : "Saint Barthélemy Airport",
+    "city" : "Saint Barthelemy",
+    "state" : "Pointe-À-Pitre",
+    "country" : "Guadeloupe",
+    "tz" : "America/Guadeloupe",
+    "phone" : "",
+    "type" : "Airports",
+    "icao" : "TFFJ"
   },
   {
     "code": "PTP",
@@ -71127,6 +71178,18 @@
     "icao": "CYEG",
     "direct_flights": "44",
     "carriers": "27"
+  },
+  {
+    "code" : "",
+    "lat" : "47.49",
+    "lon" : "-68.481667",
+    "name" : "Edmundston Airport",
+    "city" : "Edmundston",
+    "state" : "New Brunswick",
+    "country" : "Canada",
+    "type" : "Airports",
+    "email" : "",
+    "icao" : "CYES"
   },
   {
     "code": "YEI",

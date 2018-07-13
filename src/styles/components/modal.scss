@@ -55,29 +55,33 @@
 	&__sections {
 		display: flex;
 		flex-direction: row;
+    height: 50%;
 	}
 
 	&__section {
 		border-color: $dark-grey;
 		border-style: solid;
 		border-width: 0 1px 1px;
-		padding: 0 20px;
+		padding: 20px;
+    overflow: auto;
+    width: 50%;
 
-		&.departures {
+    h2 {
+      margin: 0 0 10px;
+    }
+
+		&.--departures {
 			border-width: 0 1px 1px 0;
-      overflow: auto;
-      width: 50%;
 		}
 
-		&.arrivals {
+		&.--arrivals {
 			border-width: 0 0 1px;
-      overflow: auto;
-      width: 50%;
 		}
 
-    &.atc {
+    &.--atc {
       flex: 1;
       overflow: auto;
+      width: 100%;
     }
 
     &.weather {
@@ -136,4 +140,57 @@
 			color: $primary-blue;
 		}
 	}
+
+  .table {
+    display: table;
+    width: 100%;
+  }
+
+  .table__row {
+    display: table-row;
+  }
+
+  .table__header {
+    font-weight: 600;
+
+    background-color: transparent;
+  }
+
+  .table__row {
+    &:nth-child(even) {
+      background-color: $dark-grey;
+    }
+  }
+
+  .table__data {
+    display: table-cell;
+    padding: 5px;
+    white-space: nowrap;
+  }
+}
+
+@include respond-to(md-max) {
+  .Modal {
+    &__sections {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    &__section {
+      overflow: auto;
+      width: auto;
+
+      &.--departures {
+  			height: 40%;
+  		}
+
+  		&.--arrivals {
+        height: 40%;
+  		}
+
+      &.--atc {
+        height: 20%;
+      }
+    }
+  }
 }

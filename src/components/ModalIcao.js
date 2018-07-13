@@ -16,10 +16,9 @@ class ModalIcao extends Component {
 		this.setState({ isModalOpen: (this.state.isModalOpen ? false : true) })
 	}
 
-	returnData = (e) => {
-    const value = e.target.dataset.icao
+	returnData = (callsign) => {
 		this.closeModal()
-		this.props.returnData(value)
+		this.props.returnData(callsign)
 	}
 
 	componentDidMount = () => {
@@ -58,43 +57,55 @@ class ModalIcao extends Component {
 						</span>
 					</header>
 					<div className='Modal__sections'>
-						<section className='Modal__section departures'>
+						<section className='Modal__section --departures'>
 							<h2>Departures</h2>
-								{this.state.items[0] && (
-									<ul>
-										{this.state.items[0].length > 0 ? this.state.items[0].map((departureData, i) =>
-											<li key={i}>
-												<span
-                          className='Modal__link'
-                          data-icao={departureData.callsign}
-                          onClick={this.returnData.bind(this)}>
-                          {departureData.callsign}: {departureData.name}
-                        </span>
-											</li>
-										) : (<li><span>None</span></li>)}
-									</ul>
-								)}
+                {this.state.items[0] && (
+                  <div className='table'>
+                    <div className='table__header table__row'>
+                      <div className='table__data'>Callsign</div>
+                      <div className='table__data'>Name</div>
+                      <div className='table__data'>Dep. Location</div>
+                    </div>
+                    {this.state.items[1].length > 0 ? this.state.items[0].map((departureData, i) =>
+                      <div
+                        className='table__row Modal__link'
+                        data-icao={departureData.callsign}
+                        onClick={() => this.returnData(departureData.callsign)}
+                        key={i}>
+                        <span className='table__data'>{departureData.callsign}</span>
+                        <span className='table__data'>{departureData.name}</span>
+                        <span className='table__data'>{departureData.planned_depairport}</span>
+                      </div>
+                    ) : (<div><span>None</span></div>)}
+                  </div>
+                )}
 						</section>
-						<section className='Modal__section arrivals'>
+						<section className='Modal__section --arrivals'>
 							<h2>Arrivals</h2>
 								{this.state.items[1] && (
-									<ul>
+									<div className='table'>
+                    <div className='table__header table__row'>
+                      <div className='table__data'>Callsign</div>
+                      <div className='table__data'>Name</div>
+                      <div className='table__data'>Dep. Location</div>
+                    </div>
 										{this.state.items[1].length > 0 ? this.state.items[1].map((arrivalData, i) =>
-											<li key={i}>
-												<span
-                          className='Modal__link'
-                          data-icao={arrivalData.callsign}
-                          onClick={this.returnData.bind(this)}>
-                          {arrivalData.callsign}: {arrivalData.name}
-                        </span>
-											</li>
-										) : (<li><span>None</span></li>)}
-									</ul>
+											<div
+                        className='table__row Modal__link'
+                        data-icao={arrivalData.callsign}
+                        onClick={() => this.returnData(arrivalData.callsign)}
+                        key={i}>
+                        <span className='table__data'>{arrivalData.callsign}</span>
+                        <span className='table__data'>{arrivalData.name}</span>
+                        <span className='table__data'>{arrivalData.planned_depairport}</span>
+											</div>
+										) : (<div><span>None</span></div>)}
+									</div>
 								)}
 						</section>
 					</div>
           <div className='Modal__sections'>
-            <section className='Modal__section atc'>
+            <section className='Modal__section --atc'>
 							<h2>Controllers</h2>
 								{this.state.items[2] && (
 									<ul className='icao__list'>
