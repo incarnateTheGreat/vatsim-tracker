@@ -5,6 +5,7 @@ import { DEGREES_KEY, CURRENTLY_UNAVAILABLE } from '../constants/constants';
 
 class ModalMetar extends Component {
 	state = {
+		airport_name: null,
     icao: null,
 		isModalOpen: false,
     metar: null
@@ -131,6 +132,7 @@ class ModalMetar extends Component {
 	static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.metar) {
       return {
+				airport_name: nextProps.airport_name,
         icao: nextProps.icao.toUpperCase(),
         metar: Metar(nextProps.metar)
   		}
@@ -158,7 +160,7 @@ class ModalMetar extends Component {
 			<div id='Modal_Metar' className={modalClasses}>
 				<div className='Modal__container --weather'>
 					<header>
-						<h1>{this.state.icao}</h1>
+						<h1>{this.state.icao} ({this.state.airport_name})</h1>
 						<span
 							onClick={this.closeModal.bind(this)}
 							className='close'>X

@@ -8,10 +8,15 @@ const express = require('express'),
 			graphqlHTTP = require('express-graphql'),
 			schema = require('./schema/schema'),
       mongoose = require('mongoose'),
+			SleepTime = require('sleeptime'),
 			CONSTANTS = require('../constants/constants'),
 			{ CLIENT_LABELS } = CONSTANTS
 
 require('dotenv').config()
+
+const sleepy = new SleepTime((diff,date) => {
+	console.log("System slept for" + diff + " seconds" + " and woke up at " + date)
+}, 5000)
 
 function checkFlightPosition(clientInterface) {
 	return ((isNaN(clientInterface.longitude) || clientInterface.longitude === '') ||
@@ -134,7 +139,7 @@ app.use('/api/metar/:metar', (req, res) => {
 // Use GraphQL to retrieve Coordinates data for selected Destination.
 app.use('/graphql', graphqlHTTP((req, res, graphQLParams) => {
   const icao = req.url.replace(/\//g, ''),
-        query = `{icao(icao:"${icao}"){lat,lon}}`
+        query = `{icao(icao:"${req.query.icao}"){${req.query.params}}}`
 
   // Assemble query string and put it into the graphQLParams object for insertion
   // in to GraphQL Schema, which will then contact MongoDB via Mongoose and then

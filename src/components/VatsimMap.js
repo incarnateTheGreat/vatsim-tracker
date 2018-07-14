@@ -16,6 +16,7 @@ import './leaflet-openweathermap'
 
 export default class VatsimMap extends Component {
   state = {
+    airport_name: '',
     callsign: '',
     controllers: [],
     destination_data: null,
@@ -313,28 +314,36 @@ export default class VatsimMap extends Component {
   }
 
   openIcaoModal = (selected_icao) => {
-    if (this.state.icaos.includes(selected_icao)) {
-      const icao_departures = this.state.flights.filter(flight => selected_icao === flight.planned_depairport),
-            icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport),
-            icao_controllers = this.state.controllers.filter(controller => controller.callsign.indexOf(selected_icao) > -1)
+    this.getAirportName(selected_icao).then(data => {
+      const airport_name = data.data.icao.name
 
-      this.setState({ icao_departures, icao_destinations, icao_controllers, selected_icao },
-        () => { this.modalIcaoRef.current.toggleModal() })
-    } else {
-      this.errorToastMsg('This ICAO is not listed.')
-    }
+      if (this.state.icaos.includes(selected_icao)) {
+        const icao_departures = this.state.flights.filter(flight => selected_icao === flight.planned_depairport),
+              icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport),
+              icao_controllers = this.state.controllers.filter(controller => controller.callsign.indexOf(selected_icao) > -1)
+
+        this.setState({ icao_departures, icao_destinations, icao_controllers, selected_icao, airport_name },
+          () => { this.modalIcaoRef.current.toggleModal() })
+      } else {
+        this.errorToastMsg('This ICAO is not listed.')
+      }
+    })
   }
 
   openMetarModal = (selected_metar) => {
-    this.getMetarData(selected_metar).then(metar => {
-      console.log(metar);
-      if (metar) {
-        this.setState({ metar, selected_metar_icao: selected_metar }, () => {
-          this.modalMetarRef.current.toggleModal()
-        })
-      } else {
-        this.errorToastMsg('There is no METAR for this ICAO.')
-      }
+    this.getAirportName(selected_metar).then(data => {
+      const airport_name = data.data.icao.name
+
+      this.getMetarData(selected_metar).then(metar => {
+        console.log(metar);
+        if (metar) {
+          this.setState({ metar, selected_metar_icao: selected_metar, airport_name }, () => {
+            this.modalMetarRef.current.toggleModal()
+          })
+        } else {
+          this.errorToastMsg('There is no METAR for this ICAO.')
+        }
+      })
     })
   }
 
@@ -393,15 +402,30 @@ export default class VatsimMap extends Component {
     if (destination_icao === '' || !destination_icao) {
       return null
     } else {
-      return await axios(`${SERVER_PATH}/graphql/${destination_icao}`)
-        .then(res => res.data.data.icao)
-        .catch(err => this.errorToastMsg('There was a problem retrieving the Destination Airport Data.'))
+      return await axios(`${SERVER_PATH}/graphql`, {
+        params: {
+          icao: destination_icao,
+          params: 'lat,lon'
+        }
+      })
+      .then(res => res.data.data.icao)
+      .catch(err => this.errorToastMsg('There was a problem retrieving the Destination Airport Data.'))
     }
   }
 
   async getMetarData(metar) {
     return await axios(`${SERVER_PATH}/api/metar/${metar}`)
       .then(res => res.data)
+  }
+
+  async getAirportName(icao) {
+    return await axios(`${SERVER_PATH}/graphql`, {
+      params: {
+        icao: icao,
+        params: 'name'
+      }
+    })
+    .then(res => res.data)
   }
 
   // React Lifecycle Hooks
@@ -444,6 +468,7 @@ export default class VatsimMap extends Component {
         </div>
         <ToastContainer />
         <ModalIcao
+          airport_name={this.state.airport_name}
           icao={this.state.selected_icao}
           items={[this.state.icao_departures, this.state.icao_destinations, this.state.icao_controllers]}
           returnData={callsign => this.updateCallsign(callsign)}
@@ -451,6 +476,7 @@ export default class VatsimMap extends Component {
           toggleModal={this.state.isModalIcaoOpen}
         />
         <ModalMetar
+          airport_name={this.state.airport_name}
           icao={this.state.selected_metar_icao}
           metar={this.state.metar}
           ref={this.modalMetarRef}

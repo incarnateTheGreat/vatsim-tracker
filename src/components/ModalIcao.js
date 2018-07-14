@@ -3,6 +3,7 @@ import classNames from 'classnames'
 
 class ModalIcao extends Component {
 	state = {
+		airport_name: null,
 		isModalOpen: false,
 		items: null,
 		icao: null
@@ -35,6 +36,7 @@ class ModalIcao extends Component {
 
 	static getDerivedStateFromProps(nextProps, prevState) {
 		return {
+			airport_name: nextProps.airport_name,
 			items: nextProps.items,
 			icao: nextProps.icao
 		}
@@ -50,7 +52,7 @@ class ModalIcao extends Component {
 			<div id='Modal_Icao' className={modalClasses}>
 				<div className='Modal__container'>
 					<header>
-						<h1>{this.state.icao}</h1>
+						<h1>{this.state.icao} ({this.state.airport_name})</h1>
 						<span
 							onClick={this.closeModal.bind(this)}
 							className='close'>X
@@ -64,7 +66,7 @@ class ModalIcao extends Component {
                     <div className='table__header table__row'>
                       <div className='table__data'>Callsign</div>
                       <div className='table__data'>Name</div>
-                      <div className='table__data'>Dep. Location</div>
+                      <div className='table__data'>Arr. Location</div>
                     </div>
                     {this.state.items[1].length > 0 ? this.state.items[0].map((departureData, i) =>
                       <div
@@ -74,7 +76,7 @@ class ModalIcao extends Component {
                         key={i}>
                         <span className='table__data'>{departureData.callsign}</span>
                         <span className='table__data'>{departureData.name}</span>
-                        <span className='table__data'>{departureData.planned_depairport}</span>
+                        <span className='table__data'>{departureData.planned_destairport}</span>
                       </div>
                     ) : (<div><span>None</span></div>)}
                   </div>
