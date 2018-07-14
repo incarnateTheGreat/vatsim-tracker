@@ -1,12 +1,3 @@
-/// A helper Mixin that allows for quick responsive media
-/// queries, using canned code with variables.
-///
-/// @group GT
-/// @author Garry Tsaconas
-///
-/// @param {Media} $media - CSS that is passed through.
-/// @output Based on the criteria, the resulting output.
-
 @mixin respond-to($media) {
 	// Max widths
 	@if $media == xs-max {
@@ -24,4 +15,26 @@
       @content;
     }
   }
+}
+
+@mixin respond-to-height($media) {
+  // Max heights
+  @media only screen and (max-height: $screen-md - 1) {
+    @content;
+  }
+  // @if $media == xs-max {
+  //   @media only screen and (max-height: $screen-xs - 1) {
+  //     @content;
+  //   }
+  // }
+  // @if $media == sm-max {
+  //   @media only screen and (max-height: $screen-sm-max) {
+  //     @content;
+  //   }
+  // }
+  // @if $media == md-max {
+  //   @media only screen and (max-height: $screen-md-max) {
+  //     @content;
+  //   }
+  // }
 }

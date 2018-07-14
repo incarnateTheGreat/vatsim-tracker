@@ -156,7 +156,7 @@ class ModalMetar extends Component {
 
 		return (
 			<div id='Modal_Metar' className={modalClasses}>
-				<div className='Modal__container'>
+				<div className='Modal__container --weather'>
 					<header>
 						<h1>{this.state.icao}</h1>
 						<span
@@ -164,51 +164,53 @@ class ModalMetar extends Component {
 							className='close'>X
 						</span>
 					</header>
-					<div className='Modal__sections'>
+					<div className='Modal__sections --weather'>
 						<section className='Modal__section --weather'>
               {this.state.metar && (
                 <React.Fragment>
                   <div className='Modal__weatherIcon'>
                     <i className={weatherClasses}></i>
                   </div>
-                  <div className='Modal__weatherContainer'>
-                    <div>Temperature</div>
-                    <div>{this.getTemperature(this.state.metar['temperature'])}</div>
-                  </div>
-                  <div className='Modal__weatherContainer'>
-                    <div>Wind</div>
-                    <div>
-                      From the {this.getWindDirection(this.state.metar['wind']['direction'])} at {this.state.metar['wind']['speed']} {this.state.metar['wind']['unit']}
+                  <div className='Modal__weatherData'>
+                    <div className='Modal__weatherContainer'>
+                      <div>Temperature</div>
+                      <div>{this.getTemperature(this.state.metar['temperature'])}</div>
                     </div>
-                  </div>
-                  <div className='Modal__weatherContainer'>
-                    <div>Visibility</div>
-                    <div>{this.getVisibility(this.state.metar['visibility'])}</div>
-                  </div>
-                  <div className='Modal__weatherContainer'>
-                    <div>Clouds</div>
-                    <div>
-                      <ul className='Modal__weatherContainer__list'>
-                        {this.state.metar['clouds'] ? this.state.metar['clouds'].map((metarData, i) =>
-                          metarData['abbreviation'] === 'NCD' ?
-                            <li key={i}>{metarData['meaning']}</li> :
-                            <li key={i}>{metarData['meaning']} at {metarData['altitude']} FT.</li>
-                        ) : (<li>{CURRENTLY_UNAVAILABLE}</li>)}
-                      </ul>
+                    <div className='Modal__weatherContainer'>
+                      <div>Wind</div>
+                      <div>
+                        From the {this.getWindDirection(this.state.metar['wind']['direction'])} at {this.state.metar['wind']['speed']} {this.state.metar['wind']['unit']}
+                      </div>
                     </div>
-                  </div>
-                  <div className='Modal__weatherContainer'>
-                    <div>QNH</div>
-                    <div>{this.getQNH()}</div>
-                  </div>
-                  <div className='Modal__weatherContainer'>
-                    <div>Weather</div>
-                    <div>
-                      <ul className='Modal__weatherContainer__list'>
-                        {this.state.metar['weather'] ? this.state.metar['weather'].map((weatherData, i) =>
-                          <li key={i}>{weatherData['meaning']}</li>
-                        ) : (<span>Nothing to report.</span>)}
-                      </ul>
+                    <div className='Modal__weatherContainer'>
+                      <div>Visibility</div>
+                      <div>{this.getVisibility(this.state.metar['visibility'])}</div>
+                    </div>
+                    <div className='Modal__weatherContainer'>
+                      <div>Clouds</div>
+                      <div>
+                        <ul className='Modal__weatherContainer__list'>
+                          {this.state.metar['clouds'] ? this.state.metar['clouds'].map((metarData, i) =>
+                            metarData['abbreviation'] === 'NCD' ?
+                              <li key={i}>{metarData['meaning']}</li> :
+                              <li key={i}>{metarData['meaning']} at {metarData['altitude']} FT.</li>
+                          ) : (<li>{CURRENTLY_UNAVAILABLE}</li>)}
+                        </ul>
+                      </div>
+                    </div>
+                    <div className='Modal__weatherContainer'>
+                      <div>QNH</div>
+                      <div>{this.getQNH()}</div>
+                    </div>
+                    <div className='Modal__weatherContainer'>
+                      <div>Weather</div>
+                      <div>
+                        <ul className='Modal__weatherContainer__list'>
+                          {this.state.metar['weather'] ? this.state.metar['weather'].map((weatherData, i) =>
+                            <li key={i}>{weatherData['meaning']}</li>
+                          ) : (<span>Nothing to report.</span>)}
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </React.Fragment>

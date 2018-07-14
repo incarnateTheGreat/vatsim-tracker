@@ -36,6 +36,7 @@
 			.close {
 				cursor: pointer;
 				font-size: $font-size-base;
+        font-weight: 600;
 				height: 20px;
 				margin: 10px 0 0;
 
@@ -50,12 +51,20 @@
 		flex-direction: column;
 		height: 85%;
 		width: 75%;
+
+    &.--weather {
+      height: 55%;
+    }
 	}
 
 	&__sections {
 		display: flex;
 		flex-direction: row;
     height: 50%;
+
+    &.--weather {
+      height: 100%;
+    }
 	}
 
 	&__section {
@@ -87,6 +96,7 @@
     &.--weather {
       display: flex;
       flex-direction: column;
+      width: 100%;
     }
 
     .icao__list {
@@ -173,6 +183,10 @@
     &__sections {
       flex-direction: column;
       width: 100%;
+
+      &.--weather {
+        height: 100%;
+      }
     }
 
     &__section {
@@ -189,6 +203,47 @@
 
       &.--atc {
         height: 20%;
+      }
+
+      &.--weather {
+        height: 100%;
+        width: auto;
+      }
+    }
+  }
+}
+
+@include respond-to-height(md-max) {
+  .Modal {
+    .wi {
+      font-size: 84px;
+    }
+
+    &__section {
+      &.--weather {
+        flex-direction: row;
+      }
+    }
+
+    &__weatherIcon {
+      padding: 0 40px 0 0;
+    }
+
+    &__weatherData {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    &__weatherContainer {
+      padding: 10px;
+
+      &:nth-child(odd) {
+        background-color: $dark-grey;
+      }
+
+      div {
+        text-align: right;
+        width: auto;
       }
     }
   }
