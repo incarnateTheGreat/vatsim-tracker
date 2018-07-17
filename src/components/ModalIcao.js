@@ -14,10 +14,10 @@ class ModalIcao extends Component {
 	}
 
 	toggleModal = () => {
-		this.setState({ isModalOpen: (this.state.isModalOpen ? false : true) })
+		this.setState({ isModalOpen: this.state.isModalOpen ? false : true })
 	}
 
-	returnData = (callsign) => {
+	returnData = callsign => {
 		this.closeModal()
 		this.props.returnData(callsign)
 	}
@@ -33,6 +33,14 @@ class ModalIcao extends Component {
 			if (e.key === 'Escape') this.closeModal()
 		}, false);
 	}
+
+  componentDidUpdate = () => {
+    const tables = document.getElementsByClassName("Modal__section")
+
+    if (tables.length > 0) {
+      for (let i = 0; i < tables.length; i++) tables[i].scrollTop = 0
+    }
+  }
 
 	static getDerivedStateFromProps(nextProps, prevState) {
 		return {

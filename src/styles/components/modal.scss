@@ -19,7 +19,6 @@
     list-style-type: none;
     margin: 0;
     padding: 0;
-    text-transform: capitalize;
   }
 
 	&.--open {
@@ -138,7 +137,9 @@
     }
 
     &__list {
-      text-transform: none;
+      li {
+        text-transform: capitalize;
+      }
     }
   }
 

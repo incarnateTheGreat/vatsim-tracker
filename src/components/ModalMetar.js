@@ -15,7 +15,7 @@ class ModalMetar extends Component {
 		this.setState({ isModalOpen: false })
 	}
 
-  convertSMtoKM = (sm) => {
+  convertSMtoKM = sm => {
     const conversion = Math.round(1.609344 * sm)
 
     return `${conversion} KM`
@@ -56,7 +56,7 @@ class ModalMetar extends Component {
     }
   }
 
-  getWeatherIcon = (icon) => {
+  getWeatherIcon = icon => {
     switch (icon) {
 			case 'clear-night':
 				return 'wi-night-clear';
@@ -97,7 +97,7 @@ class ModalMetar extends Component {
     }
   }
 
-  getVisibility = (visibility) => {
+  getVisibility = visibility => {
     if (visibility === 9999) {
       return 9999
     } else if (!visibility) {
@@ -111,7 +111,7 @@ class ModalMetar extends Component {
 		this.setState({ isModalOpen: (this.state.isModalOpen ? false : true) })
 	}
 
-	returnData = (e) => {
+	returnData = e => {
 		const value = e.target.innerHTML || e.target.innerText
 		this.closeModal()
 		this.props.returnData(value)

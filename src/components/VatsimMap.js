@@ -314,9 +314,7 @@ export default class VatsimMap extends Component {
   }
 
   openIcaoModal = (selected_icao) => {
-    this.getAirportName(selected_icao).then(data => {
-      const airport_name = data.data.icao.name
-
+    this.getAirportName(selected_icao).then(airport_name => {
       if (this.state.icaos.includes(selected_icao)) {
         const icao_departures = this.state.flights.filter(flight => selected_icao === flight.planned_depairport),
               icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport),
@@ -331,9 +329,7 @@ export default class VatsimMap extends Component {
   }
 
   openMetarModal = (selected_metar) => {
-    this.getAirportName(selected_metar).then(data => {
-      const airport_name = data.data.icao.name
-
+    this.getAirportName(selected_metar).then(airport_name => {
       this.getMetarData(selected_metar).then(metar => {
         console.log(metar);
         if (metar) {
@@ -425,7 +421,13 @@ export default class VatsimMap extends Component {
         params: 'name'
       }
     })
-    .then(res => res.data)
+    .then(res => {
+      try {
+        return res.data.data.icao.name
+      } catch(err) {
+        return null
+      }
+    })
   }
 
   // React Lifecycle Hooks
