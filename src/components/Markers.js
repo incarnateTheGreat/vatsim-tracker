@@ -49,7 +49,7 @@ export class Markers extends Component {
 								coords = [position.coordinates[1], position.coordinates[0]]
 
 	      let icon = null,
-						plan = false;
+						plan = false
 
 	      if (isController) {
 	        icon = new Leaflet.Icon({
@@ -73,8 +73,9 @@ export class Markers extends Component {
 	        })
 	      }
 
+        // If the user has submitted a flight plan, display the Departure and Destination points.
 	      if (planned_depairport && planned_destairport) {
-	        plan = `${planned_depairport} ⟶ ${planned_destairport}`;
+	        plan = `${planned_depairport} ⟶ ${planned_destairport}`
 	      }
 
 	      return (

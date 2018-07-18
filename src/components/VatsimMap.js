@@ -3,6 +3,7 @@ import { ScaleLoader } from 'react-spinners'
 import axios from 'axios'
 import { Map, TileLayer } from 'react-leaflet'
 import Leaflet from 'leaflet'
+import setText from 'leaflet-textpath'
 import MarkerClusterGroup from 'react-leaflet-markercluster'
 import Control from 'react-leaflet-control'
 import { ToastContainer, toast, Flip } from 'react-toastify'
@@ -170,18 +171,18 @@ export default class VatsimMap extends Component {
     }
   }
 
-  drawPolylines = (coordinates, data) => {
-    const latlngs = [
-      [coordinates[1], coordinates[0]],
-      [parseFloat(data.lat), parseFloat(data.lng)]],
-      polyline = new Leaflet.polyline(
-        latlngs,
-        { color: 'red' }
-      ).addTo(this.map),
-      circle = new Leaflet.circle(
-        [parseFloat(data.lat), parseFloat(data.lng)],
-        { color: 'red' }
-      ).addTo(this.map)
+  drawPolylines = (coordinates, data, icao, heading) => {
+    const latlngs = [[coordinates[1], coordinates[0]],[parseFloat(data.lat), parseFloat(data.lng)]],
+          polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map),
+          circle = new Leaflet.circle([parseFloat(data.lat), parseFloat(data.lng)],{ color: 'red' }).addTo(this.map)
+
+    // Add 'Distance to Go' text to the Polyline in Kilometers.
+    polyline.setText(`${this.getDistanceToDestination(latlngs)} KM`, {
+      attributes: {'font-weight': 'bold','font-size': '24'},
+      center: true,
+      offset: 25,
+      orientation: heading && (heading >= 180 && heading <= 360) ? 'flip' : 0
+    })
 
     setTimeout(() => {
       this.map.fitBounds(polyline.getBounds(), { padding: [50, 50] })
@@ -207,7 +208,7 @@ export default class VatsimMap extends Component {
       if (destination_data) {
         this.setState({ selected_flight: flight, destination_data }, () => {
           if(!this.isPlaneOnGround(flight.groundspeed)) {
-            this.drawPolylines(flight.coordinates, destination_data)
+            this.drawPolylines(flight.coordinates, destination_data, flight.planned_destairport, flight.heading)
           }
 
           this.applySelectedFlightData(flight)
@@ -230,6 +231,32 @@ export default class VatsimMap extends Component {
         zoom: 13
       })
     })
+  }
+
+  getDeg2rad = (deg) => {
+    return deg * (Math.PI / 180)
+  }
+
+  getDistanceToDestination = (latlngs) => {
+    try {
+      const flight_coords_lat = latlngs[0][0],
+            flight_coords_lng = latlngs[0][1],
+            airport_coords_lat = latlngs[1][0],
+            airport_coords_lng = latlngs[1][1]
+
+      const R = 6371, // Radius of the earth in km
+            dLat = this.getDeg2rad(airport_coords_lat - flight_coords_lat),
+            dLon = this.getDeg2rad(airport_coords_lng - flight_coords_lng),
+            a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(this.getDeg2rad(flight_coords_lat)) * Math.cos(this.getDeg2rad(airport_coords_lat)) *
+                Math.sin(dLon/2) * Math.sin(dLon/2),
+            c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)),
+            d = R * c // Distance in km
+
+      return Math.round(d)
+    } catch (err) {
+      return null
+    }
   }
 
   getFlightData = (callback) => {
