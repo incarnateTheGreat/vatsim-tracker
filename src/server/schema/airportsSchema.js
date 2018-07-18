@@ -4,7 +4,7 @@ const mongoose = require('mongoose'),
         icao: String,
         name: String,
         lat: String,
-        lon: String,
+        lng: String,
         country: String,
         done: Boolean
       })

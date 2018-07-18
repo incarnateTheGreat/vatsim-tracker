@@ -14,7 +14,7 @@ const IcaoType = new GraphQLObjectType({
 		icao: { type: GraphQLString },
 		name: { type: GraphQLString },
 		lat: { type: GraphQLString },
-		lon: { type: GraphQLString },
+		lng: { type: GraphQLString },
 		country: { type: GraphQLString }
 	})
 })

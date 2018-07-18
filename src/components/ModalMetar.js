@@ -21,6 +21,11 @@ class ModalMetar extends Component {
     return `${conversion} KM`
   }
 
+  gotoAirport = () => {
+    this.closeModal()
+    return this.props.returnICAO(this.state.icao)
+  }
+
   getQNH = () => {
     const keys = Object.keys(this.state.metar),
           altimeter = keys.find((key, i) => key.includes('altimeterIn'))
@@ -160,7 +165,13 @@ class ModalMetar extends Component {
 			<div id='Modal_Metar' className={modalClasses}>
 				<div className='Modal__container --weather'>
 					<header>
-						<h1>{this.state.icao} ({this.state.airport_name})</h1>
+            <div>
+              <h1>{this.state.icao} ({this.state.airport_name})</h1>
+              <h5
+                className='Modal__gotoAirport'
+                onClick={() => this.gotoAirport()}>Go to Airport
+              </h5>
+            </div>
 						<span
 							onClick={this.closeModal.bind(this)}
 							className='close'>X

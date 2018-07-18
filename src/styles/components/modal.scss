@@ -21,6 +21,14 @@
     padding: 0;
   }
 
+  h1 {
+    margin-bottom: 0;
+  }
+
+  h5 {
+    margin-top: 5px;
+  }
+
 	&.--open {
 		display: flex;
 	}
@@ -55,6 +63,10 @@
       height: 55%;
     }
 	}
+
+  &__gotoAirport {
+    cursor: pointer;
+  }
 
 	&__sections {
 		display: flex;

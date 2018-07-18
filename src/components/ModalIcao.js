@@ -13,6 +13,11 @@ class ModalIcao extends Component {
 		this.setState({ isModalOpen: false })
 	}
 
+  gotoAirport = () => {
+    this.closeModal()
+    return this.props.returnICAO(this.state.icao)
+  }
+
 	toggleModal = () => {
 		this.setState({ isModalOpen: this.state.isModalOpen ? false : true })
 	}
@@ -60,7 +65,13 @@ class ModalIcao extends Component {
 			<div id='Modal_Icao' className={modalClasses}>
 				<div className='Modal__container'>
 					<header>
-						<h1>{this.state.icao} ({this.state.airport_name})</h1>
+            <div>
+              <h1>{this.state.icao} ({this.state.airport_name})</h1>
+              <h5
+                className='Modal__gotoAirport'
+                onClick={() => this.gotoAirport()}>Go to Airport
+              </h5>
+            </div>
 						<span
 							onClick={this.closeModal.bind(this)}
 							className='close'>X

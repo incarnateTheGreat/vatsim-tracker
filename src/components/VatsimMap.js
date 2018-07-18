@@ -173,13 +173,13 @@ export default class VatsimMap extends Component {
   drawPolylines = (coordinates, data) => {
     const latlngs = [
       [coordinates[1], coordinates[0]],
-      [parseFloat(data.lat), parseFloat(data.lon)]],
+      [parseFloat(data.lat), parseFloat(data.lng)]],
       polyline = new Leaflet.polyline(
         latlngs,
         { color: 'red' }
       ).addTo(this.map),
       circle = new Leaflet.circle(
-        [parseFloat(data.lat), parseFloat(data.lon)],
+        [parseFloat(data.lat), parseFloat(data.lng)],
         { color: 'red' }
       ).addTo(this.map)
 
@@ -219,6 +219,16 @@ export default class VatsimMap extends Component {
       }
     }).catch(err => {
       this.errorToastMsg('There is no destination data for this flight.')
+    })
+  }
+
+  getAirportPosition = (icao) => {
+    this.getAirportData(icao).then(icao_data => {
+      this.setState({
+        lat: parseFloat(icao_data.lat),
+        lng: parseFloat(icao_data.lng),
+        zoom: 13
+      })
     })
   }
 
@@ -401,10 +411,16 @@ export default class VatsimMap extends Component {
       return await axios(`${SERVER_PATH}/graphql`, {
         params: {
           icao: destination_icao,
-          params: 'lat,lon'
+          params: 'lat,lng'
         }
       })
-      .then(res => res.data.data.icao)
+      .then(res => {
+        try {
+          return res.data.data.icao
+        } catch(err) {
+          return null
+        }
+      })
       .catch(err => this.errorToastMsg('There was a problem retrieving the Destination Airport Data.'))
     }
   }
@@ -452,12 +468,12 @@ export default class VatsimMap extends Component {
     }, 0)
   }
 
-  myWindroseMarker = (data) => {
-  	const content = '<canvas id="id_' + data.id + '" width="50" height="50"></canvas>',
-          icon = Leaflet.divIcon({html: content, iconSize: [50,50], className: 'owm-div-windrose'});
-
-  	return Leaflet.marker([data.coord.Lat, data.coord.Lon], {icon: icon, clickable: false});
-  }
+  // myWindroseMarker = (data) => {
+  // 	const content = '<canvas id="id_' + data.id + '" width="50" height="50"></canvas>',
+  //         icon = Leaflet.divIcon({html: content, iconSize: [50,50], className: 'owm-div-windrose'});
+  //
+  // 	return Leaflet.marker([data.coord.Lat, data.coord.Lon], {icon: icon, clickable: false});
+  // }
 
   render = () => {
     return (
@@ -475,6 +491,7 @@ export default class VatsimMap extends Component {
           items={[this.state.icao_departures, this.state.icao_destinations, this.state.icao_controllers]}
           returnData={callsign => this.updateCallsign(callsign)}
           ref={this.modalIcaoRef}
+          returnICAO={e => this.getAirportPosition(e)}
           toggleModal={this.state.isModalIcaoOpen}
         />
         <ModalMetar
@@ -482,6 +499,7 @@ export default class VatsimMap extends Component {
           icao={this.state.selected_metar_icao}
           metar={this.state.metar}
           ref={this.modalMetarRef}
+          returnICAO={e => this.getAirportPosition(e)}
           toggleModal={this.state.isModalMetarOpen}
         />
         <Map
