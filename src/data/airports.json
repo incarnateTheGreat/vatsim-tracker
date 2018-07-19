@@ -15440,6 +15440,19 @@
     "carriers": "2"
   },
   {
+    "code": "DSS",
+    "lat": "14.671111",
+    "lng": "-17.066944",
+    "name": "Blaise Diagne International Airport",
+    "city": "Diass Dakar",
+    "state": "",
+    "country": "Senegal",
+    "tz": "Africa\/Senegal",
+    "type": "Airports",
+    "runway_length": null,
+    "icao": "GOBD"
+  },
+  {
     "code": "DTM",
     "lat": "51.5123",
     "lng": "7.60451",
@@ -34327,7 +34340,7 @@
     "url": "",
     "runway_length": "11506",
     "elev": "113",
-    "icao": "SPIM",
+    "icao": "SPJC",
     "direct_flights": "39",
     "carriers": "32"
   },

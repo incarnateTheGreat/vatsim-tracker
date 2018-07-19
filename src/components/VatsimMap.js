@@ -180,8 +180,8 @@ export default class VatsimMap extends Component {
     polyline.setText(`${this.getDistanceToDestination(latlngs)} KM`, {
       attributes: {'font-weight': 'bold','font-size': '24'},
       center: true,
-      offset: heading && (heading >= 180 && heading <= 360) ? 35 : -15,
-      orientation: heading && (heading >= 180 && heading <= 360) ? 'flip' : 0
+      offset: heading && (heading >= 0 && heading <= 180) ? -15 : 35,
+      orientation: heading && (heading >= 0 && heading <= 180) ? 0 : 'flip'
     })
 
     setTimeout(() => {
