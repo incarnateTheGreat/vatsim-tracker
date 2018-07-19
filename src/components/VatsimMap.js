@@ -180,7 +180,7 @@ export default class VatsimMap extends Component {
     polyline.setText(`${this.getDistanceToDestination(latlngs)} KM`, {
       attributes: {'font-weight': 'bold','font-size': '24'},
       center: true,
-      offset: 25,
+      offset: heading && (heading >= 180 && heading <= 360) ? 35 : -15,
       orientation: heading && (heading >= 180 && heading <= 360) ? 'flip' : 0
     })
 
@@ -201,8 +201,6 @@ export default class VatsimMap extends Component {
   findFlight = (flight, isCity) => {
     this.clearPolylines()
     this.clearPopups()
-
-    console.log(flight)
 
     this.getAirportData(flight.planned_destairport).then(destination_data => {
       if (destination_data) {
@@ -286,8 +284,12 @@ export default class VatsimMap extends Component {
       })
     })
     .catch(err => {
-      console.log(err)
-      this.setState({ isLoading: false }, () => {
+      this.setState({
+        controllers: [],
+        flights: [],
+        icaos: [],
+        isLoading: false,
+      }, () => {
         this.serverToastMsg('No connection.', false)
       })
     })
@@ -368,7 +370,6 @@ export default class VatsimMap extends Component {
   openMetarModal = (selected_metar) => {
     this.getAirportName(selected_metar).then(airport_name => {
       this.getMetarData(selected_metar).then(metar => {
-        console.log(metar);
         if (metar) {
           this.setState({ metar, selected_metar_icao: selected_metar, airport_name }, () => {
             this.modalMetarRef.current.toggleModal()
