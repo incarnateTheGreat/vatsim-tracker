@@ -106,14 +106,6 @@ export default class VatsimMap extends Component {
 
   // Handlers & Functionality
 
-  addAirport = (name, lat, lng) => {
-    const { flights } = this.state
-
-    flights.push({ name: name, coordinates: [lat, lng] })
-
-    this.setState({ flights })
-  }
-
   applySelectedFlightData = (flight) => {
     this.setState({
       callsign: flight.callsign,
@@ -202,12 +194,16 @@ export default class VatsimMap extends Component {
     this.clearPolylines()
     this.clearPopups()
 
+    console.log(flight);
+
     this.getAirportData(flight.planned_destairport).then(destination_data => {
       if (destination_data) {
         this.setState({ selected_flight: flight, destination_data }, () => {
           if(!this.isPlaneOnGround(flight.groundspeed)) {
             this.drawPolylines(flight.coordinates, destination_data, flight.planned_destairport, flight.heading)
           }
+
+          this.getDecodedFlightRoute(flight.planned_depairport, flight.planned_route ,flight.planned_destairport)
 
           this.applySelectedFlightData(flight)
         })
@@ -471,6 +467,19 @@ export default class VatsimMap extends Component {
       } catch(err) {
         return null
       }
+    })
+  }
+
+  async getDecodedFlightRoute(origin, route, destination) {
+    return await axios(`${SERVER_PATH}/api/decodeRoute`, {
+      params: {
+        origin,
+        route,
+        destination
+      }
+    })
+    .then(res => {
+      console.log(res.data);
     })
   }
 

@@ -1,5 +1,7 @@
 const express = require('express'),
 			app = express(),
+      https = require('https'),
+      Client = require('node-rest-client').Client,
       path = require('path'),
 			cors = require('cors'),
 			request = require('request'),
@@ -132,6 +134,41 @@ app.use('/api/metar/:metar', (req, res) => {
       res.send(null)
     } else {
       res.send(body)
+    }
+  })
+})
+
+app.use('/api/decodeRoute', (req, res) => {
+  const { origin,
+          route,
+          destination } = req.query
+
+  const username = 'incarnate',
+        apiKey = 'a9f4144243d8130553b2beece195f892bda92b43',
+        fxmlUrl = 'http://flightxml.flightaware.com/json/FlightXML3/',
+        client_options = {
+          user: username,
+          password: apiKey
+        },
+        client = new Client(client_options)
+
+  client.registerMethod('decodeRoute', fxmlUrl + 'DecodeRoute', 'GET');
+
+  const args = {
+  	parameters: {
+  		origin,
+      route,
+      destination
+  	}
+  };
+
+  client.methods.decodeRoute(args, (data, response) => {
+    const result = data.DecodeRouteResult.data
+
+    if (!result || result.length === 0) {
+      res.send(null)
+    } else {
+      res.send(result)
     }
   })
 })
