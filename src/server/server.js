@@ -163,12 +163,12 @@ app.use('/api/decodeRoute', (req, res) => {
   };
 
   client.methods.decodeRoute(args, (data, response) => {
-    const result = data.DecodeRouteResult.data
+    const result = data.DecodeRouteResult
 
-    if (!result || result.length === 0) {
+    if (!result) {
       res.send(null)
     } else {
-      res.send(result)
+      res.send(result.data)
     }
   })
 })

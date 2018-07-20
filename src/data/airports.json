@@ -12095,7 +12095,7 @@
     "url": "http:\/\/www.cochin-airport.com\/",
     "runway_length": "6380",
     "elev": "8",
-    "icao": "VOCC",
+    "icao": "VOCI",
     "direct_flights": "22",
     "carriers": "21"
   },
@@ -19174,8 +19174,8 @@
   },
   {
     "code": "FUE",
-    "lat": "28.3997",
-    "lng": "-13.9998",
+    "lat": "28.452778",
+    "lng": "-13.863889",
     "name": "Puerto del Rosario Airport",
     "city": "Antigua",
     "state": "Canary Islands",

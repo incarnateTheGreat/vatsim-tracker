@@ -163,10 +163,11 @@ export default class VatsimMap extends Component {
     }
   }
 
-  drawPolylines = (coordinates, data, icao, heading) => {
+  drawPolylines = (coordinates, data, icao) => {
     const latlngs = [[coordinates[1], coordinates[0]],[parseFloat(data.lat), parseFloat(data.lng)]],
           polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map),
-          circle = new Leaflet.circle([parseFloat(data.lat), parseFloat(data.lng)],{ color: 'red' }).addTo(this.map)
+          circle = new Leaflet.circle([parseFloat(data.lat), parseFloat(data.lng)],{ color: 'red' }).addTo(this.map),
+          heading = this.state.selected_flight.heading
 
     // Add 'Distance to Go' text to the Polyline in Kilometers.
     polyline.setText(`${this.getDistanceToDestination(latlngs)} KM`, {
@@ -200,7 +201,7 @@ export default class VatsimMap extends Component {
       if (destination_data) {
         this.setState({ selected_flight: flight, destination_data }, () => {
           if(!this.isPlaneOnGround(flight.groundspeed)) {
-            this.drawPolylines(flight.coordinates, destination_data, flight.planned_destairport, flight.heading)
+            this.drawPolylines(flight.coordinates, destination_data, flight.planned_destairport)
           }
 
           this.getDecodedFlightRoute(flight.planned_depairport, flight.planned_route ,flight.planned_destairport)
@@ -241,10 +242,10 @@ export default class VatsimMap extends Component {
       const R = 6371, // Radius of the earth in km
             dLat = this.getDeg2rad(airport_coords_lat - flight_coords_lat),
             dLon = this.getDeg2rad(airport_coords_lng - flight_coords_lng),
-            a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(this.getDeg2rad(flight_coords_lat)) * Math.cos(this.getDeg2rad(airport_coords_lat)) *
-                Math.sin(dLon/2) * Math.sin(dLon/2),
-            c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)),
+                Math.sin(dLon / 2) * Math.sin(dLon / 2),
+            c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)),
             d = R * c // Distance in km
 
       return Math.round(d)
@@ -479,7 +480,11 @@ export default class VatsimMap extends Component {
       }
     })
     .then(res => {
-      console.log(res.data);
+      if (!res.data) {
+        console.log('nodata.');
+      } else {
+        console.log(res.data);
+      }
     })
   }
 
