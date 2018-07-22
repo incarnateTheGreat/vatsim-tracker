@@ -99,8 +99,6 @@ export default class VatsimMap extends Component {
           }
         }
       })
-
-      // this.getWeather();
 		}, REFRESH_TIME)
 	}
 

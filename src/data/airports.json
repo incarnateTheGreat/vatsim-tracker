@@ -5023,7 +5023,7 @@
     "code": "BCN",
     "lat": "41.3006",
     "lng": "2.07976",
-    "name": "Barcelnga International Airport",
+    "name": "Barcelona International Airport",
     "city": "El Prat de Llobregat",
     "state": "Catalngia",
     "country": "Spain",
@@ -15115,7 +15115,7 @@
     "url": "",
     "runway_length": "15000",
     "elev": "35",
-    "icao": "OTBD",
+    "icao": "OTHH",
     "direct_flights": "87",
     "carriers": "43"
   },
@@ -16231,6 +16231,20 @@
     "icao": "",
     "direct_flights": "2",
     "carriers": "1"
+  },
+  {
+    "code": "EDW",
+    "lat": "34.905556",
+    "lng": "-117.883611",
+    "name": "Edwards Air Force Base",
+    "city": "",
+    "state": "California",
+    "country": "United States",
+    "woeid": "12708477",
+    "tz": "America\/Los Angeles",
+    "phone": "",
+    "type": "Airports",
+    "icao": "KEDW"
   },
   {
     "code": "EEK",
