@@ -62,6 +62,13 @@ export class Markers extends Component {
     }
   }
 
+  removeSelected = (planned_aircraft) => {
+    return new Leaflet.Icon({
+      iconUrl: this.getTypeOfAircraft(planned_aircraft),
+      className: 'airplane-icon'
+    })
+  }
+
   selectFlight = (planned_aircraft) => {
     return new Leaflet.Icon({
       iconUrl: this.getTypeOfAircraftSelected(planned_aircraft),
@@ -151,6 +158,16 @@ export class Markers extends Component {
                if (!isController) {
                  e.sourceTarget.setIcon(this.setSelected(planned_aircraft, callsign))
                  updateCallsign(callsign)
+               }}
+             }
+             onMouseOver={e => {
+               if (!isController) {
+                 e.sourceTarget.setIcon(this.setSelected(planned_aircraft, callsign))
+               }}
+             }
+             onMouseOut={e => {
+               if (!isController) {
+                 e.sourceTarget.setIcon(this.removeSelected(planned_aircraft, callsign))
                }}
              }
 	           position={coords}
