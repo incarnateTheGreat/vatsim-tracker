@@ -138,6 +138,7 @@ app.use('/api/metar/:metar', (req, res) => {
   })
 })
 
+// TODO: DECIDE WHETHER OR NOT TO KEEP THIS.
 app.use('/api/decodeRoute', (req, res) => {
   const { origin,
           route,

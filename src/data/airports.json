@@ -21254,7 +21254,7 @@
     "url": "",
     "runway_length": "2559",
     "elev": "66",
-    "icao": "",
+    "icao": "BIGR",
     "direct_flights": "1",
     "carriers": "1"
   },
@@ -27174,7 +27174,7 @@
     "url": "",
     "runway_length": null,
     "elev": "2",
-    "icao": "",
+    "icao": "BGAA",
     "direct_flights": "7",
     "carriers": "1"
   },
@@ -29477,6 +29477,19 @@
     "icao": "HRYR",
     "direct_flights": "7",
     "carriers": "11"
+  },
+  {
+    "code": "KGO",
+    "lat": "54.89",
+    "lng": "20.5925",
+    "name": "Khrabrovo Airport",
+    "city": "Kaliningrad",
+    "state": "",
+    "country": "Russia",
+    "tz": "Europe\/Kaliningrad",
+    "phone": "",
+    "type": "Airports",
+    "icao": "UMKK"
   },
   {
     "code": "KGP",
@@ -43405,7 +43418,7 @@
     "code": "NUE",
     "lat": "49.4946",
     "lng": "11.0785",
-    "name": "Nurnberg Airport",
+    "name": "Nuremberg Airport",
     "city": "Nuremberg",
     "state": "Bavaria",
     "country": "Germany",
@@ -58790,7 +58803,7 @@
     "code": "TCQ",
     "lat": "-18.0508",
     "lng": "-70.2739",
-    "name": "Cor Fap Carlos C Santa Rosa Airport",
+    "name": "Cor FAP Carlos C. Santa Rosa Int. Airport",
     "city": "Tacna",
     "state": "Tacna",
     "country": "Peru",
@@ -58802,7 +58815,7 @@
     "url": "",
     "runway_length": null,
     "elev": null,
-    "icao": "",
+    "icao": "SPTN",
     "direct_flights": "2",
     "carriers": "4"
   },

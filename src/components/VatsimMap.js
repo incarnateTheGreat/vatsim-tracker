@@ -165,10 +165,12 @@ export default class VatsimMap extends Component {
     const latlngs = [[coordinates[1], coordinates[0]],[parseFloat(data.lat), parseFloat(data.lng)]],
           polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map),
           circle = new Leaflet.circle([parseFloat(data.lat), parseFloat(data.lng)],{ color: 'red' }).addTo(this.map),
-          heading = this.state.selected_flight.heading
+          heading = this.state.selected_flight.heading,
+          distanceKM = this.getDistanceToDestination(latlngs),
+          distanceNMI = this.getNauticalMilesFromKM(distanceKM)
 
     // Add 'Distance to Go' text to the Polyline in Kilometers.
-    polyline.setText(`${this.getDistanceToDestination(latlngs)} KM`, {
+    polyline.setText(`${distanceKM} KM to go (${distanceNMI} nmi)`, {
       attributes: {'font-weight': 'bold','font-size': '24'},
       center: true,
       offset: heading && (heading >= 0 && heading <= 180) ? -15 : 35,
@@ -201,8 +203,6 @@ export default class VatsimMap extends Component {
           if(!this.isPlaneOnGround(flight.groundspeed)) {
             this.drawPolylines(flight.coordinates, destination_data, flight.planned_destairport)
           }
-
-          this.getDecodedFlightRoute(flight.planned_depairport, flight.planned_route ,flight.planned_destairport)
 
           this.applySelectedFlightData(flight)
         })
@@ -274,6 +274,7 @@ export default class VatsimMap extends Component {
             callback ? callback() : null
           })
         } else {
+          this.handleUnfollow()
           callback ? callback() : null
         }
       })
@@ -288,6 +289,10 @@ export default class VatsimMap extends Component {
         this.serverToastMsg('No connection.', false)
       })
     })
+  }
+
+  getNauticalMilesFromKM = (km) => {
+    return Math.round(km * 0.5399568)
   }
 
   getWeather = () => {
@@ -469,22 +474,23 @@ export default class VatsimMap extends Component {
     })
   }
 
-  async getDecodedFlightRoute(origin, route, destination) {
-    return await axios(`${SERVER_PATH}/api/decodeRoute`, {
-      params: {
-        origin,
-        route,
-        destination
-      }
-    })
-    .then(res => {
-      if (!res.data) {
-        console.log('nodata.');
-      } else {
-        console.log(res.data);
-      }
-    })
-  }
+  // TODO: DECIDE WHETHER OR NOT TO KEEP THIS.
+  // async getDecodedFlightRoute(origin, route, destination) {
+  //   return await axios(`${SERVER_PATH}/api/decodeRoute`, {
+  //     params: {
+  //       origin,
+  //       route,
+  //       destination
+  //     }
+  //   })
+  //   .then(res => {
+  //     if (!res.data) {
+  //       console.log('nodata.');
+  //     } else {
+  //       console.log(res.data);
+  //     }
+  //   })
+  // }
 
   // React Lifecycle Hooks
 
