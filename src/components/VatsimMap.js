@@ -112,38 +112,7 @@ export default class VatsimMap extends Component {
       zoom: this.isPlaneOnGround(flight.groundspeed) ? 16 : this.state.zoom
     }, () => {
       this.unfollowBtnRef.current.disabled = false
-      /*
-      const { lat, lng } = this.state,
-            cluster = this.clusterRef.current.leafletElement
-
-      let thing = null
-
-      // Remove layer from MarkerClusterGroup
-      cluster.eachLayer(layer => {
-        // Narrow down the selected Cluster group.
-        if (layer._latlng && ((layer._latlng.lat === lat) && (layer._latlng.lng === lng))) {
-          const markers = layer.__parent._markers
-
-          // Find the matching LatLng of the selected Flight that's in the Cluster.
-          for (let i in markers) {
-            if (markers[i]._latlng.lat === layer._latlng.lat &&
-                markers[i]._latlng.lng === layer._latlng.lng) {
-              thing = markers[i]
-
-              break
-            }
-          }
-        }
-      })
-
-      console.log(thing)
-      cluster.removeLayer(thing)
-      */
     })
-  }
-
-  clearPopups = () => {
-    this.map.eachLayer(layer => layer.closePopup())
   }
 
   clearPolylines = () => {
@@ -193,9 +162,6 @@ export default class VatsimMap extends Component {
 
   findFlight = (flight, isCity) => {
     this.clearPolylines()
-    this.clearPopups()
-
-    console.log(flight);
 
     this.getAirportData(flight.planned_destairport).then(destination_data => {
       if (destination_data) {
@@ -327,7 +293,6 @@ export default class VatsimMap extends Component {
     }, () => {
       // Clear Progress Line, Popups, and Inputs.
       this.clearPolylines()
-      this.clearPopups()
       this.flightRef.current.inputRef.current.value = ''
       this.icaoRef.current.inputRef.current.value = ''
       this.metarRef.current.value = ''
@@ -342,7 +307,6 @@ export default class VatsimMap extends Component {
     }, () => {
       // Clear Progress Line, Popups, and Inputs.
       this.clearPolylines()
-      this.clearPopups()
       this.flightRef.current.inputRef.current.value = ''
       this.unfollowBtnRef.current.disabled = true
     })

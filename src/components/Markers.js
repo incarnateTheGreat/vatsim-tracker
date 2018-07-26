@@ -77,12 +77,9 @@ export class Markers extends Component {
   }
 
   setSelected = (planned_aircraft, callsign) => {
-    if (this.state.callsign) {
-      return this.selectFlight(planned_aircraft)
-    } else {
-      this.setState({ callsign })
-      return this.selectFlight(planned_aircraft)
-    }
+    this.setState({ callsign })
+
+    return this.selectFlight(planned_aircraft)
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -92,9 +89,7 @@ export class Markers extends Component {
 	}
 
   render = () => {
-		const { flights,
-            selectedFlight,
-            updateCallsign } = this.props;
+		const { flights, updateCallsign } = this.props;
 
     return (
 			flights.map((position, idx) => {
@@ -158,16 +153,6 @@ export class Markers extends Component {
                if (!isController) {
                  e.sourceTarget.setIcon(this.setSelected(planned_aircraft, callsign))
                  updateCallsign(callsign)
-               }}
-             }
-             onMouseOver={e => {
-               if (!isController) {
-                 e.sourceTarget.setIcon(this.setSelected(planned_aircraft, callsign))
-               }}
-             }
-             onMouseOut={e => {
-               if (!isController) {
-                 e.sourceTarget.setIcon(this.removeSelected(planned_aircraft, callsign))
                }}
              }
 	           position={coords}
