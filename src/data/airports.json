@@ -24820,8 +24820,8 @@
   },
   {
     "code": "ICN",
-    "lat": "37.4534",
-    "lng": "126.657",
+    "lat": "37.463333",
+    "lng": "126.44",
     "name": "New Incheon International Airport",
     "city": "Incheon",
     "state": "Incheon",
@@ -41390,7 +41390,7 @@
     "url": "",
     "runway_length": "6560",
     "elev": "21",
-    "icao": "KMYJ",
+    "icao": "RJOM",
     "direct_flights": "10",
     "carriers": "8"
   },
@@ -44502,7 +44502,7 @@
     "url": "",
     "runway_length": "8022",
     "elev": "37",
-    "icao": "",
+    "icao": "LIEO",
     "direct_flights": "49",
     "carriers": "24"
   },
@@ -53635,7 +53635,7 @@
     "url": "",
     "runway_length": "9200",
     "elev": "5740",
-    "icao": "",
+    "icao": "FNUB",
     "direct_flights": "5",
     "carriers": "2"
   },
