@@ -19894,7 +19894,7 @@
     "url": "",
     "runway_length": "11325",
     "elev": "574",
-    "icao": "",
+    "icao": "UHMM",
     "direct_flights": "7",
     "carriers": "6"
   },
@@ -24074,7 +24074,7 @@
     "url": "",
     "runway_length": null,
     "elev": null,
-    "icao": "",
+    "icao": "UOHH",
     "direct_flights": "1",
     "carriers": "1"
   },

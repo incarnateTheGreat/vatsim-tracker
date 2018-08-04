@@ -264,7 +264,6 @@ export default class VatsimMap extends Component {
   getWeather = () => {
     const options = { opacity: 0.5 },
           osm = Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
-          rain = Leaflet.OWM.rain(options),
           clouds = Leaflet.OWM.clouds(options),
           precipitation = Leaflet.OWM.precipitation(options),
           windrose = Leaflet.OWM.current({
@@ -278,7 +277,6 @@ export default class VatsimMap extends Component {
             imageLoadingBgUrl: 'https://openweathermap.org/img/w0/iwind.png'
           }),
           overlayMaps = {
-            'Rain': rain,
             'Clouds': clouds,
             'Precipitation': precipitation,
             'Wind Rose': windrose
