@@ -15608,7 +15608,7 @@
     "url": "",
     "runway_length": "8015",
     "elev": "25",
-    "icao": "FADN",
+    "icao": "FALE",
     "direct_flights": "10",
     "carriers": "16"
   },
@@ -21802,7 +21802,7 @@
     "code": "GYD",
     "lat": "40.3781",
     "lng": "49.8028",
-    "name": "Azerbaijan",
+    "name": "Heydar Aliyev International Airport",
     "city": "Baku",
     "state": "Baki",
     "country": "Azerbaijan",
@@ -25274,7 +25274,7 @@
     "url": "",
     "runway_length": "9022",
     "elev": "1641",
-    "icao": "UUII",
+    "icao": "UIII",
     "direct_flights": "22",
     "carriers": "15"
   },

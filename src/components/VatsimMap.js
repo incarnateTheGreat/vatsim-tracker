@@ -279,7 +279,7 @@ export default class VatsimMap extends Component {
           overlayMaps = {
             'Clouds': clouds,
             'Precipitation': precipitation,
-            'Wind Rose': windrose
+            // 'Wind Rose': windrose
           },
           baseMaps = {}
 
@@ -299,7 +299,6 @@ export default class VatsimMap extends Component {
   	for (var i in this.map._layers) {
   		var m = this.map._layers[i];
   		var cv = document.getElementById('id_' + m.options.owmId);
-      console.log(m.options.owmId);
   		for (var j in this._cache._cachedData.list) {
   			var station = this._cache._cachedData.list[j];
   			if (station.id === m.options.owmId) {
