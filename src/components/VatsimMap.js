@@ -573,7 +573,7 @@ export default class VatsimMap extends Component {
           this.setResizeEvent()
           this.startInterval()
           this.getFlightData(() => {
-            this.getWeather()
+            // this.getWeather()
             this.setState({ isLoading: false }, () => this.unfollowBtnRef.current.disabled = true )
           })
           window.dispatchEvent(new Event('resize'))
