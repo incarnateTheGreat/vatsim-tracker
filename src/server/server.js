@@ -1,12 +1,8 @@
 const express = require('express'),
 			app = express(),
-      https = require('https'),
       Client = require('node-rest-client').Client,
-      path = require('path'),
 			cors = require('cors'),
 			request = require('request'),
-      DataLoader = require('dataloader'),
-      graphql = require('graphql'),
 			graphqlHTTP = require('express-graphql'),
 			schema = require('./schema/schema'),
       mongoose = require('mongoose'),
@@ -29,8 +25,8 @@ function checkFlightPosition(clientInterface) {
 app.use(cors())
 
 app.listen(8000, () => {
-  console.log('Express & GraphQL servers started!')
-  mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_NAME}`)
+	console.log('Express & GraphQL servers started!')
+  mongoose.connect(`mongodb://127.0.0.1:27017/airports`)
 })
 
 // Connect to the VATSIM Data, render all Flights/Controllers, and thend dispatch to the front-end.
@@ -176,8 +172,7 @@ app.use('/api/decodeRoute', (req, res) => {
 
 // Use GraphQL to retrieve Coordinates data for selected Destination.
 app.use('/graphql', graphqlHTTP((req, res, graphQLParams) => {
-  const icao = req.url.replace(/\//g, ''),
-        query = `{icao(icao:"${req.query.icao}"){${req.query.params}}}`
+  const query = `{icao(icao:"${req.query.icao}"){${req.query.params}}}`
 
   // Assemble query string and put it into the graphQLParams object for insertion
   // in to GraphQL Schema, which will then contact MongoDB via Mongoose and then

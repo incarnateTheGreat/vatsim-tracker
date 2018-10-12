@@ -496,8 +496,7 @@ export default class VatsimMap extends Component {
   // Data Fetchers
 
   async getVatsimData() {
-    return await axios(`${SERVER_PATH}/api/vatsim-data`)
-      .then(res => res.data)
+    return await axios(`${SERVER_PATH}/api/vatsim-data`).then(res => res.data)
   }
 
   async getAirportData(destination_icao) {
@@ -509,15 +508,13 @@ export default class VatsimMap extends Component {
           icao: destination_icao,
           params: 'lat,lng'
         }
-      })
-      .then(res => {
+      }).then(res => {
         try {
           return res.data.data.icao
         } catch(err) {
           return null
         }
-      })
-      .catch(err => this.errorToastMsg('There was a problem retrieving the Destination Airport Data.'))
+      }).catch(err => this.errorToastMsg('There was a problem retrieving the Destination Airport Data.'))
     }
   }
 
