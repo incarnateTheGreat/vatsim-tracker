@@ -35,7 +35,7 @@ app.route('/api/vatsim-data').get((req, res) => {
   console.log('Get VATSIM Data...');
 
 	request('http://info.vroute.net/vatsim-data.txt', (error, response, body) => {
-		const lines = body.split('\n')
+		const lines = body.split('\n'),
 					results = []
 
 		let isRecording = false,
