@@ -4,6 +4,8 @@ import classNames from 'classnames'
 class ModalIcao extends Component {
 	state = {
 		airport_name: null,
+		arrivals_sort: null,
+		departures_sort: null,
 		isModalOpen: false,
 		items: null,
 		icao: null
@@ -14,9 +16,43 @@ class ModalIcao extends Component {
 	}
 
   gotoAirport = () => {
-    this.closeModal()
+		this.closeModal()
+
     return this.props.returnICAO(this.state.icao)
-  }
+	}
+	
+	sortColumn = (group, col, sortOrder) => {
+		const copiedItems = JSON.parse(JSON.stringify(this.state.items));
+
+		// Change Order of Sort Direction.
+		if (!sortOrder || sortOrder === 'ASC') {
+			sortOrder = 'DESC';
+		} else if (sortOrder === 'DESC') {
+			sortOrder = 'ASC';
+		}
+
+		// Sort based on Sort Order and Data.
+		const sortedResult = copiedItems[group].sort((a,b) => {
+			const nameA = a[col].toUpperCase(),
+						nameB = b[col].toUpperCase()
+
+			if (sortOrder === 'ASC') {
+				return nameA.localeCompare(nameB)
+			} else if (sortOrder === 'DESC') {
+				return nameB.localeCompare(nameA)
+			}
+		})
+		
+		// Re-insert data back into Items object.
+		let items = this.state.items;
+		items[group] = sortedResult;
+
+		this.setState({ 
+			items,
+			arrivals_sort: group === 1 ? sortOrder : this.state.arrivals_sort,
+			departures_sort: group === 0 ? sortOrder : this.state.departures_sort
+		})
+	}
 
 	toggleModal = () => {
 		this.setState({ isModalOpen: this.state.isModalOpen ? false : true })
@@ -79,13 +115,13 @@ class ModalIcao extends Component {
 					</header>
 					<div className='Modal__sections'>
 						<section className='Modal__section --departures'>
-							<h2>Departures</h2>
+							<h2>Departures {this.state.items[0] && this.state.items[0].length > 0 ? `(${this.state.items[0].length})` : ``}</h2>
                 {this.state.items[0] && (
                   <div className='table'>
                     <div className='table__header table__row'>
-                      <div className='table__data'>Callsign</div>
-                      <div className='table__data'>Name</div>
-                      <div className='table__data'>Arr. Location</div>
+                      <div className='table__data table__columnHeader' onClick={() => this.sortColumn(0, 'callsign', this.state.departures_sort)}>Callsign</div>
+                      <div className='table__data table__columnHeader' onClick={() => this.sortColumn(0, 'name', this.state.departures_sort)}>Name &#9650;</div>
+                      <div className='table__data table__columnHeader' onClick={() => this.sortColumn(0, 'planned_destairport', this.state.departures_sort)}>Arr. Location</div>
                     </div>
                     {this.state.items[1].length > 0 ? this.state.items[0].map((departureData, i) =>
                       <div
@@ -102,13 +138,13 @@ class ModalIcao extends Component {
                 )}
 						</section>
 						<section className='Modal__section --arrivals'>
-							<h2>Arrivals</h2>
+							<h2>Arrivals {this.state.items[1] && this.state.items[1].length > 0 ? `(${this.state.items[1].length})` : ``}</h2>
 								{this.state.items[1] && (
 									<div className='table'>
                     <div className='table__header table__row'>
-                      <div className='table__data'>Callsign</div>
-                      <div className='table__data'>Name</div>
-                      <div className='table__data'>Dep. Location</div>
+                      <div className='table__data table__columnHeader' onClick={() => this.sortColumn(1, 'callsign', this.state.arrivals_sort)}>Callsign</div>
+                      <div className='table__data table__columnHeader' onClick={() => this.sortColumn(1, 'name', this.state.arrivals_sort)}>Name</div>
+                      <div className='table__data table__columnHeader' onClick={() => this.sortColumn(1, 'planned_depairport', this.state.arrivals_sort)}>Dep. Location</div>
                     </div>
 										{this.state.items[1].length > 0 ? this.state.items[1].map((arrivalData, i) =>
 											<div

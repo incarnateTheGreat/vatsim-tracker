@@ -166,28 +166,31 @@
   .table {
     display: table;
     width: 100%;
-  }
 
-  .table__row {
-    display: table-row;
-  }
-
-  .table__header {
-    font-weight: 600;
-
-    background-color: transparent;
-  }
-
-  .table__row {
-    &:nth-child(even) {
-      background-color: $dark-grey;
+    &__row {
+      display: table-row;
     }
-  }
+  
+    &__header {
+      background-color: transparent;
+      font-weight: 600;
+    }
+  
+    &__row {
+      &:nth-child(even) {
+        background-color: $dark-grey;
+      }
+    }
+  
+    &__data {
+      display: table-cell;
+      padding: 5px;
+      white-space: nowrap;
+    }
 
-  .table__data {
-    display: table-cell;
-    padding: 5px;
-    white-space: nowrap;
+    &__columnHeader {
+      cursor: pointer;
+    }
   }
 }
 
