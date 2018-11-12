@@ -160,12 +160,12 @@ export default class VatsimMap extends Component {
     )
   }
 
-  findFlight = (flight, isCity) => {
+  findFlight = (flight) => {
     this.clearPolylines()
 
     this.getAirportData(flight.planned_destairport).then(destination_data => {
       if (destination_data) {
-        this.setState({ selected_flight: flight, destination_data }, () => {
+        this.setState({ isLoading: false, selected_flight: flight, destination_data }, () => {
           if(!this.isPlaneOnGround(flight.groundspeed)) {
             this.drawPolylines(flight.coordinates, destination_data, flight.planned_destairport)
           }
@@ -173,7 +173,7 @@ export default class VatsimMap extends Component {
           this.applySelectedFlightData(flight)
         })
       } else {
-        this.setState({ selected_flight: flight }, () => {
+        this.setState({ isLoading: false, selected_flight: flight }, () => {
           this.applySelectedFlightData(flight)
         })
       }
@@ -484,7 +484,7 @@ export default class VatsimMap extends Component {
       })
 
       if (flight) {
-        this.setState({ callsign }, () => {
+        this.setState({ isLoading: true, callsign }, () => {
           this.findFlight(flight)
         })
       } else {
