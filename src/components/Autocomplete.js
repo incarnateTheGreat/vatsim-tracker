@@ -98,9 +98,9 @@ export default class Autocomplete extends Component {
 
 			this.setState({ sortedResult })
 		} else {
-      // Clears Autocomplete results when the input is blank.
-      this.setState({ sortedResult: [] })
-    }
+			// Clears Autocomplete results when the input is blank.
+			this.setState({ sortedResult: [] })
+		}
 	}
 
 	static getDerivedStateFromProps(nextProps, prevState) {
@@ -117,8 +117,7 @@ export default class Autocomplete extends Component {
 					onKeyUp={this.sortItems}
 					placeholder={this.props.placeholder}
 					ref={this.inputRef}
-					type='search'
-				/>
+					type='search' />
 				{this.state.sortedResult && (
 					<div className='autocomplete__results' ref={this.resultRef}>
 						{this.state.sortedResult.map((item, i) =>
