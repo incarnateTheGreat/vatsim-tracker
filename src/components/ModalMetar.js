@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import classNames from 'classnames'
 import Metar from 'metar'
 import { DEGREES_KEY, CURRENTLY_UNAVAILABLE } from '../constants/constants';
@@ -180,7 +180,7 @@ class ModalMetar extends Component {
 					<div className='Modal__sections --weather'>
 						<section className='Modal__section --weather'>
               {this.state.metar && (
-                <React.Fragment>
+                <Fragment>
                   <div className='Modal__weatherIcon'>
                     <i className={weatherClasses}></i>
                   </div>
@@ -226,7 +226,7 @@ class ModalMetar extends Component {
                       </div>
                     </div>
                   </div>
-                </React.Fragment>
+                </Fragment>
               )}
 						</section>
 					</div>

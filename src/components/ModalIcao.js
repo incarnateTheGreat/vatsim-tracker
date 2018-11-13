@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
+import { DOWN_ARROW, UP_ARROW } from '../constants/constants'
 
 class ModalIcao extends Component {
 	state = {
@@ -21,9 +22,19 @@ class ModalIcao extends Component {
 		})
 	}
 
-	clearArrows = () => {
-		// Get Parent of Departures or Arrivals' Element.
-		const columnElems  = document.getElementsByClassName('table__columnHeader')
+	clearArrows = (group) => {
+		let columnElems = null
+
+		// If 'group' is not specified, reset both sets of columns. Otherwise, select either Departures or Arrivals to clear.
+		if (!group) {
+			columnElems = document.getElementsByClassName('table__columnHeader')
+		} else {
+			if (group === 1) {
+				columnElems = document.getElementsByClassName('arrivals')[0].getElementsByClassName('table__columnHeader')
+			} else if (group === 0) {
+				columnElems = document.getElementsByClassName('departures')[0].getElementsByClassName('table__columnHeader')
+			}
+		}
 
 		// Find and Remove Arrow.
 		for (let i = 0; i < columnElems.length; i++) {
@@ -40,8 +51,8 @@ class ModalIcao extends Component {
 	sortColumn = (group, col, sortOrder, e) => {
 		const copiedItems = JSON.parse(JSON.stringify(this.state.items)),
 					elem = e.currentTarget,
-					upArrow = '&#9650',
-					downArrow = '&#9660'
+					upArrow = UP_ARROW,
+					downArrow = DOWN_ARROW
 
 		// Change Order of Sort Direction.
 		if (!sortOrder || sortOrder === 'ASC') {
@@ -60,13 +71,15 @@ class ModalIcao extends Component {
 			} else if (sortOrder === 'DESC') {
 				return nameB.localeCompare(nameA)
 			}
+
+			return 0
 		})
 		
 		// Re-insert data back into Items object.
 		let items = this.state.items;
 		items[group] = sortedResult;
 
-		this.clearArrows()
+		this.clearArrows(group)
 
 		// Place Arrow in Clicked Column with updated direction.
 		const arrowElem = `<span class='table__sortArrow'>${sortOrder === 'ASC' ? upArrow : downArrow}</span>`
@@ -89,8 +102,9 @@ class ModalIcao extends Component {
 
 			// Assign first column of each section an ASC Arrow.
 			if (columnElems_departures !== undefined || columnElems_arrivals !== undefined) {
-				const arrowElem = `<span class='table__sortArrow'>&#9650</span>`				
-				columnElems_departures.insertAdjacentHTML('beforeend', arrowElem)		
+				const arrowElem = `<span class='table__sortArrow'>${UP_ARROW}</span>`				
+				columnElems_departures.insertAdjacentHTML('beforeend', arrowElem)
+				columnElems_arrivals.insertAdjacentHTML('beforeend', arrowElem)
 			}
 		})
 	}

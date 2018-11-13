@@ -72,11 +72,17 @@ const SERVER_PATH = 'http://localhost:8000';
 
 const CURRENTLY_UNAVAILABLE = 'Currently Unavailable'
 
+const UP_ARROW = '&#9650'
+
+const DOWN_ARROW = '&#9660'
+
 module.exports = {
   CLIENT_LABELS,
   CURRENTLY_UNAVAILABLE,
   DEGREES_KEY,
+  DOWN_ARROW,
   MAX_BOUNDS,
   REFRESH_TIME,
-  SERVER_PATH
+  SERVER_PATH,
+  UP_ARROW
 };

@@ -1,9 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { ScaleLoader } from 'react-spinners'
 import axios from 'axios'
 import { Map, TileLayer } from 'react-leaflet'
 import Leaflet from 'leaflet'
-import setText from 'leaflet-textpath'
 import MarkerClusterGroup from 'react-leaflet-markercluster'
 import Control from 'react-leaflet-control'
 import { ToastContainer, toast, Flip } from 'react-toastify'
@@ -13,7 +12,11 @@ import ModalIcao from './ModalIcao'
 import ModalMetar from './ModalMetar'
 import { MAX_BOUNDS, REFRESH_TIME, SERVER_PATH } from '../constants/constants'
 
-import './leaflet-openweathermap'
+/*eslint-disable */
+import setText from 'leaflet-textpath'
+/*eslint-disable */
+
+// import './leaflet-openweathermap'
 
 export default class VatsimMap extends Component {
   state = {
@@ -130,13 +133,16 @@ export default class VatsimMap extends Component {
     }
   }
 
-  drawPolylines = (coordinates, data, icao) => {
+  drawPolylines = (coordinates, data) => {
     const latlngs = [[coordinates[1], coordinates[0]],[parseFloat(data.lat), parseFloat(data.lng)]],
           polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map),
-          circle = new Leaflet.circle([parseFloat(data.lat), parseFloat(data.lng)],{ color: 'red' }).addTo(this.map),
           heading = this.state.selected_flight.heading,
           distanceKM = this.getDistanceToDestination(latlngs),
           distanceNMI = this.getNauticalMilesFromKM(distanceKM)
+    
+    /*eslint-disable */
+    const circle = new Leaflet.circle([parseFloat(data.lat), parseFloat(data.lng)],{ color: 'red' }).addTo(this.map)
+    /*eslint-disable */
 
     // Add 'Distance to Go' text to the Polyline in Kilometers.
     polyline.setText(`${distanceKM} KM to go (${distanceNMI} nmi)`, {
@@ -236,12 +242,11 @@ export default class VatsimMap extends Component {
             return flight.callsign.toUpperCase() === this.state.selected_flight.callsign.toUpperCase()
           })
 
-          this.setState({ selected_flight: result }, () => {
-            callback ? callback() : null
-          })
+          this.setState({ selected_flight: result }, () => callback ? callback() : null)
         } else {
           this.handleUnfollow()
-          callback ? callback() : null
+
+          if (callback) callback()
         }
       })
     })
@@ -581,7 +586,7 @@ export default class VatsimMap extends Component {
 
   render = () => {
     return (
-      <React.Fragment>
+      <Fragment>
         <div className={'loading-spinner ' + (this.state.isLoading ? null : '--hide-loader')}>
           <ScaleLoader
             color={'#123abc'}
@@ -633,7 +638,7 @@ export default class VatsimMap extends Component {
             />
           </MarkerClusterGroup>
           <Control position="topleft">
-            <React.Fragment>
+            <Fragment>
               <div>
                 <button onClick={this.handleReset.bind(this)}>
                   Reset View
@@ -666,10 +671,10 @@ export default class VatsimMap extends Component {
                 placeholder='Search for the METAR...'
                 type='search'
               />
-            </React.Fragment>
+            </Fragment>
           </Control>
         </Map>
-      </React.Fragment>
+      </Fragment>
     )
   }
 }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Leaflet from 'leaflet'
 import RotatedMarker from 'react-leaflet-rotatedmarker'
 import { Tooltip } from 'react-leaflet'
@@ -160,22 +160,22 @@ export class Markers extends Component {
 	           rotationOrigin={'center'}
 	         >
 	          <Tooltip direction="auto">
-	            <React.Fragment>
+	            <Fragment>
 	              <div><strong>{callsign}</strong></div>
 	              <div>{name}</div>
 								{isController && (
 									<div>{frequency}</div>
 								)}
 	              {!isController && (
-	                <React.Fragment>
+	                <Fragment>
 	                  <div>{planned_aircraft}</div>
 	                  <div>{altitude} FT.</div>
 	                  <div>{groundspeed} KTS</div>
 	                  <div>{heading}°</div>
 	                  <div>{plan}</div>
-	                </React.Fragment>
+	                </Fragment>
 	              )}
-	            </React.Fragment>
+	            </Fragment>
 	          </Tooltip>
 	        </RotatedMarker>
 	      )
