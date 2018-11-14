@@ -134,7 +134,9 @@ export default class VatsimMap extends Component {
   }
 
   drawPolylines = (coordinates, data) => {
-    const latlngs = [[coordinates[1], coordinates[0]],[parseFloat(data.lat), parseFloat(data.lng)]],
+    console.log(coordinates, data);
+    
+    const latlngs = [[coordinates[1], coordinates[0]],[data.lat, data.lng]],
           polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map),
           heading = this.state.selected_flight.heading,
           distanceKM = this.getDistanceToDestination(latlngs),
@@ -206,8 +208,8 @@ export default class VatsimMap extends Component {
     try {
       const flight_coords_lat = latlngs[0][0],
             flight_coords_lng = latlngs[0][1],
-            airport_coords_lat = latlngs[1][0],
-            airport_coords_lng = latlngs[1][1]
+            airport_coords_lat = parseFloat(latlngs[1][0]),
+            airport_coords_lng = parseFloat(latlngs[1][1])
 
       const R = 6371, // Radius of the earth in km
             dLat = this.getDeg2rad(airport_coords_lat - flight_coords_lat),
@@ -429,17 +431,27 @@ export default class VatsimMap extends Component {
                   if (controller.callsign.substring(0,4).indexOf('_') > 0) {
                     return selected_icao.includes(controller.callsign.substring(0,3))
                   }
-  
+      
                   return controller.callsign.indexOf(selected_icao) > -1
                 });
-  
-          this.setState({ 
-            airport_name,
-            icao_controllers,
-            icao_departures,
-            icao_destinations,
-            isLoading: false,
-            selected_icao }, () => { this.modalIcaoRef.current.toggleModal() })
+
+          // Get the Distance remaining in any active flights.
+          this.getAirportData(selected_icao).then(icao_data => {
+            for (let i = 0; i < icao_destinations.length; i++) {
+              icao_destinations[i]['distanceToGo'] = 
+              `${this.getDistanceToDestination([
+                [icao_destinations[i]['coordinates'][1], icao_destinations[i]['coordinates'][0]
+              ], [icao_data.lat, icao_data.lng]])} km`
+            }
+
+            this.setState({ 
+              airport_name,
+              icao_controllers,
+              icao_departures,
+              icao_destinations,
+              isLoading: false,
+              selected_icao }, () => { this.modalIcaoRef.current.toggleModal() })
+          })
         } else {
           this.errorToastMsg('This ICAO is not listed.')
         }

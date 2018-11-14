@@ -185,6 +185,7 @@ class ModalIcao extends Component {
                         <span className='table__data'>{departureData.callsign}</span>
                         <span className='table__data'>{departureData.name}</span>
                         <span className='table__data'>{departureData.planned_destairport}</span>
+												<span className='table__data'>{departureData.distanceToGo}</span>
                       </div>
                     ) : (<div><span>None</span></div>)}
                   </div>
@@ -201,6 +202,8 @@ class ModalIcao extends Component {
 													 onClick={elem => this.sortColumn(1, 'name', this.state.arrivals_sort, elem)}>Pilot's Name</div>
 											<div className='table__data table__columnHeader'
 													 onClick={elem => this.sortColumn(1, 'planned_depairport', this.state.arrivals_sort, elem)}>Dep. Location</div>
+											<div className='table__data table__columnHeader'
+													 onClick={elem => this.sortColumn(1, 'distanceToGo', this.state.arrivals_sort, elem)}>Distance To Go</div>
                     </div>
 										{this.state.items[1].length > 0 ? this.state.items[1].map((arrivalData, i) =>
 											<div className='table__row Modal__link'
@@ -210,6 +213,7 @@ class ModalIcao extends Component {
                         <span className='table__data'>{arrivalData.callsign}</span>
                         <span className='table__data'>{arrivalData.name}</span>
                         <span className='table__data'>{arrivalData.planned_depairport}</span>
+												<span className='table__data'>{arrivalData.distanceToGo}</span>
 											</div>
 										) : (<div><span>None</span></div>)}
 									</div>
