@@ -134,8 +134,6 @@ export default class VatsimMap extends Component {
   }
 
   drawPolylines = (coordinates, data) => {
-    console.log(coordinates, data);
-    
     const latlngs = [[coordinates[1], coordinates[0]],[data.lat, data.lng]],
           polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map),
           heading = this.state.selected_flight.heading,
