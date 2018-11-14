@@ -419,37 +419,50 @@ export default class VatsimMap extends Component {
   }
 
   openIcaoModal = (selected_icao) => {
-    this.getAirportName(selected_icao).then(airport_name => {
-      if (this.state.icaos.includes(selected_icao)) {
-        const icao_departures = this.state.flights.filter(flight => selected_icao === flight.planned_depairport),
-              icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport),
-              icao_controllers = this.state.controllers.filter(controller => {
-                // If ICAO only has 3 characters for a prefix, find it.
-                if (controller.callsign.substring(0,4).indexOf('_') > 0) {
-                  return selected_icao.includes(controller.callsign.substring(0,3))
-                }
-
-                return controller.callsign.indexOf(selected_icao) > -1
-              });
-
-        this.setState({ icao_departures, icao_destinations, icao_controllers, selected_icao, airport_name },
-          () => { this.modalIcaoRef.current.toggleModal() })
-      } else {
-        this.errorToastMsg('This ICAO is not listed.')
-      }
+    this.setState({ isLoading: true }, () => {
+      this.getAirportName(selected_icao).then(airport_name => {
+        if (this.state.icaos.includes(selected_icao)) {
+          const icao_departures = this.state.flights.filter(flight => selected_icao === flight.planned_depairport),
+                icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport),
+                icao_controllers = this.state.controllers.filter(controller => {
+                  // If ICAO only has 3 characters for a prefix, find it.
+                  if (controller.callsign.substring(0,4).indexOf('_') > 0) {
+                    return selected_icao.includes(controller.callsign.substring(0,3))
+                  }
+  
+                  return controller.callsign.indexOf(selected_icao) > -1
+                });
+  
+          this.setState({ 
+            airport_name,
+            icao_controllers,
+            icao_departures,
+            icao_destinations,
+            isLoading: false,
+            selected_icao }, () => { this.modalIcaoRef.current.toggleModal() })
+        } else {
+          this.errorToastMsg('This ICAO is not listed.')
+        }
+      })
     })
   }
 
   openMetarModal = (selected_metar) => {
-    this.getAirportName(selected_metar).then(airport_name => {
-      this.getMetarData(selected_metar).then(metar => {
-        if (metar) {
-          this.setState({ metar, selected_metar_icao: selected_metar, airport_name }, () => {
-            this.modalMetarRef.current.toggleModal()
-          })
-        } else {
-          this.errorToastMsg('There is no METAR for this ICAO.')
-        }
+    this.setState({ isLoading: true }, () => {
+      this.getAirportName(selected_metar).then(airport_name => {
+        this.getMetarData(selected_metar).then(metar => {
+          if (metar) {
+            this.setState({
+              airport_name,
+              isLoading: false,
+              metar, 
+              selected_metar_icao: selected_metar }, () => {
+              this.modalMetarRef.current.toggleModal()
+            })
+          } else {
+            this.errorToastMsg('There is no METAR for this ICAO.')
+          }
+        })
       })
     })
   }
@@ -603,7 +616,7 @@ export default class VatsimMap extends Component {
           returnICAO={e => this.getAirportPosition(e)}
           toggleModal={this.state.isModalIcaoOpen}
         />
-        <ModalMetar
+        <ModalMetar 
           airport_name={this.state.airport_name}
           icao={this.state.selected_metar_icao}
           metar={this.state.metar}

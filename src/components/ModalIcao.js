@@ -177,7 +177,7 @@ class ModalIcao extends Component {
 											<div className='table__data table__columnHeader'
 													 onClick={elem => this.sortColumn(0, 'planned_destairport', this.state.departures_sort, elem)}>Arr. Location</div>
                     </div>
-                    {this.state.items[1].length > 0 ? this.state.items[0].map((departureData, i) =>
+                    {this.state.items[0].length > 0 ? this.state.items[0].map((departureData, i) =>
                       <div className='table__row Modal__link'
 													 data-icao={departureData.callsign}
 													 onClick={() => this.returnData(departureData.callsign)}
