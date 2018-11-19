@@ -13,7 +13,7 @@ const express = require('express'),
 require('dotenv').config()
 
 const sleepy = new SleepTime((diff,date) => {
-	console.log("System slept for" + diff + " seconds" + " and woke up at " + date)
+	console.log(`System slept for ${diff} seconds and woke up at ${date}`);
 }, 5000)
 
 function checkFlightPosition(clientInterface) {
@@ -46,14 +46,14 @@ app.route('/api/vatsim-data').get((req, res) => {
 		// Go line by line to find CLIENTS data.
 		for(let line = 0; line < lines.length; line++) {
 			// When the '!CLIENTS:' line is found, begin recording data.
-			if (lines[line] == '!CLIENTS:\r') {
+			if (lines[line] === '!CLIENTS:\r') {
 				isRecording = true;
-			} else if (lines[line] == ';\r') {
+			} else if (lines[line] === ';\r') {
 				isRecording = false;
 			}
 
 			// Skip the '!CLIENTS:' line to avoid adding to the results array.
-			if (isRecording && lines[line] != '!CLIENTS:\r') {
+			if (isRecording && lines[line] !== '!CLIENTS:\r') {
 				results.push(lines[line]);
 			}
 		}
@@ -75,7 +75,7 @@ app.route('/api/vatsim-data').get((req, res) => {
 					isController: clientInterface.frequency !== "" ? true : false,
 					name: clientInterface.realname,
 					callsign: clientInterface.callsign,
-					coordinates: [parseFloat(clientInterface.longitude), parseFloat(clientInterface.latitude)],
+					coordinates: [parseFloat(clientInterface.latitude), parseFloat(clientInterface.longitude)],
 					frequency: clientInterface.frequency,
 					altitude: clientInterface.altitude,
 					planned_aircraft: clientInterface.planned_aircraft,
@@ -177,7 +177,7 @@ app.use('/graphql', graphqlHTTP((req, res, graphQLParams) => {
   // Assemble query string and put it into the graphQLParams object for insertion
   // in to GraphQL Schema, which will then contact MongoDB via Mongoose and then
   // return results.
-  graphQLParams.query = query
+	graphQLParams.query = query
 
   return ({
     schema,

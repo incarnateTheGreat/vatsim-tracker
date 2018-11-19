@@ -103,7 +103,7 @@ export class Markers extends Component {
 								planned_aircraft,
 								planned_depairport,
 								planned_destairport } = position,
-								coords = [position.coordinates[1], position.coordinates[0]]
+								coords = [position.coordinates[0], position.coordinates[1]]
 
 	      let icon = null,
 						plan = false

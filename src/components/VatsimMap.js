@@ -96,7 +96,7 @@ export default class VatsimMap extends Component {
             this.drawPolylines(this.state.selected_flight.coordinates, this.state.destination_data)
           } else {
             this.map.panTo(
-              [this.state.selected_flight.coordinates[1], this.state.selected_flight.coordinates[0]],
+              [this.state.selected_flight.coordinates[0], this.state.selected_flight.coordinates[1]],
               { animate: true, duration: 1.0, easeLinearity: 0.10 }
             )
           }
@@ -110,8 +110,8 @@ export default class VatsimMap extends Component {
   applySelectedFlightData = (flight) => {
     this.setState({
       callsign: flight.callsign,
-      lat: flight.coordinates[1],
-      lng: flight.coordinates[0],
+      lat: flight.coordinates[0],
+      lng: flight.coordinates[1],
       zoom: this.isPlaneOnGround(flight.groundspeed) ? 16 : this.state.zoom
     }, () => {
       this.unfollowBtnRef.current.disabled = false
@@ -134,22 +134,27 @@ export default class VatsimMap extends Component {
   }
 
   drawPolylines = (coordinates, data) => {
-    const latlngs = [[coordinates[1], coordinates[0]],[data.lat, data.lng]],
-          polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map),
-          heading = this.state.selected_flight.heading,
-          distanceKM = this.getDistanceToDestination(latlngs),
-          distanceNMI = this.getNauticalMilesFromKM(distanceKM)
+    const lat1 = coordinates[0],
+          lng1 = coordinates[1],
+          lat2 = data.lat,
+          lng2 = data.lng    
     
+    const latlngs = [[lat1, lng1],[lat2, lng2]],
+          polyline = new Leaflet.polyline(latlngs, { color: 'red' }).addTo(this.map),
+          oppDirectionHeading = this.getRadialOppDirection(lat1, lng1, lat2, lng2),
+          distanceKM = this.getDistanceToDestination(latlngs),
+          distanceNMI = this.getNauticalMilesFromKM(distanceKM)    
+
     /*eslint-disable */
     const circle = new Leaflet.circle([parseFloat(data.lat), parseFloat(data.lng)],{ color: 'red' }).addTo(this.map)
-    /*eslint-disable */
+    /*eslint-disable */    
 
     // Add 'Distance to Go' text to the Polyline in Kilometers.
     polyline.setText(`${distanceKM} KM to go (${distanceNMI} nmi)`, {
       attributes: {'font-weight': 'bold','font-size': '24'},
       center: true,
-      offset: heading && (heading >= 0 && heading <= 180) ? -15 : 35,
-      orientation: heading && (heading >= 0 && heading <= 180) ? 0 : 'flip'
+      offset: oppDirectionHeading && (oppDirectionHeading >= 0 && oppDirectionHeading <= 180) ? 35 : -15,
+      orientation: oppDirectionHeading && (oppDirectionHeading >= 180 && oppDirectionHeading <= 360) ? 0 : 'flip'
     })
 
     setTimeout(() => {
@@ -191,9 +196,14 @@ export default class VatsimMap extends Component {
   getAirportPosition = (icao) => {
     this.getAirportData(icao).then(icao_data => {
       this.setState({
+        isLoading: true,
         lat: parseFloat(icao_data.lat),
         lng: parseFloat(icao_data.lng),
         zoom: 13
+      }, () => {
+        this.setState({
+          isLoading: false
+        })
       })
     })
   }
@@ -202,7 +212,22 @@ export default class VatsimMap extends Component {
     return deg * (Math.PI / 180)
   }
 
-  getDistanceToDestination = (latlngs) => {
+  getRadialOppDirection = (lat1, lng1, lat2, lng2) => {
+    const _lat1 = this.getDeg2rad(lat1),
+          _lat2 = this.getDeg2rad(lat2),
+          dLng = this.getDeg2rad(lng2 - lng1)
+
+    const y = Math.sin(dLng) * Math.cos(_lat2),
+          x = Math.cos(_lat1) * Math.sin(_lat2) - Math.sin(_lat1) * Math.cos(_lat2) * Math.cos(dLng)
+          
+    const brng = Math.atan2(y, x);
+
+    let res = ((((brng * 180 / Math.PI) + 360) % 360));
+
+    return res <= 180 ? res + 180 : res - 180
+  }
+
+  getDistanceToDestination = (latlngs) => {    
     try {
       const flight_coords_lat = latlngs[0][0],
             flight_coords_lng = latlngs[0][1],
@@ -438,8 +463,8 @@ export default class VatsimMap extends Component {
             for (let i = 0; i < icao_destinations.length; i++) {
               icao_destinations[i]['distanceToGo'] = 
               `${this.getDistanceToDestination([
-                [icao_destinations[i]['coordinates'][1], icao_destinations[i]['coordinates'][0]
-              ], [icao_data.lat, icao_data.lng]])} km`
+                [icao_destinations[i]['coordinates'][0], icao_destinations[i]['coordinates'][1]], 
+                [icao_data.lat, icao_data.lng]])} km`
             }
 
             this.setState({ 
@@ -451,7 +476,11 @@ export default class VatsimMap extends Component {
               selected_icao }, () => { this.modalIcaoRef.current.toggleModal() })
           })
         } else {
-          this.errorToastMsg('This ICAO is not listed.')
+          this.setState({
+            isLoading: false
+          }, () => {
+            this.errorToastMsg('This ICAO is not listed.')
+          })
         }
       })
     })
