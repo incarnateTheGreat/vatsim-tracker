@@ -16,8 +16,6 @@ import { MAX_BOUNDS, REFRESH_TIME, SERVER_PATH } from '../constants/constants'
 import setText from 'leaflet-textpath'
 /*eslint-disable */
 
-// import './leaflet-openweathermap'
-
 export default class VatsimMap extends Component {
   state = {
     airport_name: '',
@@ -31,7 +29,6 @@ export default class VatsimMap extends Component {
     icao_destinations: null,
     icao_departures: null,
     isLoading: true,
-    isModalIcaoOpen: false,
     isModalMetarOpen: false,
     lat: 43.862,
     lng: -79.369,
@@ -177,6 +174,8 @@ export default class VatsimMap extends Component {
     this.getAirportData(flight.planned_destairport).then(destination_data => {
       if (destination_data) {
         this.setState({ isLoading: false, selected_flight: flight, destination_data }, () => {
+          this.getDecodedFlightRoute(flight.planned_depairport, flight.planned_route, flight.planned_destairport)
+          
           if(!this.isPlaneOnGround(flight.groundspeed)) {
             this.drawPolylines(flight.coordinates, destination_data, flight.planned_destairport)
           }
@@ -262,12 +261,16 @@ export default class VatsimMap extends Component {
       this.setState({ flights,
                       controllers,
                       icaos }, () => {
+        if (this.modalIcaoRef.current.state.isModalOpen && this.modalIcaoRef.current.state.icao) {        
+          this.modalData(this.state.selected_icao)
+        }
+
         if (this.state.selected_flight) {
-          const result = this.state.flights.find(flight => {
+          const selected_flight = this.state.flights.find(flight => {
             return flight.callsign.toUpperCase() === this.state.selected_flight.callsign.toUpperCase()
           })
 
-          this.setState({ selected_flight: result }, () => callback ? callback() : null)
+          this.setState({ selected_flight }, () => callback ? callback() : null)
         } else {
           this.handleUnfollow()
 
@@ -445,44 +448,50 @@ export default class VatsimMap extends Component {
 
   openIcaoModal = (selected_icao) => {
     this.setState({ isLoading: true }, () => {
-      this.getAirportName(selected_icao).then(airport_name => {
-        if (this.state.icaos.includes(selected_icao)) {
-          const icao_departures = this.state.flights.filter(flight => selected_icao === flight.planned_depairport),
-                icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport),
-                icao_controllers = this.state.controllers.filter(controller => {
-                  // If ICAO only has 3 characters for a prefix, find it.
-                  if (controller.callsign.substring(0,4).indexOf('_') > 0) {
-                    return selected_icao.includes(controller.callsign.substring(0,3))
-                  }
-      
-                  return controller.callsign.indexOf(selected_icao) > -1
-                });
+      this.modalData(selected_icao)
+    })
+  }
 
-          // Get the Distance remaining in any active flights.
-          this.getAirportData(selected_icao).then(icao_data => {
-            for (let i = 0; i < icao_destinations.length; i++) {
-              icao_destinations[i]['distanceToGo'] = 
-              `${this.getDistanceToDestination([
-                [icao_destinations[i]['coordinates'][0], icao_destinations[i]['coordinates'][1]], 
-                [icao_data.lat, icao_data.lng]])} km`
-            }
+  modalData = (selected_icao) => {
+    this.getAirportName(selected_icao).then(airport_name => {        
+      if (this.state.icaos.includes(selected_icao)) {
+        const icao_departures = this.state.flights.filter(flight => selected_icao === flight.planned_depairport),
+              icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport),
+              icao_controllers = this.state.controllers.filter(controller => {
+                // If ICAO only has 3 characters for a prefix, find it.
+                if (controller.callsign.substring(0,4).indexOf('_') > 0) {
+                  return selected_icao.includes(controller.callsign.substring(0,3))
+                }
+    
+                return controller.callsign.indexOf(selected_icao) > -1
+              });              
 
-            this.setState({ 
-              airport_name,
-              icao_controllers,
-              icao_departures,
-              icao_destinations,
-              isLoading: false,
-              selected_icao }, () => { this.modalIcaoRef.current.toggleModal() })
-          })
-        } else {
-          this.setState({
-            isLoading: false
-          }, () => {
-            this.errorToastMsg('This ICAO is not listed.')
-          })
-        }
-      })
+        // Get the Distance remaining in any active flights.
+        this.getAirportData(selected_icao).then(icao_data => {
+          for (let i = 0; i < icao_destinations.length; i++) {
+            icao_destinations[i]['distanceToGo'] = 
+            `${this.getDistanceToDestination([
+              [icao_destinations[i]['coordinates'][0], icao_destinations[i]['coordinates'][1]], 
+              [icao_data.lat, icao_data.lng]])} km`
+          }
+
+          this.setState({ 
+            airport_name,
+            icao_controllers,
+            icao_departures,
+            icao_destinations,
+            isLoading: false,
+            selected_icao }, () => {
+              if (!this.modalIcaoRef.current.state.isModalOpen) this.modalIcaoRef.current.toggleModal()                           
+            })
+        })
+      } else {
+        this.setState({
+          isLoading: false
+        }, () => {
+          this.errorToastMsg('This ICAO is not listed.')
+        })
+      }
     })
   }
 
@@ -597,22 +606,24 @@ export default class VatsimMap extends Component {
   }
 
   // TODO: DECIDE WHETHER OR NOT TO KEEP THIS.
-  // async getDecodedFlightRoute(origin, route, destination) {
-  //   return await axios(`${SERVER_PATH}/api/decodeRoute`, {
-  //     params: {
-  //       origin,
-  //       route,
-  //       destination
-  //     }
-  //   })
-  //   .then(res => {
-  //     if (!res.data) {
-  //       console.log('nodata.');
-  //     } else {
-  //       console.log(res.data);
-  //     }
-  //   })
-  // }
+  async getDecodedFlightRoute(origin, route, destination) {
+    return await axios(`${SERVER_PATH}/api/decodeRoute`, {
+      params: {
+        origin,
+        route,
+        destination
+      }
+    })
+    .then(res => {
+      console.log(res);
+      
+      if (!res.data) {
+        console.log('nodata.');
+      } else {
+        console.log(res.data);
+      }
+    })
+  }
 
   // React Lifecycle Hooks
 
@@ -627,7 +638,6 @@ export default class VatsimMap extends Component {
           this.setResizeEvent()
           this.startInterval()
           this.getFlightData(() => {
-            // this.getWeather()
             this.setState({ isLoading: false }, () => this.unfollowBtnRef.current.disabled = true )
           })
           window.dispatchEvent(new Event('resize'))
@@ -653,7 +663,6 @@ export default class VatsimMap extends Component {
           returnData={callsign => this.updateCallsign(callsign)}
           ref={this.modalIcaoRef}
           returnICAO={e => this.getAirportPosition(e)}
-          toggleModal={this.state.isModalIcaoOpen}
         />
         <ModalMetar 
           airport_name={this.state.airport_name}

@@ -180,6 +180,9 @@
       &:nth-child(even) {
         background-color: $dark-grey;
       }
+      &.--no-data {
+        background: transparent;
+      }
     }
   
     &__data {

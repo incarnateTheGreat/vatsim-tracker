@@ -41,8 +41,6 @@ app.route('/api/vatsim-data').get((req, res) => {
 		let isRecording = false,
 				flights = []
 
-    console.log('Number of Lines:', lines.length);
-
 		// Go line by line to find CLIENTS data.
 		for(let line = 0; line < lines.length; line++) {
 			// When the '!CLIENTS:' line is found, begin recording data.
@@ -57,8 +55,6 @@ app.route('/api/vatsim-data').get((req, res) => {
 				results.push(lines[line]);
 			}
 		}
-
-    console.log('Number of results:', results.length);
 
 		for (let i = 0; i < results.length; i++) {
 			let clientInterface = {},
@@ -111,11 +107,11 @@ app.route('/api/vatsim-data').get((req, res) => {
 			return r
 		}, {})
 
-    console.log('Push ICAOS...');
-
 		// Put Departure & Destination ICAOs into Array.
 		for (let key in icaos_temp) icaos.push(key)
 
+		console.log('Number of Lines:', lines.length);
+		console.log('Number of results:', results.length);
     console.log('Number of ICAOS:', icaos.length);
 
 		res.send({flights, controllers, icaos})
@@ -149,7 +145,7 @@ app.use('/api/decodeRoute', (req, res) => {
         },
         client = new Client(client_options)
 
-  client.registerMethod('decodeRoute', fxmlUrl + 'DecodeRoute', 'GET');
+  client.registerMethod('decodeFlightRoute', fxmlUrl + 'DecodeRoute', 'GET');
 
   const args = {
   	parameters: {
@@ -159,8 +155,10 @@ app.use('/api/decodeRoute', (req, res) => {
   	}
   };
 
-  client.methods.decodeRoute(args, (data, response) => {
-    const result = data.DecodeRouteResult
+  client.methods.decodeFlightRoute(args, (data, response) => {
+		console.log(data);
+		
+		const result = data.DecodeRouteResult		
 
     if (!result) {
       res.send(null)
