@@ -155,16 +155,10 @@ app.use('/api/decodeRoute', (req, res) => {
   	}
   };
 
-  client.methods.decodeFlightRoute(args, (data, response) => {
-		console.log(data);
+  client.methods.decodeFlightRoute(args, (data, response) => {		
+		const result = data.DecodeRouteResult
 		
-		const result = data.DecodeRouteResult		
-
-    if (!result) {
-      res.send(null)
-    } else {
-      res.send(result.data)
-    }
+		result ? res.send(result.data) : res.send(null)
   })
 })
 
