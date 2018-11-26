@@ -1,19 +1,25 @@
+// Dependencies
 import React, { Component, Fragment } from 'react'
 import { ScaleLoader } from 'react-spinners'
-import axios from 'axios'
 import { Map, TileLayer } from 'react-leaflet'
 import Leaflet from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-markercluster'
 import Control from 'react-leaflet-control'
 import { ToastContainer, toast, Flip } from 'react-toastify'
+
+// Components & Constants
 import Autocomplete from './Autocomplete'
 import { Markers } from './Markers'
 import ModalIcao from './ModalIcao'
 import ModalMetar from './ModalMetar'
 import { MAX_BOUNDS,
          ICAO_LETTERS_SUPPORTED,
-         REFRESH_TIME, 
-         SERVER_PATH } from '../constants/constants'
+         REFRESH_TIME } from '../constants/constants'
+import { getAirportData,
+         getAirportName,
+         getDecodedFlightRoute,
+         getMetarData,
+         getVatsimData } from '../services/api'
 
 /*eslint-disable */
 import setText from 'leaflet-textpath'
@@ -230,8 +236,8 @@ export default class VatsimMap extends Component {
     this.clearPolylines()
 
     Promise.all([
-      this.getAirportData(flight.planned_destairport),
-      this.getDecodedFlightRoute(flight.planned_depairport, flight.planned_route, flight.planned_destairport)
+      getAirportData(flight.planned_destairport),
+      getDecodedFlightRoute(flight.planned_depairport, flight.planned_route, flight.planned_destairport)
     ]).then(responses => {
       const destination_data = responses[0]
       const data = responses[1]
@@ -261,7 +267,7 @@ export default class VatsimMap extends Component {
   
   // Get the Airport Data that is required to find it on the Map.
   getAirportPosition = (icao) => {
-    this.getAirportData(icao).then(icao_data => {
+    getAirportData(icao).then(icao_data => {
       this.setState({
         isLoading: true,
         lat: parseFloat(icao_data.lat),
@@ -320,7 +326,7 @@ export default class VatsimMap extends Component {
 
   getFlightData = (callback) => {
     // Collect the latest VATSIM Data.
-    this.getVatsimData().then(data => {
+    getVatsimData().then(data => {
       const { flights,
               controllers,
               icaos } = data
@@ -538,7 +544,7 @@ export default class VatsimMap extends Component {
   }
 
   modalData = (selected_icao) => {
-    Promise.all([this.getAirportName(selected_icao), this.getAirportData(selected_icao)]).then(responses => {
+    Promise.all([getAirportName(selected_icao), getAirportData(selected_icao)]).then(responses => {
       const airport_name = responses[0]
       const icao_data = responses[1]
       
@@ -585,7 +591,7 @@ export default class VatsimMap extends Component {
   openMetarModal = (selected_metar) => {
     this.setState({ isLoading: true }, () => {
 
-      Promise.all([this.getAirportName(selected_metar), this.getMetarData(selected_metar)]).then(responses => {
+      Promise.all([getAirportName(selected_metar), getMetarData(selected_metar)]).then(responses => {
         const airport_name = responses[0]
         const metar = responses[1]
 
@@ -646,61 +652,6 @@ export default class VatsimMap extends Component {
         this.errorToastMsg(`${callsign} does not exist.`)
       }
     }
-  }
-
-  // Data Fetchers
-
-  async getVatsimData() {
-    return await axios(`${SERVER_PATH}/api/vatsim-data`).then(res => res.data)
-  }
-
-  async getAirportData(destination_icao) {
-    if (destination_icao === '' || !destination_icao) {
-      return null
-    } else {
-      return await axios(`${SERVER_PATH}/graphql`, {
-        params: {
-          icao: destination_icao,
-          params: 'lat,lng'
-        }
-      }).then(res => {
-        try {
-          return res.data.data.icao
-        } catch(err) {
-          return null
-        }
-      }).catch(err => this.errorToastMsg('There was a problem retrieving the Destination Airport Data.'))
-    }
-  }
-
-  async getMetarData(metar) {
-    return await axios(`${SERVER_PATH}/api/metar/${metar}`)
-      .then(res => res.data)
-  }
-
-  async getAirportName(icao) {
-    return await axios(`${SERVER_PATH}/graphql`, {
-      params: {
-        icao: icao,
-        params: 'name'
-      }
-    }).then(res => {
-      try {
-        return res.data.data.icao.name
-      } catch(err) {
-        return null
-      }
-    })
-  }
-
-  async getDecodedFlightRoute(origin, route, destination) {
-    return await axios(`${SERVER_PATH}/api/decodeRoute`, {
-      params: {
-        origin,
-        route,
-        destination
-      }
-    }).then(res => res.data)
   }
 
   // React Lifecycle Hooks

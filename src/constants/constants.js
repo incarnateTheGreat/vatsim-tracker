@@ -76,7 +76,12 @@ const UP_ARROW = '&#9650'
 
 const DOWN_ARROW = '&#9660'
 
-const ICAO_LETTERS_SUPPORTED = ['C', 'K', 'P']
+const ICAO_LETTERS_SUPPORTED = [
+  'C', // Canada
+  'K', // United States
+  'P', // Alaska, Hawaii, and any other U.S-related Territory
+  'T'  // Caribbean
+]
 
 module.exports = {
   CLIENT_LABELS,
