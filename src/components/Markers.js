@@ -8,6 +8,7 @@ export class Markers extends Component {
     callsign: null
   }
 
+  // Select and Assign the correct (or approximate) Aircraft Type for the Marker.
   getTypeOfAircraft = (aircraft) => {
     if (aircraft.includes('B74')) {
       return require('../images/airplane-747-icon.png')
@@ -62,6 +63,7 @@ export class Markers extends Component {
     }
   }
 
+  // Remove the selected Airplane Icon class.
   removeSelected = (planned_aircraft) => {
     return new Leaflet.Icon({
       iconUrl: this.getTypeOfAircraft(planned_aircraft),
@@ -69,6 +71,7 @@ export class Markers extends Component {
     })
   }
 
+  // Assign the selected Airplane Icon class.
   selectFlight = (planned_aircraft) => {
     return new Leaflet.Icon({
       iconUrl: this.getTypeOfAircraftSelected(planned_aircraft),
@@ -76,6 +79,7 @@ export class Markers extends Component {
     })
   }
 
+  // Set the Selected Marker.
   setSelected = (planned_aircraft, callsign) => {
     this.setState({ callsign })
 

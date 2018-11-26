@@ -27,8 +27,9 @@ class ModalIcao extends Component {
 		isModalOpen: false,
 		items: null,
 		icao: null
-	}
-
+  }
+  
+  // Nullify all data when closing the Modal.
 	closeModal = () => {
 		this.setState({ 
 			arrivals_sort_order: null,
@@ -37,8 +38,9 @@ class ModalIcao extends Component {
 		}, () => {
 			this.clearArrows()
 		})
-	}
-
+  }
+  
+  // Clear any Arrows off the screen to allow to be reset.
 	clearArrows = (group) => {
 		let columnElems = null
 
@@ -57,8 +59,9 @@ class ModalIcao extends Component {
 		for (let i = 0; i < columnElems.length; i++) {
 			if (columnElems[i].children.length > 0) columnElems[i].removeChild(columnElems[i].children[0])
 		}
-	}
-
+  }
+  
+  // If the User wants to go to the currently-selected Airport on the Map, send back the data to the Container and pan to it.
   gotoAirport = () => {
 		this.closeModal()
 
@@ -85,10 +88,10 @@ class ModalIcao extends Component {
 		let items = this.state.items;
 		items[group] = sortedResult;
 
-		this.clearArrows(group)
-
+    this.clearArrows(group)
+    
+    // Place Arrow in Clicked Column with updated direction.
 		if (elem) {
-			// Place Arrow in Clicked Column with updated direction.
 			const arrowElem = `<span class='table__sortArrow'>${sortOrder === 'ASC' ? upArrow : downArrow}</span>`
 			elem.insertAdjacentHTML('beforeend', arrowElem)		
 		}
@@ -117,13 +120,15 @@ class ModalIcao extends Component {
 				columnElems_arrivals.insertAdjacentHTML('beforeend', arrowElem)
 			}
 		})
-	}
-
+  }
+  
+  // If the user selects a Flight from the List, return the Callsign to the Container and find the Flight.
 	returnData = callsign => {
 		this.closeModal()
 		this.props.returnData(callsign)
-	}
-
+  }
+  
+  // Create click and key events to support closing the modal.
 	componentDidMount = () => {
 		const modal = document.getElementById('Modal_Icao')
 
@@ -136,19 +141,21 @@ class ModalIcao extends Component {
 		}, false);
 	}
 
+  // If there's data in the table, force the scroll view to the top.
   componentDidUpdate = () => {		
     const tables = document.getElementsByClassName("Modal__section")
 
     if (tables.length > 0 && (this.state.items[0] && this.state.items[0].length > 0)) {
 			for (let i = 0; i < tables.length; i++) tables[i].scrollTop = 0
 		}
-	}
-
+  }
+  
+  // Update the ICAO Modal with Props Data.
 	static getDerivedStateFromProps(nextProps, prevState) {
-		let items = prevState.items
-
+    let items = prevState.items
+    
+    // Pass the latest Props data and persist the sorted columns if the Modal is open.
 		if (nextProps.items && nextProps.items[1]) {
-			// Sort based on Sort Order and Data.
 			const sortedDepartures = sortColumnData(nextProps.items, 0, prevState.departures_sort_column, prevState.departures_sort_order)
 			const sortedArrivals = sortColumnData(nextProps.items, 1, prevState.arrivals_sort_column, prevState.arrivals_sort_order)		
 

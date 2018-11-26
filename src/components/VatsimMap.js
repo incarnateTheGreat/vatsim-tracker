@@ -60,6 +60,7 @@ export default class VatsimMap extends Component {
 
   // Getters & Setters
 
+  // Get the Current Zoom level. Update the position on the Map.
   getMapZoom = () => {
     if (this.map) {
       const { lat, lng } = this.map.getCenter()
@@ -72,13 +73,15 @@ export default class VatsimMap extends Component {
     }
   }
 
+  // Get the current Viewport size.
   getViewportSize = () => {
-    const width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
-          height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+    const width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+    const height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 
     return { width, height }
   }
 
+  // Leaflet map requires a Resize event in order to prevent any (literal) gray areas from being displayed.
   setResizeEvent = () => {
     window.addEventListener('resize', () => {
       setTimeout(() => {
@@ -89,15 +92,19 @@ export default class VatsimMap extends Component {
     })
   }
 
+  // Every 30 seconds, execute calls to update all data on the Map.
   startInterval = () => {
 		this.interval = setInterval(() => {
+      
 			this.getFlightData(() => {
+        // If there is a Selected Flight, re-draw its position and Polylines, if any.
         if (this.state.selected_flight) {
           this.clearPolylines()
 
           if (!this.isPlaneOnGround(this.state.selected_flight.groundspeed) && this.state.destination_data) {
             this.drawPolylines(this.state.selected_flight.coordinates, this.state.selected_planned_route, this.state.selected_depairport, this.state.selected_destairport)
           } else {
+            // If there's no flight path drawn on the screen, then simply centre the viewpoint over the Selected flight.
             this.map.panTo(
               [this.state.selected_flight.coordinates[0], this.state.selected_flight.coordinates[1]],
               { animate: true, duration: 1.0, easeLinearity: 0.10 }
@@ -110,18 +117,19 @@ export default class VatsimMap extends Component {
 
   // Handlers & Functionality
 
+  // Store Selected Flight Data in the State.
   applySelectedFlightData = (flight) => {
     this.setState({
       callsign: flight.callsign,
       lat: flight.coordinates[0],
       lng: flight.coordinates[1],
-      isLoading: false,
       zoom: this.isPlaneOnGround(flight.groundspeed) ? 16 : this.state.zoom
     }, () => {
       this.unfollowBtnRef.current.disabled = false
     })
   }
 
+  // Clear all Polylines off of the Map.
   clearPolylines = () => {
     const layers = this.map._layers
 
@@ -137,30 +145,39 @@ export default class VatsimMap extends Component {
     }
   }
 
-  drawPolylines = (coordinates, data, depICAO, arrICAO) => {
-    if (!data) return;
-
-    // Assign Lat/Lng values for Current Position and Arrival.
+  // Assign Lat/Lng values for Current Position and Arrival.
+  drawPolylines = (coordinates, data, destination_data, depICAO, arrICAO) => {
     let latlngs = null;
-    const lat1 = coordinates[0],
-          lng1 = coordinates[1],
-          lat2 = Array.isArray(data[0]) ? data[data.length - 1][0] : data[data.length - 1].latitude,
-          lng2 = Array.isArray(data[1]) ? data[data.length - 1][1] : data[data.length - 1].longitude
+
+    const lat1 = coordinates[0]
+    const lng1 = coordinates[1]
+
+    let lat2 = null
+    let lng2 = null
 
     // If the Planned Route has already been applied to State, then continue to use it.
-    if (this.state.selected_planned_route) {      
+    if (this.state.selected_planned_route) {
+      lat2 = Array.isArray(data[0]) ? data[data.length - 1][0] : data[data.length - 1].latitude
+      lng2 = Array.isArray(data[1]) ? data[data.length - 1][1] : data[data.length - 1].longitude
+      
       latlngs = this.state.selected_planned_route
+    } else if (!data) {
+      // In the event that the DecodeRoute Service returns a null result, we must use the Destination Data from 
+      // the parent call to build a proper LatLng object so we can draw a straight line from the current flight's
+      // position to the destination.
+      lat2 = parseFloat(destination_data.lat)
+      lng2 = parseFloat(destination_data.lng)
+
+      latlngs = [[lat1, lng1], [lat2, lng2]]
     } else if (!this.isICAONorthAmerica(depICAO) || !this.isICAONorthAmerica(arrICAO)) {
       // Because FlightAware does not support non-continental US/Canada ICAOs and Waypoints,
       // we must prevent Departure or Arrival ICAOs that do not meet the requirements from drawing
-      // points on the map. Instead, this will go from the Departure to Arrival points. 
-      latlngs = [[lat1, lng1], [lat2, lng2]]
+      // points on the map. Instead, this will go from the Departure to Arrival points.
+      lat2 = Array.isArray(data[0]) ? data[data.length - 1][0] : data[data.length - 1].latitude
+      lng2 = Array.isArray(data[1]) ? data[data.length - 1][1] : data[data.length - 1].longitude
 
-      this.setState({
-        isLoading: false,
-        selected_planned_route: latlngs
-      })
-    } else {
+      latlngs = [[lat1, lng1], [lat2, lng2]]
+    } else {      
       // Collect all Waypoints, excluding Unknown and Airport Waypoints. Also, disregard any objects
       // that do not have a Lat or Lng.
       latlngs = data.reduce((r, a) => {
@@ -171,17 +188,16 @@ export default class VatsimMap extends Component {
         return r
       }, [])
 
-      this.setState({
-        isLoading: false,
-        selected_planned_route: latlngs
-      })
+      lat2 = Array.isArray(data[0]) ? data[data.length - 1][0] : data[data.length - 1].latitude
+      lng2 = Array.isArray(data[1]) ? data[data.length - 1][1] : data[data.length - 1].longitude
     }
-    
-    const polyline = new Leaflet.polyline(latlngs, { color: 'green' }).addTo(this.map),
-          oppDirectionHeading = this.getRadialOppDirection(lat1, lng1, lat2, lng2),
-          distanceLatLngs = [[lat1, lng1],[lat2, lng2]],
-          distanceKM = this.getDistanceToDestination(distanceLatLngs),
-          distanceNMI = this.getNauticalMilesFromKM(distanceKM) 
+
+    // Use collected data to assemble the Polyline.
+    const polyline = new Leaflet.polyline(latlngs, { color: 'green' }).addTo(this.map)
+    const oppDirectionHeading = this.getRadialOppDirection(lat1, lng1, lat2, lng2)
+    const distanceLatLngs = [[lat1, lng1],[lat2, lng2]]
+    const distanceKM = this.getDistanceToDestination(distanceLatLngs)
+    const distanceNMI = this.getNauticalMilesFromKM(distanceKM) 
 
     // Add 'Distance to Go' text to the Polyline in Kilometers.
     polyline.setText(`${distanceKM} KM to go (${distanceNMI} nmi)`, {
@@ -192,7 +208,12 @@ export default class VatsimMap extends Component {
     })
 
     // Draw the line on the screen.
-    this.map.fitBounds(polyline.getBounds(), { padding: [50, 50] })
+    this.setState({
+      isLoading: false,
+      selected_planned_route: latlngs
+    }, () => {
+      this.map.fitBounds(polyline.getBounds(), { padding: [50, 50] })
+    })
   }
 
   errorToastMsg = (msg) => {
@@ -204,10 +225,17 @@ export default class VatsimMap extends Component {
     )
   }
 
+  // Get the necessary Flight Data to determine it's Position, Destination, and Route (if available).
   findFlight = (flight) => {    
     this.clearPolylines()
 
-    this.getAirportData(flight.planned_destairport).then(destination_data => {
+    Promise.all([
+      this.getAirportData(flight.planned_destairport),
+      this.getDecodedFlightRoute(flight.planned_depairport, flight.planned_route, flight.planned_destairport)
+    ]).then(responses => {
+      const destination_data = responses[0]
+      const data = responses[1]
+
       if (destination_data) {        
         this.setState({
           destination_data,
@@ -216,23 +244,22 @@ export default class VatsimMap extends Component {
           selected_flight: flight,
           selected_planned_route: null }, () => {          
           if(!this.isPlaneOnGround(flight.groundspeed)) {
-            this.getDecodedFlightRoute(flight.planned_depairport, flight.planned_route, flight.planned_destairport).then(data => {
-              this.drawPolylines(flight.coordinates, data, flight.planned_depairport, flight.planned_destairport)
-            })
+            this.drawPolylines(flight.coordinates, data, destination_data, flight.planned_depairport, flight.planned_destairport)
           }
 
-          this.applySelectedFlightData(flight)
+          this.setState({ isLoading: false }, () => {
+            this.applySelectedFlightData(flight)
+          })
         })
       } else {
         this.setState({ isLoading: false, selected_flight: flight }, () => {
           this.applySelectedFlightData(flight)
         })
       }
-    }).catch(err => {
-      this.errorToastMsg('There is no destination data for this flight.')
     })
   }
-
+  
+  // Get the Airport Data that is required to find it on the Map.
   getAirportPosition = (icao) => {
     this.getAirportData(icao).then(icao_data => {
       this.setState({
@@ -252,14 +279,15 @@ export default class VatsimMap extends Component {
     return deg * (Math.PI / 180)
   }
 
+  // Get Radial Opposite Direction from Destination to Current Position.
   getRadialOppDirection = (lat1, lng1, lat2, lng2) => {
-    const _lat1 = this.getDeg2rad(lat1),
-          _lat2 = this.getDeg2rad(lat2),
-          dLng = this.getDeg2rad(lng2 - lng1)
+    const _lat1 = this.getDeg2rad(lat1)
+    const _lat2 = this.getDeg2rad(lat2)
+    const dLng = this.getDeg2rad(lng2 - lng1)
 
-    const y = Math.sin(dLng) * Math.cos(_lat2),
-          x = Math.cos(_lat1) * Math.sin(_lat2) - Math.sin(_lat1) * Math.cos(_lat2) * Math.cos(dLng)
-          
+    const x = Math.cos(_lat1) * Math.sin(_lat2) - Math.sin(_lat1) * Math.cos(_lat2) * Math.cos(dLng)
+    const y = Math.sin(dLng) * Math.cos(_lat2)
+
     const brng = Math.atan2(y, x);
 
     let res = ((((brng * 180 / Math.PI) + 360) % 360));
@@ -267,51 +295,54 @@ export default class VatsimMap extends Component {
     return res <= 180 ? res + 180 : res - 180
   }
 
-  getDistanceToDestination = (latlngs) => {    
+  // Calculate the Distance between the Current Position and the Destination in Kilometres.
+  getDistanceToDestination = (latlngs) => {
     try {
-      const flight_coords_lat = latlngs[0][0],
-            flight_coords_lng = latlngs[0][1],
-            airport_coords_lat = parseFloat(latlngs[1][0]),
-            airport_coords_lng = parseFloat(latlngs[1][1])
+      const flight_coords_lat = latlngs[0][0]
+      const flight_coords_lng = latlngs[0][1]
+      const airport_coords_lat = parseFloat(latlngs[1][0])
+      const airport_coords_lng = parseFloat(latlngs[1][1])
 
-      const R = 6371, // Radius of the earth in km
-            dLat = this.getDeg2rad(airport_coords_lat - flight_coords_lat),
-            dLon = this.getDeg2rad(airport_coords_lng - flight_coords_lng),
-            a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      const R = 6371 // Radius of the earth in km
+      const dLat = this.getDeg2rad(airport_coords_lat - flight_coords_lat)
+      const dLon = this.getDeg2rad(airport_coords_lng - flight_coords_lng)
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(this.getDeg2rad(flight_coords_lat)) * Math.cos(this.getDeg2rad(airport_coords_lat)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2),
-            c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)),
-            d = R * c // Distance in km
+                Math.sin(dLon / 2) * Math.sin(dLon / 2)
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+      const d = R * c // Distance in km
 
       return Math.round(d)
     } catch (err) {
-      console.log(err);
-      
       return null
     }
   }
 
   getFlightData = (callback) => {
+    // Collect the latest VATSIM Data.
     this.getVatsimData().then(data => {
       const { flights,
               controllers,
               icaos } = data
 
-      if (toast.isActive(this.toastId)) {
-        this.serverToastMsg('Connected.', true)
-      }
+      // Depending if there were any environment issues or changes, display the 'Connected' Toast Pop-up.
+      if (toast.isActive(this.toastId)) this.serverToastMsg('Connected.', true)
 
+      // Update State with User Data.
       this.setState({ flights,
                       controllers,
                       icaos }, () => {
+
+        // Pass the Selected ICAO to the Modal Data if it's open to feed it persistant data.
         if (this.modalIcaoRef.current.state.isModalOpen && this.modalIcaoRef.current.state.icao) {        
           this.modalData(this.state.selected_icao)
         }
 
+        // Update the Selected Flight's data and apply it to the Map.
         if (this.state.selected_flight) {          
           const selected_flight = this.state.flights.find(flight => {
             return flight.callsign.toUpperCase() === this.state.selected_flight.callsign.toUpperCase()
-          })          
+          })
 
           this.setState({ selected_flight }, () => callback ? callback() : null)
         } else {
@@ -365,8 +396,8 @@ export default class VatsimMap extends Component {
   }
 
   myWindroseMarker = data => {
-  	const content = '<canvas id="id_' + data.id + '" width="50" height="50" style="border: 1px solid red"></canvas>',
-          icon = Leaflet.divIcon({html: content, iconSize: [50,50], className: 'owm-div-windrose'});
+    const content = '<canvas id="id_' + data.id + '" width="50" height="50" style="border: 1px solid red"></canvas>'
+    const icon = Leaflet.divIcon({html: content, iconSize: [50,50], className: 'owm-div-windrose'});
 
   	return Leaflet.marker([data.coord.Lat, data.coord.Lon], {icon: icon, clickable: false});
   }
@@ -507,38 +538,40 @@ export default class VatsimMap extends Component {
   }
 
   modalData = (selected_icao) => {
-    this.getAirportName(selected_icao).then(airport_name => {        
+    Promise.all([this.getAirportName(selected_icao), this.getAirportData(selected_icao)]).then(responses => {
+      const airport_name = responses[0]
+      const icao_data = responses[1]
+      
       if (this.state.icaos.includes(selected_icao)) {
-        const icao_departures = this.state.flights.filter(flight => selected_icao === flight.planned_depairport),
-              icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport),
-              icao_controllers = this.state.controllers.filter(controller => {
-                // If ICAO only has 3 characters for a prefix, find it.
-                if (controller.callsign.substring(0,4).indexOf('_') > 0) {
-                  return selected_icao.includes(controller.callsign.substring(0,3))
-                }
-    
-                return controller.callsign.indexOf(selected_icao) > -1
-              });              
-
-        // Get the Distance remaining in any active flights.
-        this.getAirportData(selected_icao).then(icao_data => {
-          for (let i = 0; i < icao_destinations.length; i++) {
-            icao_destinations[i]['distanceToGo'] = 
-            `${this.getDistanceToDestination([
-              [icao_destinations[i]['coordinates'][0], icao_destinations[i]['coordinates'][1]], 
-              [icao_data.lat, icao_data.lng]])} km`
+        const icao_departures = this.state.flights.filter(flight => selected_icao === flight.planned_depairport)
+        const icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport)
+        const icao_controllers = this.state.controllers.filter(controller => {
+          // If ICAO only has 3 characters for a prefix, find it.
+          if (controller.callsign.substring(0,4).indexOf('_') > 0) {
+            return selected_icao.includes(controller.callsign.substring(0,3))
           }
 
-          this.setState({ 
-            airport_name,
-            icao_controllers,
-            icao_departures,
-            icao_destinations,
-            isLoading: false,
-            selected_icao }, () => {
-              if (!this.modalIcaoRef.current.state.isModalOpen) this.modalIcaoRef.current.toggleModal()                           
-            })
-        })
+          return controller.callsign.indexOf(selected_icao) > -1
+        });              
+
+        // Get the Distance remaining in any active flights.
+        for (let i = 0; i < icao_destinations.length; i++) {
+          icao_destinations[i]['distanceToGo'] = 
+          `${this.getDistanceToDestination([
+            [icao_destinations[i]['coordinates'][0], icao_destinations[i]['coordinates'][1]], 
+            [icao_data.lat, icao_data.lng]])} km`
+        }
+
+        this.setState({
+          airport_name,
+          icao_controllers,
+          icao_departures,
+          icao_destinations,
+          isLoading: false,
+          selected_icao }, () => {
+            if (!this.modalIcaoRef.current.state.isModalOpen) this.modalIcaoRef.current.toggleModal()                           
+          }
+        )
       } else {
         this.setState({
           isLoading: false
@@ -551,20 +584,22 @@ export default class VatsimMap extends Component {
 
   openMetarModal = (selected_metar) => {
     this.setState({ isLoading: true }, () => {
-      this.getAirportName(selected_metar).then(airport_name => {
-        this.getMetarData(selected_metar).then(metar => {
-          if (metar) {
-            this.setState({
-              airport_name,
-              isLoading: false,
-              metar, 
-              selected_metar_icao: selected_metar }, () => {
-              this.modalMetarRef.current.toggleModal()
-            })
-          } else {
-            this.errorToastMsg('There is no METAR for this ICAO.')
-          }
-        })
+
+      Promise.all([this.getAirportName(selected_metar), this.getMetarData(selected_metar)]).then(responses => {
+        const airport_name = responses[0]
+        const metar = responses[1]
+
+        if (metar) {
+          this.setState({
+            airport_name,
+            isLoading: false,
+            metar, 
+            selected_metar_icao: selected_metar }, () => {
+            this.modalMetarRef.current.toggleModal()
+          })
+        } else {
+          this.errorToastMsg('There is no METAR for this ICAO.')
+        }        
       })
     })
   }
@@ -730,8 +765,8 @@ export default class VatsimMap extends Component {
           />
           <MarkerClusterGroup
             chunkedLoading={true}
-            disableClusteringAtZoom="6"
-            maxClusterRadius="65"
+            disableClusteringAtZoom="15"
+            maxClusterRadius="35"
             ref={this.clusterRef}
             showCoverageOnHover={false}
             spiderfyOnMaxZoom={false}

@@ -9,44 +9,50 @@ class ModalMetar extends Component {
     icao: null,
 		isModalOpen: false,
     metar: null
-	}
-
+  }
+  
 	closeModal = () => {
 		this.setState({ isModalOpen: false })
-	}
-
+  }
+  
+  // Convert Statue Miles to Kilmetres.
   convertSMtoKM = sm => {
     const conversion = Math.round(1.609344 * sm)
 
     return `${conversion} KM`
   }
-
+  
+  // If the User wants to go to the currently-selected Airport on the Map, send back the data to the Container and pan to it.
   gotoAirport = () => {
     this.closeModal()
     return this.props.returnICAO(this.state.icao)
   }
 
+  // Determine the correct Atmospheric Pressure for the geographic area: 
+  // hPa (Europe and most of the world), or Hg (North America)
   getQNH = () => {
-    const keys = Object.keys(this.state.metar),
-          altimeter = keys.find((key, i) => key.includes('altimeterIn'))
+    const keys = Object.keys(this.state.metar)
+    const altimeter = keys.find(key => key.includes('altimeterIn'))
 
     let altimeterType = null
 
     if (altimeter) {
-      altimeterType = altimeter.includes('Hpa') ? 'Hpa' : 'Hg'
+      altimeterType = altimeter.includes('Hpa') ? 'hPa' : 'Hg'
       return `${this.state.metar[altimeter]} ${altimeterType}` || 'unavailable'
     } else {
       return CURRENTLY_UNAVAILABLE
     }
   }
 
+  // Get and Display the Temperature.
   getTemperature = (temperature) => {
     return temperature ? `${temperature}${String.fromCodePoint(176)}` : CURRENTLY_UNAVAILABLE
   }
 
+  // Get and Display the Weather Icon.
   getWeather = () => {
-    const weather = this.state.metar['weather'],
-          clouds = this.state.metar['clouds']
+    const weather = this.state.metar['weather']
+    const clouds = this.state.metar['clouds']
 
     if (weather) {
       return this.getWeatherIcon(weather[weather.length - 1].meaning)
@@ -89,6 +95,7 @@ class ModalMetar extends Component {
     }
   }
 
+  // Use the Degrees Key to approximate the Range of what direction the Wind is currently blowing.
   getWindDirection = (deg) => {
     for (let x in DEGREES_KEY) {
       if (deg >= DEGREES_KEY[x][0] && deg <= DEGREES_KEY[x][1]) {
@@ -102,6 +109,7 @@ class ModalMetar extends Component {
     }
   }
 
+  // Determine the Visibility based on the data available. Otherwise, show as 'Unavailable'.
   getVisibility = visibility => {
     if (visibility === 9999) {
       return 9999
@@ -115,13 +123,8 @@ class ModalMetar extends Component {
 	toggleModal = () => {
 		this.setState({ isModalOpen: (this.state.isModalOpen ? false : true) })
 	}
-
-	returnData = e => {
-		const value = e.target.innerHTML || e.target.innerText
-		this.closeModal()
-		this.props.returnData(value)
-	}
-
+  
+  // Create click and key events to support closing the modal.
 	componentDidMount = () => {
 		const modal = document.getElementById('Modal_Metar')
 
@@ -132,10 +135,10 @@ class ModalMetar extends Component {
 		document.addEventListener('keydown', e => {
 			if (e.key === 'Escape') this.closeModal()
 		}, false);
-	}
-
-	static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.metar) {
+  }
+  
+	static getDerivedStateFromProps(nextProps) {
+    if (nextProps.metar && nextProps.icao) {
       return {
 				airport_name: nextProps.airport_name,
         icao: nextProps.icao.toUpperCase(),
