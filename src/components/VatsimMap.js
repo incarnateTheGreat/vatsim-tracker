@@ -552,13 +552,12 @@ export default class VatsimMap extends Component {
         const icao_departures = this.state.flights.filter(flight => selected_icao === flight.planned_depairport)
         const icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport)
         const icao_controllers = this.state.controllers.filter(controller => {
-          // If ICAO only has 3 characters for a prefix, find it.
-          if (controller.callsign.substring(0,4).indexOf('_') > 0) {
-            return selected_icao.includes(controller.callsign.substring(0,3))
-          }
+          const icao_str = controller.callsign.substr(0, controller.callsign.indexOf('_'))
 
-          return controller.callsign.indexOf(selected_icao) > -1
-        });              
+          if (icao_str.length >= 3 && selected_icao.includes(icao_str)) {
+            return selected_icao.includes(icao_str)
+          }
+        })
 
         // Get the Distance remaining in any active flights.
         for (let i = 0; i < icao_destinations.length; i++) {

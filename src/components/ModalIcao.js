@@ -21,7 +21,8 @@ class ModalIcao extends Component {
 	state = {
 		airport_name: null,
 		arrivals_sort_column: 'callsign',
-		arrivals_sort_order: null,
+    arrivals_sort_order: null,
+    controllers: null,
 		departures_sort_order: null,
 		departures_sort_column: 'callsign',
 		isModalOpen: false,
@@ -151,7 +152,7 @@ class ModalIcao extends Component {
   }
   
   // Update the ICAO Modal with Props Data.
-	static getDerivedStateFromProps(nextProps, prevState) {
+	static getDerivedStateFromProps(nextProps, prevState) {    
     let items = prevState.items
     
     // Pass the latest Props data and persist the sorted columns if the Modal is open.
@@ -165,7 +166,8 @@ class ModalIcao extends Component {
 		}
 
 		return {
-			airport_name: nextProps.airport_name,
+      airport_name: nextProps.airport_name,
+      controllers: nextProps.items[2],
 			items: nextProps.items && nextProps.items[1] ? items : nextProps.items,
 			icao: nextProps.icao
 		}
@@ -175,7 +177,7 @@ class ModalIcao extends Component {
 		const modalClasses = classNames(
 			'Modal',
 			this.state.isModalOpen ? '--open' : ''
-    )    
+    )
 
 		return (
 			<div id='Modal_Icao' className={modalClasses}>
@@ -256,9 +258,9 @@ class ModalIcao extends Component {
           <div className='Modal__sections'>
             <section className='Modal__section --atc'>
 							<h2>Controllers</h2>
-								{this.state.items[2] && (
+								{this.state.controllers && (
 									<ul className='icao__list'>
-										{this.state.items[2].length > 0 ? this.state.items[2].map((controllerData, i) =>
+										{this.state.controllers.length > 0 ? this.state.controllers.map((controllerData, i) =>
 											<li className='icao__list__child' key={i}>
                         <ul>
                           <li><span>{controllerData.name}</span></li>
