@@ -83,6 +83,12 @@ const ICAO_LETTERS_SUPPORTED = [
   'T'  // Caribbean
 ]
 
+const VATSIM_SERVERS = [
+  'http://vatsim-data.hardern.net/vatsim-data.txt',
+  'http://vatsim.aircharts.org/vatsim-data.txt',
+  'http://info.vroute.net/vatsim-data.txt'
+]
+
 module.exports = {
   CLIENT_LABELS,
   CURRENTLY_UNAVAILABLE,
@@ -92,5 +98,6 @@ module.exports = {
   MAX_BOUNDS,
   REFRESH_TIME,
   SERVER_PATH,
-  UP_ARROW
+  UP_ARROW,
+  VATSIM_SERVERS
 };

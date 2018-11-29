@@ -8,7 +8,7 @@ const express = require('express'),
       mongoose = require('mongoose'),
 			SleepTime = require('sleeptime'),
 			CONSTANTS = require('../constants/constants'),
-			{ CLIENT_LABELS } = CONSTANTS
+			{ CLIENT_LABELS, VATSIM_SERVERS } = CONSTANTS
 
 require('dotenv').config()
 
@@ -32,9 +32,12 @@ app.listen(8000, () => {
 // Connect to the VATSIM Data, render all Flights/Controllers, and thend dispatch to the front-end.
 app.route('/api/vatsim-data').get((req, res) => {
   console.log('------------------------------------------------------------');
-  console.log('Get VATSIM Data...');
+	console.log('Get VATSIM Data...');
+	
+	// Get random path to avoid hitting the same VATSIM server over and over.
+	const vatsim_path = VATSIM_SERVERS[Math.floor(Math.random() * VATSIM_SERVERS.length)]
 
-	request('http://info.vroute.net/vatsim-data.txt', (error, response, body) => {
+	request(vatsim_path, (error, response, body) => {
 		const lines = body.split('\n'),
 					results = []
 

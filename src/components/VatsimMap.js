@@ -46,6 +46,7 @@ export default class VatsimMap extends Component {
     selected_destairport: null,
     selected_flight: null,
     selected_icao: null,
+    selected_isDetailedFlightRoute: null,
     selected_isICAONorthAmerica: null,
     selected_metar_icao: null,
     selected_planned_route: null,
@@ -109,7 +110,7 @@ export default class VatsimMap extends Component {
           this.clearPolylines()          
 
           if (!this.isPlaneOnGround(this.state.selected_flight.groundspeed) && this.state.destination_data) {
-            this.drawPolylines(this.state.selected_flight.coordinates, this.state.selected_planned_route, this.state.selected_depairport, this.state.selected_destairport)
+            this.drawPolylines(this.state.selected_flight.coordinates, this.state.selected_planned_route, this.state.destination_data ,this.state.selected_depairport, this.state.selected_destairport)
           } else {
             // If there's no flight path drawn on the screen, then simply centre the viewpoint over the Selected flight.
             this.map.panTo(
@@ -164,6 +165,7 @@ export default class VatsimMap extends Component {
     let lng2 = null
     let latlngs = null;
     let selected_isICAONorthAmerica = this.state.selected_isICAONorthAmerica || null;
+    let selected_isDetailedFlightRoute = this.state.selected_isDetailedFlightRoute || null;
 
     // If the Planned Route has already been applied to State, then continue to use it.
     if (this.state.selected_planned_route) {
@@ -171,7 +173,11 @@ export default class VatsimMap extends Component {
       lng2 = Array.isArray(data[1]) ? data[data.length - 1][1] : data[data.length - 1].longitude
 
       // If the Selected Flight is not in North America, we need to continue drawing its current point on the map.
-      if (selected_isICAONorthAmerica) {        
+      if (selected_isICAONorthAmerica && this.state.selected_planned_route.length === 2) {
+        // Get Detailed Route and draw again
+        latlngs = this.getDecodedFlightRoutePoints(data)
+        selected_isDetailedFlightRoute = true
+      } else if (selected_isICAONorthAmerica && this.state.selected_planned_route.length > 2) {
         latlngs = this.state.selected_planned_route
       } else {
         latlngs = [[lat1, lng1], [lat2, lng2]]
@@ -185,6 +191,8 @@ export default class VatsimMap extends Component {
 
       latlngs = [[lat1, lng1], [lat2, lng2]]
       selected_isICAONorthAmerica = false;
+      selected_isDetailedFlightRoute = false;
+      
     } else if (!this.isICAONorthAmerica(depICAO) || !this.isICAONorthAmerica(arrICAO)) {
       // Because FlightAware does not support non-continental US/Canada ICAOs and Waypoints,
       // we must prevent Departure or Arrival ICAOs that do not meet the requirements from drawing
@@ -194,21 +202,19 @@ export default class VatsimMap extends Component {
 
       latlngs = [[lat1, lng1], [lat2, lng2]]
       selected_isICAONorthAmerica = false;
-    } else {      
-      // Collect all Waypoints, excluding Unknown and Airport Waypoints. Also, disregard any objects
-      // that do not have a Lat or Lng.
-      latlngs = data.reduce((r, a) => {
-        if ((a.type !== 'UNKNOWN' && a.type !== "ARPT") && (a.latitude)) {
-          r.push([a.latitude, a.longitude])
-        }
-
-        return r
-      }, [])
+      selected_isDetailedFlightRoute = false;      
+    } else {
+      latlngs = this.getDecodedFlightRoutePoints(data)
 
       lat2 = Array.isArray(data[0]) ? data[data.length - 1][0] : data[data.length - 1].latitude
       lng2 = Array.isArray(data[1]) ? data[data.length - 1][1] : data[data.length - 1].longitude
+
       selected_isICAONorthAmerica = true;
+      selected_isDetailedFlightRoute = true;
     }
+
+    // To prevent any bad data from going into the Polyline, check if the LatLng data is valid.
+    if(!this.isValidLatLng([...latlngs])) return;
 
     // Use collected data to assemble the Polyline.
     const polyline = new Leaflet.polyline(latlngs, { color: 'green' }).addTo(this.map)
@@ -229,6 +235,7 @@ export default class VatsimMap extends Component {
     this.setState({
       isLoading: false,
       selected_planned_route: latlngs,
+      selected_isDetailedFlightRoute,
       selected_isICAONorthAmerica
     }, () => {
       this.map.fitBounds(polyline.getBounds(), { padding: [50, 50] })
@@ -296,6 +303,19 @@ export default class VatsimMap extends Component {
 
   getDeg2rad = (deg) => {
     return deg * (Math.PI / 180)
+  }
+
+  getDecodedFlightRoutePoints = (data) => {
+    // Collect all Waypoints, excluding Unknown and Airport Waypoints. Also, disregard any objects that do not have a Lat or Lng.
+    const latlngs = data.reduce((r, a) => {
+      if ((a.type !== 'UNKNOWN' && a.type !== "ARPT") && (a.latitude)) {
+        r.push([a.latitude, a.longitude])
+      }
+
+      return r
+    }, [])
+
+    return latlngs
   }
 
   // Get Radial Opposite Direction from Destination to Current Position.
@@ -515,6 +535,8 @@ export default class VatsimMap extends Component {
       selected_destairport: null,
       selected_flight: null,
       selected_icao: null,
+      selected_isDetailedFlightRoute: null,
+      selected_isICAONorthAmerica: null,
       selected_metar_icao: null,
       selected_planned_route: null,
       zoom: 2
@@ -531,7 +553,13 @@ export default class VatsimMap extends Component {
     this.setState({
       callsign: '',
       destination_data: null,
+      selected_depairport: null,
+      selected_destairport: null,
       selected_flight: null,
+      selected_icao: null,
+      selected_isDetailedFlightRoute: null,
+      selected_isICAONorthAmerica: null,
+      selected_metar_icao: null,
       selected_planned_route: null
     }, () => {
       // Clear Progress Line, Popups, and Inputs.
@@ -547,6 +575,22 @@ export default class VatsimMap extends Component {
 
   isICAONorthAmerica = (icao) => {
     return ICAO_LETTERS_SUPPORTED.includes(icao.charAt(0))
+  }
+
+  isValidLatLng = (latlng) => {
+    let i = 0
+    let isValid = true
+    const iMax = latlng.length
+
+    for (; i < iMax; i++) {
+      if (Number.isNaN(latlng[i][0]) || Number.isNaN(latlng[i][1])) {
+        isValid = false
+      }
+
+      if (!isValid) return false
+    }
+
+    return true
   }
 
   openIcaoModal = (selected_icao) => {
@@ -723,7 +767,10 @@ export default class VatsimMap extends Component {
           }}
           zoom={this.state.zoom}>
           <TileLayer
+            crossOrigin={true}
+            saveToCache={true}
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            useCache={true}
           />
           <MarkerClusterGroup
             chunkedLoading={true}
