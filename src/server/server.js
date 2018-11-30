@@ -4,7 +4,7 @@ const express = require('express'),
 			cors = require('cors'),
 			request = require('request'),
 			graphqlHTTP = require('express-graphql'),
-			schema = require('./schema/schema'),
+			schema_airport = require('./schema/schema_airport'),
       mongoose = require('mongoose'),
 			SleepTime = require('sleeptime'),
 			CONSTANTS = require('../constants/constants'),
@@ -26,7 +26,7 @@ app.use(cors())
 
 app.listen(8000, () => {
 	console.log('Express & GraphQL servers started!')
-  mongoose.connect(`mongodb://127.0.0.1:27017/airports`)
+	mongoose.connect(`mongodb://127.0.0.1:27017/airports`)
 })
 
 // Connect to the VATSIM Data, render all Flights/Controllers, and thend dispatch to the front-end.
@@ -175,7 +175,7 @@ app.use('/graphql', graphqlHTTP((req, res, graphQLParams) => {
 	graphQLParams.query = query
 
   return ({
-    schema,
+    schema: schema_airport,
     rootValue: query,
     graphiql: true
   })

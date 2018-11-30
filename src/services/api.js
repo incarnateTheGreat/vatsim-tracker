@@ -6,17 +6,19 @@ export const getAirportData = async (destination_icao) =>{
         return null
     } else {
         return await axios(`${SERVER_PATH}/graphql`, {
-        params: {
-            icao: destination_icao,
-            params: 'lat,lng'
-        }
+            params: {
+                icao: destination_icao,
+                params: 'lat,lng'
+            }
         }).then(res => {
-        try {
-            return res.data.data.icao
-        } catch(err) {
-            return null
-        }
-        }).catch(err => this.errorToastMsg('There was a problem retrieving the Destination Airport Data.'))
+            try {
+                return res.data.data.icao
+            } catch(err) {
+                console.log(err);
+                
+                return null
+            }
+        })
     }
 }
 

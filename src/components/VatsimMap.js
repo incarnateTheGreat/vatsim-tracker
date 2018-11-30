@@ -110,7 +110,14 @@ export default class VatsimMap extends Component {
           this.clearPolylines()          
 
           if (!this.isPlaneOnGround(this.state.selected_flight.groundspeed) && this.state.destination_data) {
-            this.drawPolylines(this.state.selected_flight.coordinates, this.state.selected_planned_route, this.state.destination_data ,this.state.selected_depairport, this.state.selected_destairport)
+            const latlngObject = {
+              lat1: this.state.selected_flight.coordinates[0],
+              lng1: this.state.selected_flight.coordinates[1],
+              lat2: this.state.selected_planned_route[this.state.selected_planned_route.length - 1][0],
+              lng2: this.state.selected_planned_route[this.state.selected_planned_route.length - 1][1]
+            }
+
+            this.drawPolylines(this.state.selected_planned_route, latlngObject)
           } else {
             // If there's no flight path drawn on the screen, then simply centre the viewpoint over the Selected flight.
             this.map.panTo(
@@ -157,61 +164,8 @@ export default class VatsimMap extends Component {
   }
 
   // Assign Lat/Lng values for Current Position and Arrival.
-  drawPolylines = (coordinates, data, destination_data, depICAO, arrICAO) => {
-    const lat1 = coordinates[0]
-    const lng1 = coordinates[1]
-
-    let lat2 = null
-    let lng2 = null
-    let latlngs = null;
-    let selected_isICAONorthAmerica = this.state.selected_isICAONorthAmerica || null;
-    let selected_isDetailedFlightRoute = this.state.selected_isDetailedFlightRoute || null;
-
-    // If the Planned Route has already been applied to State, then continue to use it.
-    if (this.state.selected_planned_route) {
-      lat2 = Array.isArray(data[0]) ? data[data.length - 1][0] : data[data.length - 1].latitude
-      lng2 = Array.isArray(data[1]) ? data[data.length - 1][1] : data[data.length - 1].longitude
-
-      // If the Selected Flight is not in North America, we need to continue drawing its current point on the map.
-      if (selected_isICAONorthAmerica && this.state.selected_planned_route.length === 2) {
-        // Get Detailed Route and draw again
-        latlngs = this.getDecodedFlightRoutePoints(data)
-        selected_isDetailedFlightRoute = true
-      } else if (selected_isICAONorthAmerica && this.state.selected_planned_route.length > 2) {
-        latlngs = this.state.selected_planned_route
-      } else {
-        latlngs = [[lat1, lng1], [lat2, lng2]]
-      }
-    } else if (!data) {
-      // In the event that the DecodeRoute Service returns a null result, we must use the Destination Data from 
-      // the parent call to build a proper LatLng object so we can draw a straight line from the current flight's
-      // position to the destination.
-      lat2 = parseFloat(destination_data.lat)
-      lng2 = parseFloat(destination_data.lng)
-
-      latlngs = [[lat1, lng1], [lat2, lng2]]
-      selected_isICAONorthAmerica = false;
-      selected_isDetailedFlightRoute = false;
-      
-    } else if (!this.isICAONorthAmerica(depICAO) || !this.isICAONorthAmerica(arrICAO)) {
-      // Because FlightAware does not support non-continental US/Canada ICAOs and Waypoints,
-      // we must prevent Departure or Arrival ICAOs that do not meet the requirements from drawing
-      // points on the map. Instead, this will go from the Departure to Arrival points.
-      lat2 = Array.isArray(data[0]) ? data[data.length - 1][0] : data[data.length - 1].latitude
-      lng2 = Array.isArray(data[1]) ? data[data.length - 1][1] : data[data.length - 1].longitude
-
-      latlngs = [[lat1, lng1], [lat2, lng2]]
-      selected_isICAONorthAmerica = false;
-      selected_isDetailedFlightRoute = false;      
-    } else {
-      latlngs = this.getDecodedFlightRoutePoints(data)
-
-      lat2 = Array.isArray(data[0]) ? data[data.length - 1][0] : data[data.length - 1].latitude
-      lng2 = Array.isArray(data[1]) ? data[data.length - 1][1] : data[data.length - 1].longitude
-
-      selected_isICAONorthAmerica = true;
-      selected_isDetailedFlightRoute = true;
-    }
+  drawPolylines = (latlngs, startEndPoints) => {
+    const { lat1, lng1, lat2, lng2 } = startEndPoints
 
     // To prevent any bad data from going into the Polyline, check if the LatLng data is valid.
     if(!this.isValidLatLng([...latlngs])) return;
@@ -232,12 +186,7 @@ export default class VatsimMap extends Component {
     })
 
     // Draw the line on the screen.
-    this.setState({
-      isLoading: false,
-      selected_planned_route: latlngs,
-      selected_isDetailedFlightRoute,
-      selected_isICAONorthAmerica
-    }, () => {
+    this.setState({ isLoading: false }, () => {
       this.map.fitBounds(polyline.getBounds(), { padding: [50, 50] })
     })
   }
@@ -262,15 +211,43 @@ export default class VatsimMap extends Component {
       const destination_data = responses[0]
       const data = responses[1]
 
-      if (destination_data) {        
+      if (destination_data) {
+        const lat1 = flight.coordinates[0]
+        const lng1 = flight.coordinates[1]
+        
+        let selected_planned_route = null
+        let selected_isICAONorthAmerica = null // TODO: Do we need this anymore?
+        let lat2 = null
+        let lng2 = null
+        let latlngObject = {}
+
+        // If the Flight Route returns nothing, or either of the ICAOs are not in North America, simply return the start and end points.
+        // Otherwise, return the accepted LatLng data and store it as an Array in order to draw the Route on the Map.
+        if (!data || (!this.isICAONorthAmerica(flight.planned_depairport) || !this.isICAONorthAmerica(flight.planned_destairport))) {
+          lat2 = parseFloat(destination_data.lat)
+          lng2 = parseFloat(destination_data.lng)
+
+          selected_planned_route = [[lat1, lng1], [lat2, lng2]]
+          selected_isICAONorthAmerica = false;
+        } else {
+          selected_planned_route = this.getDecodedFlightRoutePoints(data)
+          lat2 = selected_planned_route[selected_planned_route.length - 1][0]
+          lng2 = selected_planned_route[selected_planned_route.length - 1][1]
+          selected_isICAONorthAmerica = true;
+        }
+
+        // Comprise Departure and Destination Latitudes and Longitudes to assist in drawing the Route on the Map.
+        latlngObject = { lat1, lng1, lat2, lng2 }
+
         this.setState({
           destination_data,
           selected_depairport: flight.planned_depairport,
           selected_destairport: flight.planned_destairport,
           selected_flight: flight,
-          selected_planned_route: null }, () => {          
+          selected_isICAONorthAmerica,
+          selected_planned_route }, () => {          
           if(!this.isPlaneOnGround(flight.groundspeed)) {
-            this.drawPolylines(flight.coordinates, data, destination_data, flight.planned_depairport, flight.planned_destairport)
+            this.drawPolylines(selected_planned_route, latlngObject)
           }
 
           this.setState({ isLoading: false }, () => {
@@ -367,8 +344,18 @@ export default class VatsimMap extends Component {
       // Depending if there were any environment issues or changes, display the 'Connected' Toast Pop-up.
       if (toast.isActive(this.toastId)) this.serverToastMsg('Connected.', true)
 
+      // TODO: KEEP THIS HERE FOR TESTING. REMOVE WHEN DONE.
+      // let flights_onground = []      
+
+      // for(let i = 0; i < flights.length; i++) {
+      //   if (this.isPlaneOnGround(flights[i].groundspeed)) {
+      //     flights_onground.push(flights[i])
+      //   }
+      // }
+
       // Update State with User Data.
       this.setState({ flights,
+        // flights: flights_onground,
                       controllers,
                       icaos }, () => {
         // Pass the Selected ICAO to the Modal Data if it's open to feed it persistant data.

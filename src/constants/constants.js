@@ -41,7 +41,7 @@ const CLIENT_LABELS = [
   'heading',
   'QNH_iHg',
   'QNH_Mb'
-];
+]
 
 // Wind Degrees Key
 const DEGREES_KEY = {
@@ -62,7 +62,7 @@ const DEGREES_KEY = {
   'North-West': [303.75, 326.25],
   'North North-West': [326.25, 348.75],
   'N2': [348.75, 360]
-};
+}
 
 const REFRESH_TIME = 30000;
 
@@ -78,6 +78,7 @@ const DOWN_ARROW = '&#9660'
 
 const ICAO_LETTERS_SUPPORTED = [
   'C', // Canada
+  'M', // Mexico
   'K', // United States
   'P', // Alaska, Hawaii, and any other U.S-related Territory
   'T'  // Caribbean
@@ -100,4 +101,4 @@ module.exports = {
   SERVER_PATH,
   UP_ARROW,
   VATSIM_SERVERS
-};
+}

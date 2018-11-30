@@ -1,6 +1,6 @@
 const graphql = require('graphql'),
       mongoose = require('mongoose'),
-      airportsSchema = require('./airportsSchema')
+			airportsSchema = require('./airportsSchema')
 
 const { GraphQLObjectType,
 				GraphQLString,

@@ -248,9 +248,9 @@ class ModalIcao extends Component {
                         <span className='table__data'>{arrivalData.planned_depairport}</span>
 												<span className='table__data'>{arrivalData.distanceToGo}</span>
 											</div>
-										) : (<div className='table__row'>
+										) : (<div className='table__row --no-data'>
 													<span className='table__data'>None</span>
-												 </div>)}
+												</div>)}
 									</div>
 								)}
 						</section>
