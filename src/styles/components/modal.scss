@@ -57,7 +57,7 @@
 		display: flex;
 		flex-direction: column;
 		height: 85%;
-		width: 75%;
+		width: 85%;
 
     &.--weather {
       height: 55%;
@@ -72,6 +72,7 @@
 		display: flex;
 		flex-direction: row;
     height: 50%;
+		overflow: auto;
 
     &.--weather {
       height: 100%;
@@ -170,12 +171,12 @@
     &__row {
       display: table-row;
     }
-  
+
     &__header {
       background-color: transparent;
       font-weight: 600;
     }
-  
+
     &__row {
       &:nth-child(even) {
         background-color: $dark-grey;
@@ -184,7 +185,7 @@
         background: transparent;
       }
     }
-  
+
     &__data {
       display: table-cell;
       padding: 5px;
