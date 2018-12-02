@@ -103,11 +103,11 @@ export default class VatsimMap extends Component {
   // Every 30 seconds, execute calls to update all data on the Map.
   startInterval = () => {
 		this.interval = setInterval(() => {
-      
+
 			this.getFlightData(() => {
         // If there is a Selected Flight, re-draw its position and Polylines, if any.
         if (this.state.selected_flight) {
-          this.clearPolylines()          
+          this.clearPolylines()
 
           if (!this.isPlaneOnGround(this.state.selected_flight.groundspeed) && this.state.destination_data) {
             const latlngObject = {
@@ -175,7 +175,7 @@ export default class VatsimMap extends Component {
     const oppDirectionHeading = this.getRadialOppDirection(lat1, lng1, lat2, lng2)
     const distanceLatLngs = [[lat1, lng1],[lat2, lng2]]
     const distanceKM = this.getDistanceToDestination(distanceLatLngs)
-    const distanceNMI = this.getNauticalMilesFromKM(distanceKM) 
+    const distanceNMI = this.getNauticalMilesFromKM(distanceKM)
 
     // Add 'Distance to Go' text to the Polyline in Kilometers.
     polyline.setText(`${distanceKM} KM to go (${distanceNMI} nmi)`, {
@@ -201,7 +201,7 @@ export default class VatsimMap extends Component {
   }
 
   // Get the necessary Flight Data to determine it's Position, Destination, and Route (if available).
-  findFlight = (flight) => {    
+  findFlight = (flight) => {
     this.clearPolylines()
 
     Promise.all([
@@ -214,7 +214,7 @@ export default class VatsimMap extends Component {
       if (destination_data) {
         const lat1 = flight.coordinates[0]
         const lng1 = flight.coordinates[1]
-        
+
         let selected_planned_route = null
         let selected_isICAONorthAmerica = null // TODO: Do we need this anymore?
         let lat2 = null
@@ -245,7 +245,7 @@ export default class VatsimMap extends Component {
           selected_destairport: flight.planned_destairport,
           selected_flight: flight,
           selected_isICAONorthAmerica,
-          selected_planned_route }, () => {          
+          selected_planned_route }, () => {
           if(!this.isPlaneOnGround(flight.groundspeed)) {
             this.drawPolylines(selected_planned_route, latlngObject)
           }
@@ -261,7 +261,7 @@ export default class VatsimMap extends Component {
       }
     })
   }
-  
+
   // Get the Airport Data that is required to find it on the Map.
   getAirportPosition = (icao) => {
     getAirportData(icao).then(icao_data => {
@@ -339,35 +339,25 @@ export default class VatsimMap extends Component {
     getVatsimData().then(data => {
       const { flights,
               controllers,
-              icaos } = data              
+              icaos } = data
 
       // Depending if there were any environment issues or changes, display the 'Connected' Toast Pop-up.
       if (toast.isActive(this.toastId)) this.serverToastMsg('Connected.', true)
 
-      // TODO: KEEP THIS HERE FOR TESTING. REMOVE WHEN DONE.
-      // let flights_onground = []      
-
-      // for(let i = 0; i < flights.length; i++) {
-      //   if (this.isPlaneOnGround(flights[i].groundspeed)) {
-      //     flights_onground.push(flights[i])
-      //   }
-      // }
-
       // Update State with User Data.
       this.setState({ flights,
-        // flights: flights_onground,
                       controllers,
                       icaos }, () => {
         // Pass the Selected ICAO to the Modal Data if it's open to feed it persistant data.
-        if (this.modalIcaoRef.current.state.isModalOpen && this.modalIcaoRef.current.state.icao) {        
+        if (this.modalIcaoRef.current.state.isModalOpen && this.modalIcaoRef.current.state.icao) {
           this.modalData(this.state.selected_icao)
         }
 
         // Update the Selected Flight's data and apply it to the Map.
-        if (this.state.selected_flight) {          
+        if (this.state.selected_flight) {
           const selected_flight = this.state.flights.find(flight => {
             return flight.callsign.toUpperCase() === this.state.selected_flight.callsign.toUpperCase()
-          })          
+          })
 
           this.setState({ selected_flight }, () => callback ? callback() : null)
         } else {
@@ -590,7 +580,7 @@ export default class VatsimMap extends Component {
     Promise.all([getAirportName(selected_icao), getAirportData(selected_icao)]).then(responses => {
       const airport_name = responses[0]
       const icao_data = responses[1]
-      
+
       if (this.state.icaos.includes(selected_icao)) {
         const icao_departures = this.state.flights.filter(flight => selected_icao === flight.planned_depairport)
         const icao_destinations = this.state.flights.filter(flight => selected_icao === flight.planned_destairport)
@@ -604,9 +594,9 @@ export default class VatsimMap extends Component {
 
         // Get the Distance remaining in any active flights.
         for (let i = 0; i < icao_destinations.length; i++) {
-          icao_destinations[i]['distanceToGo'] = 
+          icao_destinations[i]['distanceToGo'] =
           `${this.getDistanceToDestination([
-            [icao_destinations[i]['coordinates'][0], icao_destinations[i]['coordinates'][1]], 
+            [icao_destinations[i]['coordinates'][0], icao_destinations[i]['coordinates'][1]],
             [icao_data.lat, icao_data.lng]])} km`
         }
 
@@ -617,7 +607,7 @@ export default class VatsimMap extends Component {
           icao_destinations,
           isLoading: false,
           selected_icao }, () => {
-            if (!this.modalIcaoRef.current.state.isModalOpen) this.modalIcaoRef.current.toggleModal()                           
+            if (!this.modalIcaoRef.current.state.isModalOpen) this.modalIcaoRef.current.toggleModal()
           }
         )
       } else {
@@ -641,13 +631,13 @@ export default class VatsimMap extends Component {
           this.setState({
             airport_name,
             isLoading: false,
-            metar, 
+            metar,
             selected_metar_icao: selected_metar }, () => {
             this.modalMetarRef.current.toggleModal()
           })
         } else {
           this.errorToastMsg('There is no METAR for this ICAO.')
-        }        
+        }
       })
     })
   }
@@ -735,7 +725,7 @@ export default class VatsimMap extends Component {
           ref={this.modalIcaoRef}
           returnICAO={e => this.getAirportPosition(e)}
         />
-        <ModalMetar 
+        <ModalMetar
           airport_name={this.state.airport_name}
           icao={this.state.selected_metar_icao}
           metar={this.state.metar}
