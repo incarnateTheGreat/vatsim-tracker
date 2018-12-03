@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component, memo } from 'react'
 
-export default class Autocomplete extends Component {
+class Autocomplete extends Component {
 	state = {
 		items: null,
 		searchCompareValue: '',
@@ -103,14 +103,14 @@ export default class Autocomplete extends Component {
 		}
 	}
 
-	static getDerivedStateFromProps(nextProps, prevState) {
+	static getDerivedStateFromProps(nextProps) {
 		return {
 			items: nextProps.items,
 			searchCompareValue: nextProps.searchCompareValue
 		}
 	}
 
-	render = () => {
+	render() {		
 		return (
 			<div className='autocomplete'>
 				<input
@@ -134,3 +134,5 @@ export default class Autocomplete extends Component {
 		)
 	}
 }
+
+export default memo(Autocomplete)
