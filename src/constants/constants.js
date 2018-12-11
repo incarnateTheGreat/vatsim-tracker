@@ -64,7 +64,7 @@ const DEGREES_KEY = {
   'N2': [348.75, 360]
 }
 
-const REFRESH_TIME = 30000;
+const REFRESH_TIME = 15000;
 
 const MAX_BOUNDS = [[-90, -180],[90, 180]];
 

@@ -110,7 +110,7 @@ class Autocomplete extends Component {
 		}
 	}
 
-	render() {		
+	render = () => {
 		return (
 			<div className='autocomplete'>
 				<input
@@ -128,9 +128,9 @@ class Autocomplete extends Component {
 								key={i}
 								tabIndex={i}>{item}</span>
 						)}
-				</div>
-			)}
-		</div>
+					</div>
+				)}
+			</div>
 		)
 	}
 }

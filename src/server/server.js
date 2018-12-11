@@ -1,11 +1,11 @@
 const express = require('express'),
 			app = express(),
-      Client = require('node-rest-client').Client,
 			cors = require('cors'),
 			request = require('request'),
 			graphqlHTTP = require('express-graphql'),
 			schema_airport = require('./schema/schema_airport'),
-      mongoose = require('mongoose'),
+			schema_fir = require('./schema/schema_fir'),
+			mongoose = require('mongoose'),
 			SleepTime = require('sleeptime'),
 			CONSTANTS = require('../constants/constants'),
 			{ CLIENT_LABELS, VATSIM_SERVERS } = CONSTANTS
@@ -38,86 +38,92 @@ app.route('/api/vatsim-data').get((req, res) => {
 	const vatsim_path = VATSIM_SERVERS[Math.floor(Math.random() * VATSIM_SERVERS.length)]
 
 	request(vatsim_path, (error, response, body) => {
-		const lines = body.split('\n'),
-					results = []
+		if (body) {
+			const lines = body.split('\n'),
+						results = []
 
-		let isRecording = false,
-				flights = []
+			let isRecording = false,
+					flights = []
 
-		// Go line by line to find CLIENTS data.
-		for(let line = 0; line < lines.length; line++) {
-			// When the '!CLIENTS:' line is found, begin recording data.
-			if (lines[line] === '!CLIENTS:\r') {
-				isRecording = true;
-			} else if (lines[line] === ';\r') {
-				isRecording = false;
+			// Go line by line to find CLIENTS data.
+			for(let line = 0; line < lines.length; line++) {
+				// When the '!CLIENTS:' line is found, begin recording data.
+				if (lines[line] === '!CLIENTS:\r') {
+					isRecording = true;
+				} else if (lines[line] === ';\r') {
+					isRecording = false;
+				}
+
+				// Skip the '!CLIENTS:' line to avoid adding to the results array.
+				if (isRecording && lines[line] !== '!CLIENTS:\r') {
+					results.push(lines[line]);
+				}
 			}
 
-			// Skip the '!CLIENTS:' line to avoid adding to the results array.
-			if (isRecording && lines[line] !== '!CLIENTS:\r') {
-				results.push(lines[line]);
+			for (let i = 0; i < results.length; i++) {
+				let clientInterface = {},
+						clientDataSplit = results[i].split(':');
+
+				// Using the CLIENT_LABELS Interface, assign each delimited element to its respective key.
+				for (let j = 0; j < CLIENT_LABELS.length; j++) {
+				clientInterface[CLIENT_LABELS[j]] = clientDataSplit[j];
+				}
+
+				// If the Flight doesn't have a recorded LAT/LNG, do not add it to the array.
+				if (!checkFlightPosition(clientInterface)) {
+					flights.push({
+						isController: clientInterface.frequency !== "" ? true : false,
+						name: clientInterface.realname,
+						callsign: clientInterface.callsign,
+						coordinates: [parseFloat(clientInterface.latitude), parseFloat(clientInterface.longitude)],
+						frequency: clientInterface.frequency,
+						altitude: clientInterface.altitude,
+						planned_aircraft: clientInterface.planned_aircraft,
+						heading: clientInterface.heading,
+						groundspeed: clientInterface.groundspeed,
+						transponder: clientInterface.transponder,
+						planned_depairport: clientInterface.planned_depairport,
+						planned_destairport: clientInterface.planned_destairport,
+						planned_route: clientInterface.planned_route
+					})
+				}
 			}
+
+			// Separate the Controllers & Destinations from the Flights.
+			const controllers = flights.filter(client => client.frequency !== ''),
+						icaos = [];
+
+			// Create Destinations Object.
+			const icaos_temp = flights.reduce((r, a) => {
+				const icao_destination = a.planned_destairport.toUpperCase(),
+							icao_departure = a.planned_depairport.toUpperCase()
+
+				if (icao_destination !== '') {
+					r[icao_destination] = r[icao_destination] || []
+					r[icao_destination].push(a)
+				}
+
+				if (icao_departure !== '') {
+					r[icao_departure] = r[icao_departure] || []
+					r[icao_departure].push(a)
+				}
+
+				return r
+			}, {})
+
+			// Put Departure & Destination ICAOs into Array.
+			for (let key in icaos_temp) icaos.push(key)
+
+			console.log('Number of Lines:', lines.length);
+			console.log('Number of results:', results.length);
+			console.log('Number of ICAOS:', icaos.length);
+
+			res.send({flights, controllers, icaos})
+		} else {
+			console.log('Not working...');
+			
+			res.send(null)
 		}
-
-		for (let i = 0; i < results.length; i++) {
-			let clientInterface = {},
-					clientDataSplit = results[i].split(':');
-
-		// Using the CLIENT_LABELS Interface, assign each delimited element to its respective key.
-		for (let j = 0; j < CLIENT_LABELS.length; j++) {
-			clientInterface[CLIENT_LABELS[j]] = clientDataSplit[j];
-		}
-
-			// If the Flight doesn't have a recorded LAT/LNG, do not add it to the array.
-			if (!checkFlightPosition(clientInterface)) {
-				flights.push({
-					isController: clientInterface.frequency !== "" ? true : false,
-					name: clientInterface.realname,
-					callsign: clientInterface.callsign,
-					coordinates: [parseFloat(clientInterface.latitude), parseFloat(clientInterface.longitude)],
-					frequency: clientInterface.frequency,
-					altitude: clientInterface.altitude,
-					planned_aircraft: clientInterface.planned_aircraft,
-					heading: clientInterface.heading,
-					groundspeed: clientInterface.groundspeed,
-					transponder: clientInterface.transponder,
-					planned_depairport: clientInterface.planned_depairport,
-					planned_destairport: clientInterface.planned_destairport,
-					planned_route: clientInterface.planned_route
-				})
-			}
-		}
-
-		// Separate the Controllers & Destinations from the Flights.
-		const controllers = flights.filter(client => client.frequency !== ''),
-					icaos = [];
-
-		// Create Destinations Object.
-		const icaos_temp = flights.reduce((r, a) => {
-			const icao_destination = a.planned_destairport.toUpperCase(),
-						icao_departure = a.planned_depairport.toUpperCase()
-
-			if (icao_destination !== '') {
-				r[icao_destination] = r[icao_destination] || []
-				r[icao_destination].push(a)
-			}
-
-			if (icao_departure !== '') {
-				r[icao_departure] = r[icao_departure] || []
-				r[icao_departure].push(a)
-			}
-
-			return r
-		}, {})
-
-		// Put Departure & Destination ICAOs into Array.
-		for (let key in icaos_temp) icaos.push(key)
-
-		console.log('Number of Lines:', lines.length);
-		console.log('Number of results:', results.length);
-    console.log('Number of ICAOS:', icaos.length);
-
-		res.send({flights, controllers, icaos})
 	})
 })
 
@@ -135,48 +141,66 @@ app.use('/api/metar/:metar', (req, res) => {
 
 // TODO: DECIDE WHETHER OR NOT TO KEEP THIS.
 app.use('/api/decodeRoute', (req, res) => {
-  const { origin,
-          route,
-          destination } = req.query
+	const { origin,
+			route,
+			destination } = req.query
 
-  const username = 'incarnate',
-        apiKey = 'a9f4144243d8130553b2beece195f892bda92b43',
-        fxmlUrl = 'http://flightxml.flightaware.com/json/FlightXML3/',
-        client_options = {
-          user: username,
-          password: apiKey
-        },
-        client = new Client(client_options)
+	// Join strings together, remove commas and replace them with spaces. 
+	const routeStr = [origin, route, destination]
+						.join(',')
+						.match(/[^ ,]+/g)
+						.join(' ')
 
-  client.registerMethod('decodeFlightRoute', fxmlUrl + 'DecodeRoute', 'GET');
+	const options = {
+		url: 'https://api.flightplandatabase.com/auto/decode',
+		method: 'POST',
+		form: { route: routeStr },
+		headers: { 'Authorization': 'Basic EEX0ovsK0oa4SDYT1g4XqOOZEnKvU6e9yj0ZhX9Q' }
+	};
 
-  const args = {
-  	parameters: {
-  		origin,
-      route,
-      destination
-  	}
-  };
+	// ****** DEVELOPMENT USE ONLY! REMOVE WHEN IN PRODUCTION *******
+	process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
-  client.methods.decodeFlightRoute(args, (data, response) => {		
-		const result = data.DecodeRouteResult
-		
-		result ? res.send(result.data) : res.send(null)
-  })
+	request(options, (error, response, body) => {
+		body ? res.send(body) : res.send(null)
+	})
 })
 
 // Use GraphQL to retrieve Coordinates data for selected Destination.
 app.use('/graphql', graphqlHTTP((req, res, graphQLParams) => {
-  const query = `{icao(icao:"${req.query.icao}"){${req.query.params}}}`
+	// if (param.param === 'airport') {
+		const query = `{icao(icao:"${req.query.icao}"){${req.query.params}}}`	
 
-  // Assemble query string and put it into the graphQLParams object for insertion
-  // in to GraphQL Schema, which will then contact MongoDB via Mongoose and then
-  // return results.
-	graphQLParams.query = query
+		// Assemble query string and put it into the graphQLParams object for insertion
+		// in to GraphQL Schema, which will then contact MongoDB via Mongoose and then
+		// return results.
+		graphQLParams.query = query
 
-  return ({
-    schema: schema_airport,
-    rootValue: query,
-    graphiql: true
-  })
+		return ({
+			schema: schema_airport,
+			rootValue: query,
+			graphiql: true
+		})
+	// }
+}));
+
+// Use GraphQL to retrieve Coordinates data for FIR Boundaries.
+app.use('/graphql/fir', graphqlHTTP((req, res, graphQLParams) => {
+	console.log('test');
+	
+	// const query = `{fir(icao:"${req.query.icao[0].callsign}"){${req.query.params}}}`
+	
+	// console.log(query);
+	
+
+  // // Assemble query string and put it into the graphQLParams object for insertion
+  // // in to GraphQL Schema, which will then contact MongoDB via Mongoose and then
+  // // return results.
+	// graphQLParams.query = query
+
+  // return ({
+  //   schema: schema_fir,
+  //   rootValue: query,
+  //   graphiql: true
+  // })
 }));

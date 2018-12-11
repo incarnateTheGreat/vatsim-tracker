@@ -25,8 +25,23 @@ export const getAirportData = async (destination_icao) =>{
 export const getAirportName = async (icao) => {
     return await axios(`${SERVER_PATH}/graphql`, {
         params: {
-            icao: icao,
+            icao,
             params: 'name'
+        }
+    }).then(res => {
+        try {
+            return res.data.data.icao.name
+        } catch(err) {
+            return null
+        }
+    })
+}
+
+export const getFirBoundaries = async (listOfControllers) => {    
+    return await axios(`${SERVER_PATH}/graphql`, {
+        params: {
+            icao: listOfControllers,
+            params: 'thing'
         }
     }).then(res => {
         try {
@@ -44,7 +59,9 @@ export const getDecodedFlightRoute = async (origin, route, destination) => {
             route,
             destination
         }
-    }).then(res => res.data)
+    }).then(res => {
+        return res.data
+    })
 }
 
 export const getMetarData = async (metar) => {

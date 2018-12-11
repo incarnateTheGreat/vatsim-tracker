@@ -168,8 +168,7 @@ class ModalIcao extends Component {
 		return {
       airport_name: nextProps.airport_name,
       controllers: nextProps.items[2],
-			items: nextProps.items && nextProps.items[1] ? items : nextProps.items,
-			icao: nextProps.icao
+			items: nextProps.items && nextProps.items[1] ? items : nextProps.items
 		}
 	}
 
@@ -184,7 +183,7 @@ class ModalIcao extends Component {
 				<div className='Modal__container'>
 					<header>
             <div>
-              <h1>{this.state.icao} ({this.state.airport_name})</h1>
+              <h1>{this.props.airport_name} ({this.props.icao})</h1>
               <h5
                 className='Modal__gotoAirport'
                 onClick={() => this.gotoAirport()}>Go to Airport
