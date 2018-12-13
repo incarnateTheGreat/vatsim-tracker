@@ -11,11 +11,11 @@ export const getAirportData = async (destination_icao) =>{
                 params: 'lat,lng'
             }
         }).then(res => {
+            console.log(res);
+            
             try {
                 return res.data.data.icao
             } catch(err) {
-                console.log(err);
-                
                 return null
             }
         })
@@ -37,15 +37,17 @@ export const getAirportName = async (icao) => {
     })
 }
 
-export const getFirBoundaries = async (listOfControllers) => {    
+export const getFirBoundaries = async (listOfControllers) => {
+    // console.log(listOfControllers[0]);
+    
     return await axios(`${SERVER_PATH}/graphql`, {
         params: {
-            icao: listOfControllers,
-            params: 'thing'
+            icao: 'ADR',
+            params: 'points'
         }
     }).then(res => {
         try {
-            return res.data.data.icao.name
+            return res.data.data.points
         } catch(err) {
             return null
         }

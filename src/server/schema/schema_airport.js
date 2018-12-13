@@ -28,9 +28,8 @@ const RootQuery = new GraphQLSchema({
   			args: { icao: { type: GraphQLString }},
   			resolve (parent, args) {
           // Return results to GraphQL.
-          if (db.readyState === 1) {
-            return airportsSchema.findOne({ icao: args.icao.toUpperCase() })
-              .then(res => res)
+          if (db.readyState === 1) {						
+            return airportsSchema.findOne({ icao: args.icao.toUpperCase() }).then(res => res)
           } else {
             console.log('Error: not connected to the database.')
           }

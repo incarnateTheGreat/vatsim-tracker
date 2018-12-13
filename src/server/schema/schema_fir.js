@@ -1,19 +1,34 @@
 const graphql = require('graphql'),
-      mongoose = require('mongoose'),
-      firSchema = require('./airportsSchema')
+	  mongoose = require('mongoose'),
+	  firSchema = require('./firSchema')
 
-const { GraphQLObjectType,
-        GraphQLString,
-        GraphQLSchema } = graphql,
-        db = mongoose.connection
+const db = mongoose.connection,
+	{ GraphQLObjectType,
+		GraphQLString,
+		GraphQLBoolean,
+		GraphQLSchema,
+		GraphQLScalarType,
+		GraphQLList } = graphql
+
+const resolvers = {
+	Coordinates: new GraphQLScalarType({
+		name: 'Coordinates',
+		description: 'A set of coordinates: x & y',
+		serialize(value) {
+			const [x,y] = value.map(val => parseFloat(val))
+			
+			return [x, y];
+		}
+	})
+}
 
 const FirType = new GraphQLObjectType({
 	name: 'fir',
 	fields: () => ({
-        icao: { type: GraphQLString },
-        isOceanic: { type: GraphQLString },
-        isExtension: { type: GraphQLString },
-        points: { type: GraphQLString }
+		icao: { type: GraphQLString },
+		isOceanic: { type: GraphQLBoolean },
+		isExtension: { type: GraphQLBoolean },
+		points: { type: new GraphQLList(resolvers.Coordinates) }
 	})
 })
 
@@ -22,19 +37,16 @@ const RootQuery = new GraphQLSchema({
   	name: 'RootQueryType',
     description: 'FIR data',
   	fields: {
-  		icao: {
+  		points: {
   			type: FirType,
   			args: { icao: { type: GraphQLString }},
-  			resolve (parent, args) {                  
-                // Return results to GraphQL.
-                if (db.readyState === 1) {
-                    console.log(args);
-                    
-                //     return firSchema.findOne({ icao: args.icao.toUpperCase() })
-                //     .then(res => res)
-                } else {
-                //     console.log('Error: not connected to the database.')
-                }
+  			resolve (parent, args) {
+				// Return results to GraphQL.					
+				if (db.readyState === 1) {						
+					return firSchema.findOne({ icao: args.icao.toUpperCase() }).then(res => res)
+				} else {
+					console.log('Error: not connected to the database.')
+				}
   			}
   		}
   	}

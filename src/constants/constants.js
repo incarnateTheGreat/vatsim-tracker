@@ -90,11 +90,14 @@ const VATSIM_SERVERS = [
   'http://info.vroute.net/vatsim-data.txt'
 ]
 
+const FIR_REGEX = new RegExp("^([^_]*_)(CTR)")
+
 module.exports = {
   CLIENT_LABELS,
   CURRENTLY_UNAVAILABLE,
   DEGREES_KEY,
   DOWN_ARROW,
+  FIR_REGEX,
   ICAO_LETTERS_SUPPORTED,
   MAX_BOUNDS,
   REFRESH_TIME,

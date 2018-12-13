@@ -12,7 +12,8 @@ import Autocomplete from './Autocomplete'
 import { Markers } from './Markers'
 import ModalIcao from './ModalIcao'
 import ModalMetar from './ModalMetar'
-import { MAX_BOUNDS,
+import { FIR_REGEX,
+         MAX_BOUNDS,
          ICAO_LETTERS_SUPPORTED,
          REFRESH_TIME } from '../constants/constants'
 import { getAirportData,
@@ -265,11 +266,11 @@ export default class VatsimMap extends Component {
 
   // Get the Airport Data that is required to find it on the Map.
   getAirportPosition = (icao) => {
-    getAirportData(icao).then(icao_data => {
+    getAirportData(icao).then(data => {
       this.setState({
         isLoading: true,
-        lat: parseFloat(icao_data.lat),
-        lng: parseFloat(icao_data.lng),
+        lat: parseFloat(data.lat),
+        lng: parseFloat(data.lng),
         zoom: 13
       }, () => {
         this.setState({
@@ -688,17 +689,21 @@ export default class VatsimMap extends Component {
         if (!this.interval) {
           this.setResizeEvent()
           this.startInterval()
-          this.getFlightData(() => {
+          this.getFlightData(() => {            
             // Find CTR/FSS Controllers so we can draw shaded area on the Map.
             const ctr_controllers = this.state.controllers.reduce((r, controller) => {
-              if (controller.callsign.includes('FSS') || controller.callsign.includes('CTR')) {
-                r.push(controller.callsign)
+              if ((controller.callsign.includes('FSS') || controller.callsign.includes('CTR')) && FIR_REGEX.test(controller.callsign)) {
+                r.push(controller.callsign.replace('_CTR', ''))
               }
 
               return r
             }, [])
 
-            // getFirBoundaries(ctr_controllers)
+            console.log(ctr_controllers);
+            getFirBoundaries(ctr_controllers).then(e => {
+              console.log(e);
+              
+            })
 
             this.setState({ isLoading: false, ctr_controllers }, () => this.unfollowBtnRef.current.disabled = true)
           })

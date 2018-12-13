@@ -96,7 +96,7 @@ app.route('/api/vatsim-data').get((req, res) => {
 			// Create Destinations Object.
 			const icaos_temp = flights.reduce((r, a) => {
 				const icao_destination = a.planned_destairport.toUpperCase(),
-							icao_departure = a.planned_depairport.toUpperCase()
+					  icao_departure = a.planned_depairport.toUpperCase()
 
 				if (icao_destination !== '') {
 					r[icao_destination] = r[icao_destination] || []
@@ -151,6 +151,9 @@ app.use('/api/decodeRoute', (req, res) => {
 						.match(/[^ ,]+/g)
 						.join(' ')
 
+						console.log(routeStr);
+						
+
 	const options = {
 		url: 'https://api.flightplandatabase.com/auto/decode',
 		method: 'POST',
@@ -168,8 +171,10 @@ app.use('/api/decodeRoute', (req, res) => {
 
 // Use GraphQL to retrieve Coordinates data for selected Destination.
 app.use('/graphql', graphqlHTTP((req, res, graphQLParams) => {
-	// if (param.param === 'airport') {
-		const query = `{icao(icao:"${req.query.icao}"){${req.query.params}}}`	
+	const params = req.query.params
+
+	if (params.includes('name') || params.includes('lat,lng')) {
+		const query = `{icao(icao: "${req.query.icao}"){${params}}}`
 
 		// Assemble query string and put it into the graphQLParams object for insertion
 		// in to GraphQL Schema, which will then contact MongoDB via Mongoose and then
@@ -181,26 +186,18 @@ app.use('/graphql', graphqlHTTP((req, res, graphQLParams) => {
 			rootValue: query,
 			graphiql: true
 		})
-	// }
-}));
+	} else if (params.includes('points')) {
+		const query = `{points(icao: "${req.query.icao}") {${params}}}`
 
-// Use GraphQL to retrieve Coordinates data for FIR Boundaries.
-app.use('/graphql/fir', graphqlHTTP((req, res, graphQLParams) => {
-	console.log('test');
-	
-	// const query = `{fir(icao:"${req.query.icao[0].callsign}"){${req.query.params}}}`
-	
-	// console.log(query);
-	
+		// Assemble query string and put it into the graphQLParams object for insertion
+		// in to GraphQL Schema, which will then contact MongoDB via Mongoose and then
+		// return results.
+		graphQLParams.query = query
 
-  // // Assemble query string and put it into the graphQLParams object for insertion
-  // // in to GraphQL Schema, which will then contact MongoDB via Mongoose and then
-  // // return results.
-	// graphQLParams.query = query
-
-  // return ({
-  //   schema: schema_fir,
-  //   rootValue: query,
-  //   graphiql: true
-  // })
+		return ({
+			schema: schema_fir,
+			rootValue: query,
+			graphiql: true
+		})
+	}
 }));

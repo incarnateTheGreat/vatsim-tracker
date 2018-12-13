@@ -9,4 +9,4 @@ const mongoose = require('mongoose'),
         done: Boolean
       })
 
-module.exports = mongoose.model('airports', airportsSchema)
+module.exports = mongoose.model('airports', airportsSchema, 'airports')
