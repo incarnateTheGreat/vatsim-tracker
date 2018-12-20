@@ -110,7 +110,7 @@ export default class VatsimMap extends Component {
 
 			this.getFlightData(() => {
         // If there is a Selected Flight, re-draw its position and Polylines, if any.
-        if (this.state.selected_flight) {          
+        if (this.state.selected_flight) {
           this.clearPolylines()
 
           const latlngObject = {
@@ -121,7 +121,7 @@ export default class VatsimMap extends Component {
           }
 
           if (!this.isPlaneOnGround(this.state.selected_flight.groundspeed) && this.state.destination_data) {
-            this.drawPolylines(this.state.selected_planned_route, latlngObject)
+            this.drawFlightPath(this.state.selected_planned_route, latlngObject)
           } else {
             // If there's no flight path drawn on the screen, then simply centre the viewpoint over the Selected flight.
             this.map.panTo(
@@ -133,6 +133,8 @@ export default class VatsimMap extends Component {
 
           }
         }
+
+        this.drawFIRBoundaries();
       })
 		}, REFRESH_TIME)
 	}
@@ -167,8 +169,19 @@ export default class VatsimMap extends Component {
     }
   }
 
+  // Clear all FIR Boundaries off of the Map.
+  clearFIRBoundaries = () => {
+    const layers = this.map._layers
+
+    for(let i in layers) {
+      if(this.map._layers[i].options.class) {
+        this.map.removeLayer(layers[i]);
+      }
+    }
+  }
+
   // Assign Lat/Lng values for Current Position and Arrival.
-  drawPolylines = (latlngs, startEndPoints) => {
+  drawFlightPath = (latlngs, startEndPoints) => {
     const { lat1, lng1, lat2, lng2 } = startEndPoints    
 
     // To prevent any bad data from going into the Polyline, check if the LatLng data is valid.
@@ -248,7 +261,7 @@ export default class VatsimMap extends Component {
           selected_flight: flight,
           selected_planned_route }, () => {
           if(!this.isPlaneOnGround(flight.groundspeed)) {
-            this.drawPolylines(selected_planned_route, latlngObject)
+            this.drawFlightPath(selected_planned_route, latlngObject)
           }
 
           this.setState({ isLoading: false }, () => {
@@ -261,6 +274,44 @@ export default class VatsimMap extends Component {
         })
       }
     })
+  }
+
+  drawFIRBoundaries = () => {
+    this.clearFIRBoundaries();
+    
+    // Find CTR/FSS Controllers so we can draw shaded area on the Map.
+    const ctr_controllers = this.state.controllers.reduce((r, controller) => {
+      if ((controller.callsign.includes('FSS') || controller.callsign.includes('FTW') || controller.callsign.includes('CTR'))) {
+        r.push(controller.callsign.replace('_CTR', ''));
+      }
+      return r
+    }, []);
+
+    getFirBoundaries(ctr_controllers).then(data => {
+      const availableControllers = {};
+      
+      // Map the list of Available Controllers for referencing in the FIR Call below.
+      for (let i = 0; i < ctr_controllers.length; i++) {
+        availableControllers[ctr_controllers[i]] = this.state.controllers.find(controller => controller.callsign.includes(ctr_controllers[i]))
+      }
+
+      // Draw out active FIR Boundaries.
+      for (let i = 0; i < data.length; i++) {
+        const { callsign, name, frequency } = availableControllers[data[i].icao];
+        const polygon_points = new Leaflet.polygon(data[i].points, { color: 'red', class: '' })
+                                          .bindTooltip(`
+                                            <div><strong>${callsign}</strong></div>
+                                            <div>${name}</div>
+                                            <div>${frequency}</div>
+                                          `)
+                                          .addTo(this.map);
+      }     
+    })
+
+    this.setState({
+      ctr_controllers,
+      isLoading: false 
+    }, () => this.unfollowBtnRef.current.disabled = true)
   }
 
   // Get the Airport Data that is required to find it on the Map.
@@ -686,46 +737,15 @@ export default class VatsimMap extends Component {
     setTimeout(() => {
       this.setState({ width, height }, () => {
         if (!this.interval) {
-          this.setResizeEvent()
-          this.startInterval()
+          this.setResizeEvent();
+          this.startInterval();
           this.getFlightData(() => {            
-            // Find CTR/FSS Controllers so we can draw shaded area on the Map.
-            const ctr_controllers = this.state.controllers.reduce((r, controller) => {
-              if ((controller.callsign.includes('FSS') || controller.callsign.includes('FTW') || controller.callsign.includes('CTR'))) {
-                r.push(controller.callsign.replace('_CTR', ''));
-              }
-              return r
-            }, []);
-
-            getFirBoundaries(ctr_controllers).then(data => {
-              const availableControllers = {};
-              
-              // Map the list of Available Controllers for referencing in the FIR Call below.
-              for (let i = 0; i < ctr_controllers.length; i++) {
-                availableControllers[ctr_controllers[i]] = this.state.controllers.find(controller => controller.callsign.includes(ctr_controllers[i]))
-              }
-
-              // Draw out active FIR Boundaries.
-              for (let i = 0; i < data.length; i++) {
-                const { callsign, name, frequency } = availableControllers[data[i].icao];
-                const polygon_points = new Leaflet.polygon(data[i].points, { color: 'red' })
-                                                  .bindTooltip(`
-                                                    <div><strong>${callsign}</strong></div>
-                                                    <div>${name}</div>
-                                                    <div>${frequency}</div>
-                                                  `)
-                                                  .addTo(this.map);
-              }
-            })
-
-            this.setState({
-              ctr_controllers,
-              isLoading: false }, () => this.unfollowBtnRef.current.disabled = true)
+            this.drawFIRBoundaries();
           })
-          window.dispatchEvent(new Event('resize'))
+          window.dispatchEvent(new Event('resize'));
         }
-      })
-    }, 0)
+      });
+    }, 0);
   }
 
   render = () => {
