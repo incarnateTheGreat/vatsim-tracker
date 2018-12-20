@@ -12,8 +12,7 @@ import Autocomplete from './Autocomplete'
 import { Markers } from './Markers'
 import ModalIcao from './ModalIcao'
 import ModalMetar from './ModalMetar'
-import { FIR_REGEX,
-         MAX_BOUNDS,
+import { MAX_BOUNDS,
          ICAO_LETTERS_SUPPORTED,
          REFRESH_TIME } from '../constants/constants'
 import { getAirportData,
@@ -693,19 +692,35 @@ export default class VatsimMap extends Component {
             // Find CTR/FSS Controllers so we can draw shaded area on the Map.
             const ctr_controllers = this.state.controllers.reduce((r, controller) => {
               if ((controller.callsign.includes('FSS') || controller.callsign.includes('FTW') || controller.callsign.includes('CTR'))) {
-                r.push(controller.callsign.replace('_CTR', ''))
+                r.push(controller.callsign.replace('_CTR', ''));
+              }
+              return r
+            }, []);
+
+            getFirBoundaries(ctr_controllers).then(data => {
+              const availableControllers = {};
+              
+              // Map the list of Available Controllers for referencing in the FIR Call below.
+              for (let i = 0; i < ctr_controllers.length; i++) {
+                availableControllers[ctr_controllers[i]] = this.state.controllers.find(controller => controller.callsign.includes(ctr_controllers[i]))
               }
 
-              return r
-            }, [])
-
-            console.log([ctr_controllers]);
-            getFirBoundaries(ctr_controllers).then(data => {                            
-              // const polygon_points = new Leaflet.polygon(data.points, { color: 'red' }).addTo(this.map)
-              
+              // Draw out active FIR Boundaries.
+              for (let i = 0; i < data.length; i++) {
+                const { callsign, name, frequency } = availableControllers[data[i].icao];
+                const polygon_points = new Leaflet.polygon(data[i].points, { color: 'red' })
+                                                  .bindTooltip(`
+                                                    <div><strong>${callsign}</strong></div>
+                                                    <div>${name}</div>
+                                                    <div>${frequency}</div>
+                                                  `)
+                                                  .addTo(this.map);
+              }
             })
 
-            this.setState({ isLoading: false, ctr_controllers }, () => this.unfollowBtnRef.current.disabled = true)
+            this.setState({
+              ctr_controllers,
+              isLoading: false }, () => this.unfollowBtnRef.current.disabled = true)
           })
           window.dispatchEvent(new Event('resize'))
         }

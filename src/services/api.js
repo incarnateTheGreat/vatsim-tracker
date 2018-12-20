@@ -45,9 +45,7 @@ export const getFirBoundaries = async (listOfControllers) => {
         }
     }).then(res => {
         try {
-            console.log(res.data.data.points);
-            
-            return res.data.data
+            return res.data.data.points;
         } catch(err) {
             return null
         }
