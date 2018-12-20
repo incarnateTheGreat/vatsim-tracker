@@ -699,7 +699,7 @@ export default class VatsimMap extends Component {
               return r
             }, [])
 
-            console.log(ctr_controllers);
+            console.log([ctr_controllers]);
             getFirBoundaries(ctr_controllers).then(data => {                            
               // const polygon_points = new Leaflet.polygon(data.points, { color: 'red' }).addTo(this.map)
               

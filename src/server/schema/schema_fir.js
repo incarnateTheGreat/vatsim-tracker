@@ -15,9 +15,7 @@ const resolvers = {
 		name: 'Coordinates',
 		description: 'A set of coordinates: x & y',
 		serialize(value) {			
-			const [x,y] = value.map(val => parseFloat(val))
-
-			console.log('serial', [x,y]);
+			const [x,y] = value.map(val => parseFloat(val));
 			
 			return [x, y];
 		}
@@ -42,7 +40,7 @@ const RootQuery = new GraphQLObjectType({
 	description: 'FIR data',
 	fields: {
 		points: {
-			type: FirType,
+			type: new GraphQLList(FirType),
 			args: { icao: { type: GraphQLString }},
 			resolve (_, args) {
 				query['icao']['$in'] = args.icao.toUpperCase().split(',');
@@ -50,27 +48,11 @@ const RootQuery = new GraphQLObjectType({
 				// Return results to GraphQL.					
 				if (db.readyState === 1) {
 					return FirSchema.find(query, params).then(res => res)
-					// return FirSchema.find(query, params).then(res => {
-					// 	for (let x in res) {
-					// 		console.log(res[x]);
-					// 		return res[x]
-					// 	}
-					// })
 				} else {
 					console.log('Error: not connected to the database.')
 				}
 			}
 		}
-		// ,
-		// allPoints: {
-		// 	type: { type: new GraphQLList(resolvers.Coordinates) },
-		// 	args: { point: { type: GraphQLString } },
-		// 	resolve(_, args) {
-		// 		console.log(args);
-				
-		// 		return true
-		// 	}
-		// }
 	}
 });
 
