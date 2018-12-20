@@ -692,7 +692,7 @@ export default class VatsimMap extends Component {
           this.getFlightData(() => {            
             // Find CTR/FSS Controllers so we can draw shaded area on the Map.
             const ctr_controllers = this.state.controllers.reduce((r, controller) => {
-              if ((controller.callsign.includes('FSS') || controller.callsign.includes('CTR')) && FIR_REGEX.test(controller.callsign)) {
+              if ((controller.callsign.includes('FSS') || controller.callsign.includes('FTW') || controller.callsign.includes('CTR'))) {
                 r.push(controller.callsign.replace('_CTR', ''))
               }
 
@@ -700,8 +700,8 @@ export default class VatsimMap extends Component {
             }, [])
 
             console.log(ctr_controllers);
-            getFirBoundaries(ctr_controllers).then(e => {
-              console.log(e);
+            getFirBoundaries(ctr_controllers).then(data => {                            
+              // const polygon_points = new Leaflet.polygon(data.points, { color: 'red' }).addTo(this.map)
               
             })
 

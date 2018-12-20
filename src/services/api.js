@@ -5,7 +5,7 @@ export const getAirportData = async (destination_icao) =>{
     if (destination_icao === '' || !destination_icao) {
         return null
     } else {
-        return await axios(`${SERVER_PATH}/graphql`, {
+        return await axios(`${SERVER_PATH}/graphql/airports`, {
             params: {
                 icao: destination_icao,
                 params: 'lat,lng'
@@ -23,7 +23,7 @@ export const getAirportData = async (destination_icao) =>{
 }
 
 export const getAirportName = async (icao) => {
-    return await axios(`${SERVER_PATH}/graphql`, {
+    return await axios(`${SERVER_PATH}/graphql/airports`, {
         params: {
             icao,
             params: 'name'
@@ -38,16 +38,16 @@ export const getAirportName = async (icao) => {
 }
 
 export const getFirBoundaries = async (listOfControllers) => {
-    // console.log(listOfControllers[0]);
-    
-    return await axios(`${SERVER_PATH}/graphql`, {
+    return await axios(`${SERVER_PATH}/graphql/fir`, {
         params: {
-            icao: 'ADR',
-            params: 'points'
+            icao: listOfControllers,
+            params: 'icao, points'
         }
     }).then(res => {
         try {
-            return res.data.data.points
+            console.log(res.data.data.points);
+            
+            return res.data.data
         } catch(err) {
             return null
         }

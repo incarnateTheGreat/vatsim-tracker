@@ -18,7 +18,7 @@ const sleepy = new SleepTime((diff,date) => {
 
 function checkFlightPosition(clientInterface) {
 	return ((isNaN(clientInterface.longitude) || clientInterface.longitude === '') ||
-					(isNaN(clientInterface.latitude) || clientInterface.latitude === ''))
+			(isNaN(clientInterface.latitude) || clientInterface.latitude === ''))
 }
 
 // Enable cross-origin resource sharing.
@@ -62,11 +62,11 @@ app.route('/api/vatsim-data').get((req, res) => {
 
 			for (let i = 0; i < results.length; i++) {
 				let clientInterface = {},
-						clientDataSplit = results[i].split(':');
+					clientDataSplit = results[i].split(':');
 
 				// Using the CLIENT_LABELS Interface, assign each delimited element to its respective key.
-				for (let j = 0; j < CLIENT_LABELS.length; j++) {
-				clientInterface[CLIENT_LABELS[j]] = clientDataSplit[j];
+				for (let j = 0; j < CLIENT_LABELS.length; j++) {					
+					clientInterface[CLIENT_LABELS[j]] = clientDataSplit[j];
 				}
 
 				// If the Flight doesn't have a recorded LAT/LNG, do not add it to the array.
@@ -87,11 +87,11 @@ app.route('/api/vatsim-data').get((req, res) => {
 						planned_route: clientInterface.planned_route
 					})
 				}
-			}
+			}			
 
 			// Separate the Controllers & Destinations from the Flights.
 			const controllers = flights.filter(client => client.frequency !== ''),
-						icaos = [];
+				  icaos = [];
 
 			// Create Destinations Object.
 			const icaos_temp = flights.reduce((r, a) => {
@@ -149,10 +149,7 @@ app.use('/api/decodeRoute', (req, res) => {
 	const routeStr = [origin, route, destination]
 						.join(',')
 						.match(/[^ ,]+/g)
-						.join(' ')
-
-						console.log(routeStr);
-						
+						.join(' ');
 
 	const options = {
 		url: 'https://api.flightplandatabase.com/auto/decode',
@@ -169,35 +166,43 @@ app.use('/api/decodeRoute', (req, res) => {
 	})
 })
 
-// Use GraphQL to retrieve Coordinates data for selected Destination.
-app.use('/graphql', graphqlHTTP((req, res, graphQLParams) => {
-	const params = req.query.params
+app.use('/graphql/fir', graphqlHTTP((req, res, graphQLParams) => {
+	const { icao, params } = req.query;
+	const query = `{points(icao: "${icao}"){${params}}}`		
 
-	if (params.includes('name') || params.includes('lat,lng')) {
-		const query = `{icao(icao: "${req.query.icao}"){${params}}}`
-
-		// Assemble query string and put it into the graphQLParams object for insertion
-		// in to GraphQL Schema, which will then contact MongoDB via Mongoose and then
-		// return results.
+	// Assemble query string and put it into the graphQLParams object for insertion
+	// in to GraphQL Schema, which will then contact MongoDB via Mongoose and then
+	// return results.
+	
+	// Checking for 'undefined' prevents GraphiQL from crashing.
+	if (icao !== undefined) {
 		graphQLParams.query = query
-
-		return ({
-			schema: schema_airport,
-			rootValue: query,
-			graphiql: true
-		})
-	} else if (params.includes('points')) {
-		const query = `{points(icao: "${req.query.icao}") {${params}}}`
-
-		// Assemble query string and put it into the graphQLParams object for insertion
-		// in to GraphQL Schema, which will then contact MongoDB via Mongoose and then
-		// return results.
-		graphQLParams.query = query
-
-		return ({
-			schema: schema_fir,
-			rootValue: query,
-			graphiql: true
-		})
 	}
+
+	return ({
+		schema: schema_fir,
+		rootValue: query,
+		graphiql: true
+	});
+}));
+
+// Use GraphQL to retrieve Coordinates data for selected Destination.
+app.use('/graphql/airports', graphqlHTTP((req, res, graphQLParams) => {
+	const { icao, params } = req.query;
+	const query = `{icao(icao: "${icao}"){${params}}}`;
+
+	// Assemble query string and put it into the graphQLParams object for insertion
+	// in to GraphQL Schema, which will then contact MongoDB via Mongoose and then
+	// return results.
+	
+	// Checking for 'undefined' prevents GraphiQL from crashing.
+	if (icao !== undefined) {
+		graphQLParams.query = query
+	}
+
+	return ({
+		schema: schema_airport,
+		rootValue: query,
+		graphiql: true
+	});
 }));
