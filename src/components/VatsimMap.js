@@ -158,9 +158,9 @@ export default class VatsimMap extends Component {
     const layers = this.map._layers
 
     for(let i in layers) {
-      if(layers[i]._path !== undefined) {
+      if(layers[i].options.class !== 'fir' && layers[i]._path !== undefined) {
         try {
-          this.map.removeLayer(layers[i])
+          this.map.removeLayer(layers[i]);
         }
         catch(e) {
           this.errorToastMsg("Could not draw the Flight Path.")
@@ -169,15 +169,19 @@ export default class VatsimMap extends Component {
     }
   }
 
-  // Clear all FIR Boundaries off of the Map.
-  clearFIRBoundaries = () => {
+  // Chcek if FIR Boundary is currently drawn on the Map.
+  checkFIRBoundary = (icao) => {
     const layers = this.map._layers
+    let isOnMap = false;
 
     for(let i in layers) {
-      if(this.map._layers[i].options.class) {
-        this.map.removeLayer(layers[i]);
+      if(layers[i].options.class === 'fir' && layers[i].options.fir_id.includes(icao)) {        
+        isOnMap = true;
+        break;
       }
     }
+
+    return isOnMap;
   }
 
   // Assign Lat/Lng values for Current Position and Arrival.
@@ -208,6 +212,58 @@ export default class VatsimMap extends Component {
         this.map.fitBounds(polyline.getBounds(), { padding: [50, 50] })
       }, 0);
     })
+  }
+
+  drawFIRBoundaries = () => {    
+    // Find CTR/FSS Controllers so we can draw shaded area on the Map.
+    const ctr_controllers = this.state.controllers.reduce((r, controller) => {
+      if ((controller.callsign.includes('FSS') || controller.callsign.includes('FTW') || controller.callsign.includes('CTR'))) {
+        r.push(controller.callsign.replace('_CTR', ''));
+      }
+      return r
+    }, []);
+
+    getFirBoundaries(ctr_controllers).then(data => {
+      const availableControllers = {};
+      
+      // Map the list of Available Controllers for referencing in the FIR Call below.
+      for (let i = 0; i < ctr_controllers.length; i++) {
+        availableControllers[ctr_controllers[i]] = this.state.controllers.find(controller => controller.callsign.includes(ctr_controllers[i]))
+      }
+
+      // Draw out active FIR Boundaries.
+      for (let i = 0; i < data.length; i++) {
+        // Prevent re-draws of FIR Boundaries to avoid FUAC on screen.
+        if (!this.checkFIRBoundary(data[i].icao)) {
+          const { callsign, name, frequency } = availableControllers[data[i].icao];
+
+          new Leaflet.polygon(data[i].points, 
+                              { color: 'red', class: 'fir', fir_id: callsign })
+                              .bindTooltip(`
+                                <div><strong>${callsign}</strong></div>
+                                <div>${name}</div>
+                                <div>${frequency}</div>
+                              `)
+                              .addTo(this.map);
+        } else {
+          // Find all existing FIRS on the map. Determine if they're in availableControllers. If they are not, remove them.
+          const layers = this.map._layers;
+
+          for(let j in layers) {
+            if (layers[j].options.fir_id) {
+              if (!layers[j].options.fir_id.includes(data[i].icao)) {
+                this.map.removeLayer(layers[j]);
+              } 
+            }
+          }
+        }
+      }
+    })
+
+    this.setState({
+      ctr_controllers,
+      isLoading: false
+    }, () => this.unfollowBtnRef.current.disabled = true)
   }
 
   errorToastMsg = (msg) => {
@@ -274,44 +330,6 @@ export default class VatsimMap extends Component {
         })
       }
     })
-  }
-
-  drawFIRBoundaries = () => {
-    this.clearFIRBoundaries();
-    
-    // Find CTR/FSS Controllers so we can draw shaded area on the Map.
-    const ctr_controllers = this.state.controllers.reduce((r, controller) => {
-      if ((controller.callsign.includes('FSS') || controller.callsign.includes('FTW') || controller.callsign.includes('CTR'))) {
-        r.push(controller.callsign.replace('_CTR', ''));
-      }
-      return r
-    }, []);
-
-    getFirBoundaries(ctr_controllers).then(data => {
-      const availableControllers = {};
-      
-      // Map the list of Available Controllers for referencing in the FIR Call below.
-      for (let i = 0; i < ctr_controllers.length; i++) {
-        availableControllers[ctr_controllers[i]] = this.state.controllers.find(controller => controller.callsign.includes(ctr_controllers[i]))
-      }
-
-      // Draw out active FIR Boundaries.
-      for (let i = 0; i < data.length; i++) {
-        const { callsign, name, frequency } = availableControllers[data[i].icao];
-        const polygon_points = new Leaflet.polygon(data[i].points, { color: 'red', class: '' })
-                                          .bindTooltip(`
-                                            <div><strong>${callsign}</strong></div>
-                                            <div>${name}</div>
-                                            <div>${frequency}</div>
-                                          `)
-                                          .addTo(this.map);
-      }     
-    })
-
-    this.setState({
-      ctr_controllers,
-      isLoading: false 
-    }, () => this.unfollowBtnRef.current.disabled = true)
   }
 
   // Get the Airport Data that is required to find it on the Map.

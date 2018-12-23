@@ -11,8 +11,6 @@ export const getAirportData = async (destination_icao) =>{
                 params: 'lat,lng'
             }
         }).then(res => {
-            console.log(res);
-            
             try {
                 return res.data.data.icao
             } catch(err) {
