@@ -63,7 +63,9 @@ To download and set up MongoDB:
 
 4) To apply the **Airports** JSON data to the database, make sure that you have the latest `airports.json` (from the `/data` path) file and then run: `mongoimport --db airports --collection airports --file airports.json --jsonArray`
 
-5) An easy way to interface with the database is to use **Robo-3T** (formerly known as **RoboMongo**). Install the program and then apply the database.
+5) To apply the **FIR** JSON data to the database, make sure that you have the latest `fir-boundaries.json` (from the `/data` path) file and then run: `mongoimport --db airports --collection fir --file fir-boundaries.json --jsonArray`
+
+6) An easy way to interface with the database is to use **Robo-3T** (formerly known as **RoboMongo**). Install the program and then apply the database.
 
 ## Tech Stack
 
