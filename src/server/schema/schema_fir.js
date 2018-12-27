@@ -35,7 +35,6 @@ const FirType = new GraphQLObjectType({
 })
 
 let query = { "icao": { "$in": null } };
-const params = { icao: 1, points: 1 };
 
 const RootQuery = new GraphQLObjectType({
 	name: 'RootQueryType',

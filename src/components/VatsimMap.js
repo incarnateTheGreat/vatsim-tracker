@@ -236,7 +236,7 @@ export default class VatsimMap extends Component {
         const { country,
                 icao,
                 points,
-                region } = fir_data[i];                
+                region } = fir_data[i];
 
         // Prevent re-draws of FIR Boundaries to avoid FUAC on screen.
         if (!this.checkFIRBoundary(icao)) {
@@ -249,8 +249,8 @@ export default class VatsimMap extends Component {
                               .bindTooltip(`
                                 <div><strong>${callsign}</strong></div>
                                 <div>${name}</div>
-                                <div>${region}</div>
-                                <div>${country}</div>
+                                ${region && `<div>${region}</div>`}
+                                ${country && `<div>${country}</div>`}
                                 <div>${frequency}</div>
                               `)
                               .addTo(this.map);
