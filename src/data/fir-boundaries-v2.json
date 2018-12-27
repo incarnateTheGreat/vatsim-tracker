@@ -2993,7 +2993,9 @@
                 "-6.550000",
                 "156.036667"
             ]
-        ]
+        ],
+        "region": "Honiara ACC",
+        "country": "Solomon Islands"
     },
     {
         "icao": "ANAU",
@@ -3028,7 +3030,9 @@
                 "3.000000",
                 "160.000000"
             ]
-        ]
+        ],
+        "region": "Nauru ACC",
+        "country": "Nauru"
     },
     {
         "icao": "AYPM",
@@ -3131,7 +3135,9 @@
                 "0.000000",
                 "160.000000"
             ]
-        ]
+        ],
+        "region": "Port Moresby ACC",
+        "country": "Papua New Guinea"
     },
     {
         "icao": "BGGL",
@@ -3210,7 +3216,9 @@
                 "82.000000",
                 "30.000000"
             ]
-        ]
+        ],
+        "region": "Nuuk ACC",
+        "country": "Greenland"
     },
     {
         "icao": "BIRD",
@@ -3269,7 +3277,9 @@
                 "61.000000",
                 "-7.000000"
             ]
-        ]
+        ],
+        "region": "Reykjavik ACC",
+        "country": "Iceland"
     },
     {
         "icao": "BIRD-E",
@@ -3540,7 +3550,9 @@
                 "53.425556",
                 "-110.001389"
             ]
-        ]
+        ],
+        "region": "Edmonton ACC",
+        "country": "Canada"
     },
     {
         "icao": "CZUL",
@@ -3919,7 +3931,9 @@
                 "44.233333",
                 "-76.183333"
             ]
-        ]
+        ],
+        "region": "Montreal ACC",
+        "country": "Canada"
     },
     {
         "icao": "CZWG",
@@ -3982,7 +3996,9 @@
                 "49.533333",
                 "-87.000000"
             ]
-        ]
+        ],
+        "region": "Winnipeg ACC",
+        "country": "Canada"
     },
     {
         "icao": "CZVR",
@@ -4085,7 +4101,9 @@
                 "49.500000",
                 "-115.137500"
             ]
-        ]
+        ],
+        "region": "Vancouver ACC",
+        "country": "Canada"
     },
     {
         "icao": "CZYZ",
@@ -4332,7 +4350,9 @@
                 "45.837500",
                 "-76.266667"
             ]
-        ]
+        ],
+        "region": "Toronto ACC",
+        "country": "Canada"
     },
     {
         "icao": "CZQX",
@@ -4391,7 +4411,9 @@
                 "61.000000",
                 "-30.000000"
             ]
-        ]
+        ],
+        "region": "Gander Domestic ACC",
+        "country": "Canada"
     },
     {
         "icao": "CZQX",
@@ -4406,7 +4428,9 @@
                 "44.446667",
                 "-56.051667"
             ]
-        ]
+        ],
+        "region": "Gander Domestic ACC",
+        "country": "Canada"
     },
     {
         "icao": "CZQX",
@@ -4677,7 +4701,9 @@
                 "48.500000",
                 "-62.000000"
             ]
-        ]
+        ],
+        "region": "Gander Domestic ACC",
+        "country": "Canada"
     },
     {
         "icao": "CZQX",
@@ -4716,7 +4742,9 @@
                 "45.000000",
                 "-30.000000"
             ]
-        ]
+        ],
+        "region": "Gander Domestic ACC",
+        "country": "Canada"
     },
     {
         "icao": "CZQM",
@@ -4731,7 +4759,9 @@
                 "44.446667",
                 "-56.051667"
             ]
-        ]
+        ],
+        "region": "Moncton Southern ACC",
+        "country": "Canada"
     },
     {
         "icao": "CZQM",
@@ -5002,7 +5032,9 @@
                 "48.500000",
                 "-62.000000"
             ]
-        ]
+        ],
+        "region": "Moncton Southern ACC",
+        "country": "Canada"
     },
     {
         "icao": "DAAA",
@@ -5453,7 +5485,9 @@
                 "39.000000",
                 "4.666667"
             ]
-        ]
+        ],
+        "region": "Alger ACC",
+        "country": "Algeria"
     },
     {
         "icao": "DGAC",
@@ -5704,7 +5738,9 @@
                 "-5.866667",
                 "6.583333"
             ]
-        ]
+        ],
+        "region": "Accra ACC",
+        "country": "Ghana"
     },
     {
         "icao": "DIII",
@@ -5815,7 +5851,9 @@
                 "10.033183",
                 "-5.616383"
             ]
-        ]
+        ],
+        "region": "Abidjan ACC",
+        "country": "Ivory Coast"
     },
     {
         "icao": "DNKK",
@@ -6634,7 +6672,9 @@
                 "3.000819",
                 "6.582597"
             ]
-        ]
+        ],
+        "region": "Kano ACC",
+        "country": "Nigeria"
     },
     {
         "icao": "DRRR",
@@ -7049,7 +7089,9 @@
                 "9.891142",
                 "-2.769736"
             ]
-        ]
+        ],
+        "region": "Niamey ACC",
+        "country": "Niger"
     },
     {
         "icao": "DTTC",
@@ -7252,7 +7294,9 @@
                 "36.931850",
                 "8.649489"
             ]
-        ]
+        ],
+        "region": "Tunis ACC",
+        "country": "Tunisia"
     },
     {
         "icao": "EBBU",
@@ -8147,7 +8191,9 @@
                 "50.800000",
                 "2.616667"
             ]
-        ]
+        ],
+        "region": "Brussels ACC",
+        "country": "Belgium"
     },
     {
         "icao": "EDWW",
@@ -8582,7 +8628,9 @@
                 "53.666667",
                 "6.500000"
             ]
-        ]
+        ],
+        "region": "Bremen ACC",
+        "country": "Germany"
     },
     {
         "icao": "EDWW-E",
@@ -9955,7 +10003,9 @@
                 "52.215306",
                 "6.980289"
             ]
-        ]
+        ],
+        "region": "Langen ACC",
+        "country": "Germany"
     },
     {
         "icao": "EDGG-NW",
@@ -11656,7 +11706,9 @@
                 "51.300000",
                 "15.033333"
             ]
-        ]
+        ],
+        "region": "Munich ACC",
+        "country": "Germany"
     },
     {
         "icao": "EDMM-N",
@@ -12325,7 +12377,9 @@
                 "51.300000",
                 "15.033333"
             ]
-        ]
+        ],
+        "region": "Rhein ACC",
+        "country": "Germany"
     },
     {
         "icao": "EETT",
@@ -12564,7 +12618,9 @@
                 "59.611667",
                 "27.636667"
             ]
-        ]
+        ],
+        "region": "Tallinn ACC",
+        "country": "Estonia"
     },
     {
         "icao": "EFES",
@@ -13078,7 +13134,9 @@
                 "59.32",
                 "-10.00"
             ]
-        ]
+        ],
+        "region": "Scottish ACC",
+        "country": "UK"
     },
     {
         "icao": "EGPX-E",
@@ -13511,7 +13569,9 @@
                 "51.116667",
                 "2.000000"
             ]
-        ]
+        ],
+        "region": "London ACC",
+        "country": "UK"
     },
     {
         "icao": "EGTT-C",
@@ -15697,7 +15757,9 @@
                 "52.167236",
                 "6.896408"
             ]
-        ]
+        ],
+        "region": "Amsterdam ACC",
+        "country": "Netherlands"
     },
     {
         "icao": "EISN",
@@ -15756,7 +15818,9 @@
                 "54.416667",
                 "-8.166667"
             ]
-        ]
+        ],
+        "region": "Shannon ACC",
+        "country": "Ireland"
     },
     {
         "icao": "EIDW",
@@ -15826,7 +15890,9 @@
                 "45.000000",
                 "-30.000000"
             ]
-        ]
+        ],
+        "region": "Shanwick Oceanic OCA",
+        "country": "UK"
     },
     {
         "icao": "EGGX",
@@ -15885,7 +15951,9 @@
                 "61.000000",
                 "-30.000000"
             ]
-        ]
+        ],
+        "region": "Shanwick Oceanic OCA",
+        "country": "UK"
     },
     {
         "icao": "EKDK",
@@ -16048,7 +16116,9 @@
                 "57.000000",
                 "7.500000"
             ]
-        ]
+        ],
+        "region": "Copenhagen ACC",
+        "country": "Denmark"
     },
     {
         "icao": "ENBD",
@@ -17125,7 +17195,9 @@
                 "62.000000",
                 "12.219722"
             ]
-        ]
+        ],
+        "region": "Norway ACC",
+        "country": "Norway"
     },
     {
         "icao": "ENOS",
@@ -17522,7 +17594,9 @@
                 "63.250000",
                 "0.000000"
             ]
-        ]
+        ],
+        "region": "Bodo Oceanic OCA",
+        "country": "Norway"
     },
     {
         "icao": "EPWW",
@@ -18393,7 +18467,9 @@
                 "51.016667",
                 "15.000000"
             ]
-        ]
+        ],
+        "region": "Warszawa ACC",
+        "country": "Poland"
     },
     {
         "icao": "ESMM",
@@ -18644,7 +18720,9 @@
                 "59.227097",
                 "11.843294"
             ]
-        ]
+        ],
+        "region": "Malmo ACC",
+        "country": "Sweden"
     },
     {
         "icao": "ESOS",
@@ -19127,7 +19205,9 @@
                 "69.055222",
                 "20.071964"
             ]
-        ]
+        ],
+        "region": "Stockholm ACC",
+        "country": "Sweden"
     },
     {
         "icao": "ESOS",
@@ -19378,7 +19458,9 @@
                 "59.227097",
                 "11.843294"
             ]
-        ]
+        ],
+        "region": "Stockholm ACC",
+        "country": "Sweden"
     },
     {
         "icao": "EVRR",
@@ -19717,7 +19799,9 @@
                 "56.345278",
                 "18.506389"
             ]
-        ]
+        ],
+        "region": "Riga ACC",
+        "country": "Latvia"
     },
     {
         "icao": "EYVL",
@@ -20260,7 +20344,9 @@
                 "56.345278",
                 "18.506389"
             ]
-        ]
+        ],
+        "region": "Vilnius ACC",
+        "country": "Lithuania"
     },
     {
         "icao": "FAJO",
@@ -20339,7 +20425,9 @@
                 "-34.000000",
                 "-10.000000"
             ]
-        ]
+        ],
+        "region": "Johannesburg Oceanic ACC",
+        "country": "South Africa"
     },
     {
         "icao": "FACA",
@@ -20470,7 +20558,9 @@
                 "-37.000000",
                 "15.000000"
             ]
-        ]
+        ],
+        "region": "Capetown ACC",
+        "country": "South Africa"
     },
     {
         "icao": "FACA-W",
@@ -21858,7 +21948,9 @@
                 "-22.000000",
                 "21.000000"
             ]
-        ]
+        ],
+        "region": "Gaborone ACC",
+        "country": "Botswana"
     },
     {
         "icao": "FCCC",
@@ -22577,7 +22669,9 @@
                 "-4.166667",
                 "6.583333"
             ]
-        ]
+        ],
+        "region": "Brazzaville ACC",
+        "country": "Congo Brazzaville"
     },
     {
         "icao": "FIMM",
@@ -22616,7 +22710,9 @@
                 "-19.000000",
                 "55.500000"
             ]
-        ]
+        ],
+        "region": "Mauritius ACC",
+        "country": "Mauritius"
     },
     {
         "icao": "FLFI",
@@ -23623,7 +23719,9 @@
                 "-16.200000",
                 "22.000000"
             ]
-        ]
+        ],
+        "region": "Lusaka ACC",
+        "country": "Zambia"
     },
     {
         "icao": "FMMM",
@@ -23670,7 +23768,9 @@
                 "-10.301769",
                 "44.000975"
             ]
-        ]
+        ],
+        "region": "Antananarivo ACC",
+        "country": "Madagascar"
     },
     {
         "icao": "FNAN",
@@ -23969,7 +24069,9 @@
                 "-5.866667",
                 "6.583333"
             ]
-        ]
+        ],
+        "region": "Luanda ACC",
+        "country": "Angola"
     },
     {
         "icao": "FQBE",
@@ -24648,7 +24750,9 @@
                 "-11.585322",
                 "34.642142"
             ]
-        ]
+        ],
+        "region": "Beira ACC",
+        "country": "Mozambique"
     },
     {
         "icao": "FSSS",
@@ -24675,7 +24779,9 @@
                 "-10.301769",
                 "44.000975"
             ]
-        ]
+        ],
+        "region": "Seychelles ACC",
+        "country": "Seychelles"
     },
     {
         "icao": "FTTT",
@@ -25062,7 +25168,9 @@
                 "13.354167",
                 "11.500000"
             ]
-        ]
+        ],
+        "region": "N'Djamena ACC",
+        "country": "Chad"
     },
     {
         "icao": "FVHA",
@@ -26716,7 +26824,9 @@
                 "-15.860550",
                 "34.074572"
             ]
-        ]
+        ],
+        "region": "Lilongwe ACC",
+        "country": "Malawi"
     },
     {
         "icao": "FYWH",
@@ -27055,7 +27165,9 @@
                 "-27.499900",
                 "9.999883"
             ]
-        ]
+        ],
+        "region": "Windhoek ACC",
+        "country": "Namibia"
     },
     {
         "icao": "FZZA",
@@ -27610,7 +27722,9 @@
                 "-11.001717",
                 "24.333122"
             ]
-        ]
+        ],
+        "region": "Kinshasa ACC",
+        "country": "Congo DRC"
     },
     {
         "icao": "GCCC",
@@ -27713,7 +27827,9 @@
                 "24.000000",
                 "-25.000000"
             ]
-        ]
+        ],
+        "region": "Canarias ACC",
+        "country": "Spain"
     },
     {
         "icao": "GLRB",
@@ -28007,7 +28123,9 @@
                 "31.500000",
                 "-15.750000"
             ]
-        ]
+        ],
+        "region": "Casablanca ACC",
+        "country": "Morocco"
     },
     {
         "icao": "GOOO",
@@ -28058,7 +28176,9 @@
                 "13.499444",
                 "-37.500000"
             ]
-        ]
+        ],
+        "region": "Dakar Oceanic ACC",
+        "country": "Senegal"
     },
     {
         "icao": "GOOO",
@@ -28301,7 +28421,9 @@
                 "25.998608",
                 "-8.666408"
             ]
-        ]
+        ],
+        "region": "Dakar Oceanic ACC",
+        "country": "Senegal"
     },
     {
         "icao": "GVSC",
@@ -28328,7 +28450,9 @@
                 "16.999167",
                 "-37.500000"
             ]
-        ]
+        ],
+        "region": "Sal Oceanic ACC",
+        "country": "Cape Verde"
     },
     {
         "icao": "HAAA",
@@ -28663,7 +28787,9 @@
                 "13.000714",
                 "36.000789"
             ]
-        ]
+        ],
+        "region": "Addis Ababa ACC",
+        "country": "Ethiopia"
     },
     {
         "icao": "HBBA",
@@ -28950,7 +29076,9 @@
                 "-4.443950",
                 "29.666600"
             ]
-        ]
+        ],
+        "region": "Bujumbura ACC",
+        "country": "Burundi"
     },
     {
         "icao": "HCSM",
@@ -29101,7 +29229,9 @@
                 "12.184033",
                 "50.766025"
             ]
-        ]
+        ],
+        "region": "Mogadishu ACC",
+        "country": "Somalia"
     },
     {
         "icao": "HECC",
@@ -29256,7 +29386,9 @@
                 "31.666333",
                 "25.165000"
             ]
-        ]
+        ],
+        "region": "Cairo ACC",
+        "country": "Egypt"
     },
     {
         "icao": "HHAA",
@@ -29491,7 +29623,9 @@
                 "14.266667",
                 "36.450000"
             ]
-        ]
+        ],
+        "region": "Asmara ACC",
+        "country": "Egypt"
     },
     {
         "icao": "HKNA",
@@ -29874,7 +30008,9 @@
                 "4.001508",
                 "36.000789"
             ]
-        ]
+        ],
+        "region": "Nairobi ACC",
+        "country": "Kenya"
     },
     {
         "icao": "HLLL",
@@ -30109,7 +30245,9 @@
                 "32.366669",
                 "11.500000"
             ]
-        ]
+        ],
+        "region": "Tripoli ACC",
+        "country": "Libya"
     },
     {
         "icao": "HRYR",
@@ -30464,7 +30602,9 @@
                 "-2.102547",
                 "29.167319"
             ]
-        ]
+        ],
+        "region": "Kigali ACC",
+        "country": "Rwanda"
     },
     {
         "icao": "HSSS",
@@ -31398,7 +31538,9 @@
                 "-11.001717",
                 "41.500250"
             ]
-        ]
+        ],
+        "region": "Dar Es Salaam ACC",
+        "country": "Tanzania"
     },
     {
         "icao": "HUEC",
@@ -31797,7 +31939,9 @@
                 "-0.502686",
                 "33.909092"
             ]
-        ]
+        ],
+        "region": "Entebbe ACC",
+        "country": "Uganda"
     },
     {
         "icao": "KZAB",
@@ -32056,7 +32200,9 @@
                 "35.433333",
                 "-112.000000"
             ]
-        ]
+        ],
+        "region": "Albuquerque ACC",
+        "country": "USA"
     },
     {
         "icao": "KZTL",
@@ -32187,7 +32333,9 @@
                 "36.183333",
                 "-85.400000"
             ]
-        ]
+        ],
+        "region": "Atlanta ACC",
+        "country": "USA"
     },
     {
         "icao": "KZBW",
@@ -32598,7 +32746,9 @@
                 "43.066667",
                 "-76.763889"
             ]
-        ]
+        ],
+        "region": "Boston ACC",
+        "country": "USA"
     },
     {
         "icao": "KZAU",
@@ -32725,7 +32875,9 @@
                 "42.783333",
                 "-93.000000"
             ]
-        ]
+        ],
+        "region": "Chicago ACC",
+        "country": "USA"
     },
     {
         "icao": "KZOB",
@@ -32904,7 +33056,9 @@
                 "43.000000",
                 "-82.416667"
             ]
-        ]
+        ],
+        "region": "Cleveland ACC",
+        "country": "USA"
     },
     {
         "icao": "KZJX",
@@ -33071,7 +33225,9 @@
                 "30.958333",
                 "-87.658333"
             ]
-        ]
+        ],
+        "region": "Jacksonville ACC",
+        "country": "USA"
     },
     {
         "icao": "KZMO",
@@ -33285,7 +33441,9 @@
                 "24.000000",
                 "-85.000000"
             ]
-        ]
+        ],
+        "region": "Miami ACC",
+        "country": "USA"
     },
     {
         "icao": "KZNY",
@@ -33492,7 +33650,9 @@
                 "40.072222",
                 "-72.500000"
             ]
-        ]
+        ],
+        "region": "New York Oceanic ACC",
+        "country": "USA"
     },
     {
         "icao": "KZNY",
@@ -33707,7 +33867,9 @@
                 "42.608333",
                 "-76.802778"
             ]
-        ]
+        ],
+        "region": "New York Oceanic ACC",
+        "country": "USA"
     },
     {
         "icao": "PHZH",
@@ -33778,7 +33940,9 @@
                 "20.868333",
                 "-150.536667"
             ]
-        ]
+        ],
+        "region": "Honolulu ACC",
+        "country": "USA"
     },
     {
         "icao": "KZAK",
@@ -33889,7 +34053,9 @@
                 "56.761667",
                 "-151.750000"
             ]
-        ]
+        ],
+        "region": "Oakland ACC",
+        "country": "USA"
     },
     {
         "icao": "KZAK",
@@ -33952,7 +34118,9 @@
                 "21.000000",
                 "155.000000"
             ]
-        ]
+        ],
+        "region": "Oakland ACC",
+        "country": "USA"
     },
     {
         "icao": "KZOA",
@@ -34067,7 +34235,9 @@
                 "40.983333",
                 "-126.900000"
             ]
-        ]
+        ],
+        "region": "Oakland Oceanic ACC",
+        "country": "USA"
     },
     {
         "icao": "KZDV",
@@ -34202,7 +34372,9 @@
                 "45.116667",
                 "-104.250000"
             ]
-        ]
+        ],
+        "region": "Denver ACC",
+        "country": "USA"
     },
     {
         "icao": "KZFW",
@@ -34381,7 +34553,9 @@
                 "35.333333",
                 "-100.000000"
             ]
-        ]
+        ],
+        "region": "Ft Worth ACC",
+        "country": "USA"
     },
     {
         "icao": "KZKC",
@@ -34504,7 +34678,9 @@
                 "37.500000",
                 "-102.550000"
             ]
-        ]
+        ],
+        "region": "Kansas City ACC",
+        "country": "USA"
     },
     {
         "icao": "KZLA",
@@ -34655,7 +34831,9 @@
                 "30.750000",
                 "-120.833333"
             ]
-        ]
+        ],
+        "region": "Los Angeles ACC",
+        "country": "USA"
     },
     {
         "icao": "KZMP",
@@ -34818,7 +34996,9 @@
                 "46.600000",
                 "-103.166667"
             ]
-        ]
+        ],
+        "region": "Minneapolis ACC",
+        "country": "USA"
     },
     {
         "icao": "KZLC",
@@ -34973,7 +35153,9 @@
                 "48.416667",
                 "-115.000000"
             ]
-        ]
+        ],
+        "region": "Salt Lake ACC",
+        "country": "USA"
     },
     {
         "icao": "KZHU",
@@ -35036,7 +35218,9 @@
                 "24.500000",
                 "-93.000000"
             ]
-        ]
+        ],
+        "region": "Houston ACC",
+        "country": "USA"
     },
     {
         "icao": "KZHU",
@@ -35287,7 +35471,9 @@
                 "29.766667",
                 "-102.400000"
             ]
-        ]
+        ],
+        "region": "Houston ACC",
+        "country": "USA"
     },
     {
         "icao": "KZID",
@@ -35410,7 +35596,9 @@
                 "39.904167",
                 "-88.183333"
             ]
-        ]
+        ],
+        "region": "Indianapolis ACC",
+        "country": "USA"
     },
     {
         "icao": "KZME",
@@ -35569,7 +35757,9 @@
                 "35.654167",
                 "-95.000000"
             ]
-        ]
+        ],
+        "region": "Memphis ACC",
+        "country": "USA"
     },
     {
         "icao": "KZSE",
@@ -35688,7 +35878,9 @@
                 "45.000000",
                 "-126.500000"
             ]
-        ]
+        ],
+        "region": "Seattle ACC",
+        "country": "USA"
     },
     {
         "icao": "KZDC",
@@ -35927,7 +36119,9 @@
                 "38.766667",
                 "-80.566667"
             ]
-        ]
+        ],
+        "region": "Washington ACC",
+        "country": "USA"
     },
     {
         "icao": "LBSR",
@@ -36342,7 +36536,9 @@
                 "41.322372",
                 "23.210394"
             ]
-        ]
+        ],
+        "region": "Sofia ACC",
+        "country": "Bulgaria"
     },
     {
         "icao": "LBWR",
@@ -36441,7 +36637,9 @@
                 "43.833333",
                 "28.000000"
             ]
-        ]
+        ],
+        "region": "Varna ACC",
+        "country": "Bulgaria"
     },
     {
         "icao": "LCCC",
@@ -36520,7 +36718,9 @@
                 "31.827319",
                 "34.000550"
             ]
-        ]
+        ],
+        "region": "Nicosia ACC",
+        "country": "Cyprus"
     },
     {
         "icao": "LECB",
@@ -36627,7 +36827,9 @@
                 "39.733333",
                 "-1.100000"
             ]
-        ]
+        ],
+        "region": "Barcelona ACC",
+        "country": "Spain"
     },
     {
         "icao": "LECP",
@@ -37201,7 +37403,9 @@
                 "39.031389",
                 "-1.280000"
             ]
-        ]
+        ],
+        "region": "Madrid ACC",
+        "country": "Spain"
     },
     {
         "icao": "LECS",
@@ -37384,7 +37588,9 @@
                 "38.925000",
                 "-7.022222"
             ]
-        ]
+        ],
+        "region": "Sevilla ACC",
+        "country": "Spain"
     },
     {
         "icao": "LEZL",
@@ -37853,7 +38059,9 @@
                 "49.466667",
                 "6.350000"
             ]
-        ]
+        ],
+        "region": "Reims ACC",
+        "country": "France"
     },
     {
         "icao": "LFFF",
@@ -38112,7 +38320,9 @@
                 "47.166667",
                 "-0.250000"
             ]
-        ]
+        ],
+        "region": "Paris ACC",
+        "country": "France"
     },
     {
         "icao": "LFMM",
@@ -38439,7 +38649,9 @@
                 "44.624722",
                 "3.041111"
             ]
-        ]
+        ],
+        "region": "Marseille ACC",
+        "country": "France"
     },
     {
         "icao": "LFRR",
@@ -38494,7 +38706,9 @@
                 "50.000000",
                 "-2.000000"
             ]
-        ]
+        ],
+        "region": "Brest ACC",
+        "country": "France"
     },
     {
         "icao": "LFBB",
@@ -38665,7 +38879,9 @@
                 "47.166667",
                 "2.000000"
             ]
-        ]
+        ],
+        "region": "Bordeaux ACC",
+        "country": "France"
     },
     {
         "icao": "LFFM",
@@ -40111,7 +40327,9 @@
                 "41.744850",
                 "26.155617"
             ]
-        ]
+        ],
+        "region": "Athens ACC",
+        "country": "Greece"
     },
     {
         "icao": "LGGG-W",
@@ -41631,7 +41849,9 @@
                 "46.872444",
                 "16.116086"
             ]
-        ]
+        ],
+        "region": "Budapest ACC",
+        "country": "Hungary"
     },
     {
         "icao": "LIBB",
@@ -41698,7 +41918,9 @@
                 "42.916667",
                 "13.083333"
             ]
-        ]
+        ],
+        "region": "Brindisi ACC",
+        "country": "Italy"
     },
     {
         "icao": "LIRR",
@@ -41773,7 +41995,9 @@
                 "41.333333",
                 "9.750000"
             ]
-        ]
+        ],
+        "region": "Roma ACC",
+        "country": "Italy"
     },
     {
         "icao": "LIMM",
@@ -42144,7 +42368,9 @@
                 "45.28",
                 "10"
             ]
-        ]
+        ],
+        "region": "Milano ACC",
+        "country": "Italy"
     },
     {
         "icao": "LIPP",
@@ -42754,7 +42980,9 @@
                 "51.01",
                 "14.77"
             ]
-        ]
+        ],
+        "region": "Praha ACC",
+        "country": "Czech Republic"
     },
     {
         "icao": "LLLL",
@@ -43121,7 +43349,9 @@
                 "29.394169",
                 "34.961000"
             ]
-        ]
+        ],
+        "region": "Tel-Aviv ACC",
+        "country": "Israel"
     },
     {
         "icao": "LMMM",
@@ -43156,7 +43386,9 @@
                 "36.500000",
                 "11.500000"
             ]
-        ]
+        ],
+        "region": "Malta ACC",
+        "country": "Malta"
     },
     {
         "icao": "LOVV",
@@ -43527,7 +43759,9 @@
                 "47.1",
                 "12.2"
             ]
-        ]
+        ],
+        "region": "Wien ACC",
+        "country": "Austria"
     },
     {
         "icao": "LPPO",
@@ -43582,7 +43816,9 @@
                 "22.300000",
                 "-40.000000"
             ]
-        ]
+        ],
+        "region": "Santa Maria Oceanic ACC",
+        "country": "Portugal"
     },
     {
         "icao": "LPPC",
@@ -44229,7 +44465,9 @@
                 "42.000000",
                 "-10.000000"
             ]
-        ]
+        ],
+        "region": "Lisboa ACC",
+        "country": "Portugal"
     },
     {
         "icao": "LRBB",
@@ -45416,7 +45654,9 @@
                 "43.666667",
                 "29.000000"
             ]
-        ]
+        ],
+        "region": "Bucuresti ACC",
+        "country": "Romania"
     },
     {
         "icao": "LSAS",
@@ -45763,7 +46003,9 @@
                 "46.925000",
                 "6.433333"
             ]
-        ]
+        ],
+        "region": "Switzerland ACC",
+        "country": "Switzerland"
     },
     {
         "icao": "LTBB",
@@ -45994,7 +46236,9 @@
                 "41.983333",
                 "28.316667"
             ]
-        ]
+        ],
+        "region": "Istanbul ACC",
+        "country": "Turkey"
     },
     {
         "icao": "LTAA",
@@ -46357,7 +46601,9 @@
                 "39.783333",
                 "44.700000"
             ]
-        ]
+        ],
+        "region": "Ankara ACC",
+        "country": "Turkey"
     },
     {
         "icao": "LJLA",
@@ -46792,7 +47038,9 @@
                 "45.444917",
                 "13.674103"
             ]
-        ]
+        ],
+        "region": "Ljubljana ACC",
+        "country": "Slovenia"
     },
     {
         "icao": "LDZO",
@@ -47791,7 +48039,9 @@
                 "45.571667",
                 "13.360000"
             ]
-        ]
+        ],
+        "region": "Zagreb ACC",
+        "country": "Croatia"
     },
     {
         "icao": "LQSB",
@@ -48490,7 +48740,9 @@
                 "42.889489",
                 "17.648375"
             ]
-        ]
+        ],
+        "region": "Sarajevo ACC",
+        "country": "Bosnia and Herzegovina"
     },
     {
         "icao": "LYBA",
@@ -49465,7 +49717,9 @@
                 "42.315861",
                 "22.365128"
             ]
-        ]
+        ],
+        "region": "Beograd ACC",
+        "country": "Serbia"
     },
     {
         "icao": "LWSS",
@@ -49676,7 +49930,9 @@
                 "41.353475",
                 "22.972078"
             ]
-        ]
+        ],
+        "region": "Skopje ACC",
+        "country": "Macedonia"
     },
     {
         "icao": "LAAA",
@@ -49983,7 +50239,9 @@
                 "39.703025",
                 "20.034167"
             ]
-        ]
+        ],
+        "region": "Tirana ACC",
+        "country": "Albania"
     },
     {
         "icao": "LZBB",
@@ -50546,7 +50804,9 @@
                 "48.516667",
                 "16.933333"
             ]
-        ]
+        ],
+        "region": "Bratislava ACC",
+        "country": "Slovakia"
     },
     {
         "icao": "MDCS",
@@ -50657,7 +50917,9 @@
                 "16.000000",
                 "-68.000000"
             ]
-        ]
+        ],
+        "region": "Santo Domingo ACC",
+        "country": "Dominican Republic"
     },
     {
         "icao": "MHTG",
@@ -50892,7 +51154,9 @@
                 "11.500000",
                 "-100.000000"
             ]
-        ]
+        ],
+        "region": "Central American ACC",
+        "country": "Honduras"
     },
     {
         "icao": "MKJK",
@@ -50935,7 +51199,9 @@
                 "19.000000",
                 "-82.083333"
             ]
-        ]
+        ],
+        "region": "Kingston ACC",
+        "country": "Jamaica"
     },
     {
         "icao": "MPZL",
@@ -51130,7 +51396,9 @@
                 "13.066667",
                 "-82.766667"
             ]
-        ]
+        ],
+        "region": "Panama ACC",
+        "country": "Panama"
     },
     {
         "icao": "MTEG",
@@ -51241,7 +51509,9 @@
                 "17.000000",
                 "-73.000000"
             ]
-        ]
+        ],
+        "region": "Port-Au-Prince ACC",
+        "country": "Haiti"
     },
     {
         "icao": "MUFH",
@@ -51296,7 +51566,9 @@
                 "22.000000",
                 "-86.000000"
             ]
-        ]
+        ],
+        "region": "Habana ACC",
+        "country": "Cuba"
     },
     {
         "icao": "MYNN",
@@ -51382,7 +51654,9 @@
                 "3.500000",
                 "170.000000"
             ]
-        ]
+        ],
+        "region": "Nadi ACC",
+        "country": "Fiji"
     },
     {
         "icao": "NFFF",
@@ -51405,7 +51679,9 @@
                 "-13.918900",
                 "-175.106300"
             ]
-        ]
+        ],
+        "region": "Nadi ACC",
+        "country": "Fiji"
     },
     {
         "icao": "NTTT",
@@ -51436,7 +51712,9 @@
                 "-5.000000",
                 "-155.000000"
             ]
-        ]
+        ],
+        "region": "Tahiti ACC",
+        "country": "French Polynesia"
     },
     {
         "icao": "NSFA",
@@ -51494,7 +51772,9 @@
                 "-25.000000",
                 "171.416667"
             ]
-        ]
+        ],
+        "region": "Auckland Oceanic ACC",
+        "country": "New Zealand"
     },
     {
         "icao": "NZZO",
@@ -51529,7 +51809,9 @@
                 "-60.000000",
                 "-131.000000"
             ]
-        ]
+        ],
+        "region": "Auckland Oceanic ACC",
+        "country": "New Zealand"
     },
     {
         "icao": "NZCM",
@@ -53108,7 +53390,9 @@
                 "29.408892",
                 "62.480311"
             ]
-        ]
+        ],
+        "region": "Kabul ACC",
+        "country": "Afghanistan"
     },
     {
         "icao": "OBBB",
@@ -53183,7 +53467,9 @@
                 "28.233333",
                 "48.866667"
             ]
-        ]
+        ],
+        "region": "Bahrain ACC",
+        "country": "Bahrain"
     },
     {
         "icao": "OEJD",
@@ -53522,7 +53808,9 @@
                 "28.525000",
                 "47.708333"
             ]
-        ]
+        ],
+        "region": "Jeddah ACC",
+        "country": "Saudi Arabia"
     },
     {
         "icao": "OIIX",
@@ -54253,7 +54541,9 @@
                 "35.600994",
                 "61.266344"
             ]
-        ]
+        ],
+        "region": "Tehran ACC",
+        "country": "Iran"
     },
     {
         "icao": "OJAC",
@@ -54600,7 +54890,9 @@
                 "32.644858",
                 "35.563125"
             ]
-        ]
+        ],
+        "region": "Amman ACC",
+        "country": "Jordan"
     },
     {
         "icao": "OKAC",
@@ -54707,7 +54999,9 @@
                 "28.544722",
                 "48.684167"
             ]
-        ]
+        ],
+        "region": "Kuwait ACC",
+        "country": "Kuwait"
     },
     {
         "icao": "OLBA",
@@ -54861,7 +55155,9 @@
                 "25.633333",
                 "55.333333"
             ]
-        ]
+        ],
+        "region": "Emirates ACC",
+        "country": "United Arab Emirates"
     },
     {
         "icao": "OOMM",
@@ -54948,7 +55244,9 @@
                 "24.000000",
                 "55.583333"
             ]
-        ]
+        ],
+        "region": "Muscat ACC",
+        "country": "Oman"
     },
     {
         "icao": "OPKR",
@@ -55163,7 +55461,9 @@
                 "29.837903",
                 "66.240186"
             ]
-        ]
+        ],
+        "region": "Karachi ACC",
+        "country": "Pakistan"
     },
     {
         "icao": "OPLR",
@@ -55662,7 +55962,9 @@
                 "36.908017",
                 "74.173914"
             ]
-        ]
+        ],
+        "region": "Lahore ACC",
+        "country": "Pakistan"
     },
     {
         "icao": "ORBB",
@@ -56077,7 +56379,9 @@
                 "31.950000",
                 "40.416667"
             ]
-        ]
+        ],
+        "region": "Baghdad ACC",
+        "country": "Iraq"
     },
     {
         "icao": "OSTT",
@@ -56348,7 +56652,9 @@
                 "34.584344",
                 "36.433631"
             ]
-        ]
+        ],
+        "region": "Damascus ACC",
+        "country": "Syria"
     },
     {
         "icao": "OYSC",
@@ -56567,7 +56873,9 @@
                 "17.366667",
                 "52.733333"
             ]
-        ]
+        ],
+        "region": "Sanaa ACC",
+        "country": "Yemen"
     },
     {
         "icao": "RCAA",
@@ -56598,7 +56906,9 @@
                 "21.000000",
                 "121.300000"
             ]
-        ]
+        ],
+        "region": "Taipei ACC",
+        "country": "Republic of China"
     },
     {
         "icao": "RJJJ",
@@ -56709,7 +57019,9 @@
                 "43.275000",
                 "138.035000"
             ]
-        ]
+        ],
+        "region": "Fukuoka ACC",
+        "country": "Japan"
     },
     {
         "icao": "RJCG",
@@ -57160,7 +57472,9 @@
                 "37.700000",
                 "126.000000"
             ]
-        ]
+        ],
+        "region": "Incheon ACC",
+        "country": "South Korea"
     },
     {
         "icao": "RPHI",
@@ -57211,7 +57525,9 @@
                 "20.998158",
                 "117.501478"
             ]
-        ]
+        ],
+        "region": "Manila ACC",
+        "country": "Philippines"
     },
     {
         "icao": "SACF",
@@ -57362,7 +57678,9 @@
                 "-21.983333",
                 "-62.808333"
             ]
-        ]
+        ],
+        "region": "Cordoba ACC",
+        "country": "Argentina"
     },
     {
         "icao": "SACO",
@@ -57572,7 +57890,9 @@
                 "-29.333333",
                 "-70.008333"
             ]
-        ]
+        ],
+        "region": "Mendoza ACC",
+        "country": "Argentina"
     },
     {
         "icao": "SAME",
@@ -57934,7 +58254,9 @@
                 "-23.250000",
                 "-62.000000"
             ]
-        ]
+        ],
+        "region": "Resistencia ACC",
+        "country": "Argentina"
     },
     {
         "icao": "SARE",
@@ -58348,7 +58670,9 @@
                 "-30.916667",
                 "-60.750000"
             ]
-        ]
+        ],
+        "region": "Ezeiza ACC",
+        "country": "Argentina"
     },
     {
         "icao": "SAEF-N",
@@ -58880,7 +59204,9 @@
                 "-41.309472",
                 "-70.448908"
             ]
-        ]
+        ],
+        "region": "Comodoro Rivadavia ACC",
+        "country": "Argentina"
     },
     {
         "icao": "SAVC",
@@ -59198,7 +59524,9 @@
                 "5.000000",
                 "-40.000000"
             ]
-        ]
+        ],
+        "region": "Atlantico ACC",
+        "country": "Brazil"
     },
     {
         "icao": "SBAZ",
@@ -60145,7 +60473,9 @@
                 "-17.796667",
                 "-57.093667"
             ]
-        ]
+        ],
+        "region": "Amazonica ACC",
+        "country": "Brazil"
     },
     {
         "icao": "SBBS",
@@ -60480,7 +60810,9 @@
                 "-18.664500",
                 "-52.046333"
             ]
-        ]
+        ],
+        "region": "Brasilia ACC",
+        "country": "Brazil"
     },
     {
         "icao": "SBCW",
@@ -60919,7 +61251,9 @@
                 "-34.000000",
                 "-53.000000"
             ]
-        ]
+        ],
+        "region": "Curitiba ACC",
+        "country": "Brazil"
     },
     {
         "icao": "SBRE",
@@ -61190,7 +61524,9 @@
                 "-1.756800",
                 "-41.700000"
             ]
-        ]
+        ],
+        "region": "Recife ACC",
+        "country": "Brazil"
     },
     {
         "icao": "SCFZ",
@@ -61385,7 +61721,9 @@
                 "-28.500000",
                 "-90.000000"
             ]
-        ]
+        ],
+        "region": "Antofagasta ACC",
+        "country": "Chile"
     },
     {
         "icao": "SCTZ",
@@ -61508,7 +61846,9 @@
                 "-47.000000",
                 "-90.000000"
             ]
-        ]
+        ],
+        "region": "Puerto Montt ACC",
+        "country": "Chile"
     },
     {
         "icao": "SCCZ",
@@ -61643,7 +61983,9 @@
                 "-47.000000",
                 "-90.000000"
             ]
-        ]
+        ],
+        "region": "Punta Arenas ACC",
+        "country": "Chile"
     },
     {
         "icao": "SCEZ",
@@ -61718,7 +62060,9 @@
                 "-38.500000",
                 "-90.000000"
             ]
-        ]
+        ],
+        "region": "Santiago ACC",
+        "country": "Chile"
     },
     {
         "icao": "SCIZ",
@@ -61765,7 +62109,9 @@
                 "-30.000000",
                 "-120.000000"
             ]
-        ]
+        ],
+        "region": "Easter I. ACC",
+        "country": "Chile"
     },
     {
         "icao": "SEFG",
@@ -61964,7 +62310,9 @@
                 "1.416667",
                 "-92.000000"
             ]
-        ]
+        ],
+        "region": "Guayaquil ACC",
+        "country": "Ecuador"
     },
     {
         "icao": "SGFA",
@@ -62219,7 +62567,9 @@
                 "-22.500433",
                 "-62.333819"
             ]
-        ]
+        ],
+        "region": "Asuncion ACC",
+        "country": "Paraguay"
     },
     {
         "icao": "SKEC",
@@ -62306,7 +62656,9 @@
                 "8.582983",
                 "-77.417169"
             ]
-        ]
+        ],
+        "region": "Barranquilla ACC",
+        "country": "Colombia"
     },
     {
         "icao": "SKED",
@@ -62773,7 +63125,9 @@
                 "8.516317",
                 "-77.442169"
             ]
-        ]
+        ],
+        "region": "Bogota ACC",
+        "country": "Colombia"
     },
     {
         "icao": "SLLF",
@@ -63232,7 +63586,9 @@
                 "-12.033733",
                 "-68.883819"
             ]
-        ]
+        ],
+        "region": "La Paz ACC",
+        "country": "Bolivia"
     },
     {
         "icao": "SMPM",
@@ -63363,7 +63719,9 @@
                 "5.983333",
                 "-57.000000"
             ]
-        ]
+        ],
+        "region": "Paramaribo ACC",
+        "country": "Suriname"
     },
     {
         "icao": "SOOO",
@@ -63518,7 +63876,9 @@
                 "5.750000",
                 "-54.000000"
             ]
-        ]
+        ],
+        "region": "Rochambeau ACC",
+        "country": "French Guiana"
     },
     {
         "icao": "SPIM",
@@ -64045,7 +64405,9 @@
                 "-18.350000",
                 "-90.000000"
             ]
-        ]
+        ],
+        "region": "Lima ACC",
+        "country": "Peru"
     },
     {
         "icao": "SVZM",
@@ -64508,7 +64870,9 @@
                 "11.649669",
                 "-71.967161"
             ]
-        ]
+        ],
+        "region": "Maiquetia ACC",
+        "country": "Venezuela"
     },
     {
         "icao": "SYGC",
@@ -64771,7 +65135,9 @@
                 "8.300000",
                 "-59.783333"
             ]
-        ]
+        ],
+        "region": "Georgetown ACC",
+        "country": "Guyana"
     },
     {
         "icao": "TJZS",
@@ -64846,7 +65212,9 @@
                 "21.133333",
                 "-67.750000"
             ]
-        ]
+        ],
+        "region": "San Juan ACC",
+        "country": "USA"
     },
     {
         "icao": "TNCF",
@@ -64893,7 +65261,9 @@
                 "11.400000",
                 "-67.966667"
             ]
-        ]
+        ],
+        "region": "Curacao ACC",
+        "country": "Netherlands Antilles"
     },
     {
         "icao": "TTZP",
@@ -64972,7 +65342,9 @@
                 "11.000000",
                 "-62.500000"
             ]
-        ]
+        ],
+        "region": "Piarco ACC",
+        "country": "Trinidad and Tobago"
     },
     {
         "icao": "VCCF",
@@ -65925,7 +66297,9 @@
                 "22.151681",
                 "92.610428"
             ]
-        ]
+        ],
+        "region": "Dhaka ACC",
+        "country": "Bangladesh"
     },
     {
         "icao": "VHHK",
@@ -66140,7 +66514,9 @@
                 "23.516667",
                 "117.316667"
             ]
-        ]
+        ],
+        "region": "Hong Kong ACC",
+        "country": "Hong Kong"
     },
     {
         "icao": "VLVT",
@@ -66735,7 +67111,9 @@
                 "20.257628",
                 "100.075322"
             ]
-        ]
+        ],
+        "region": "Vientiane ACC",
+        "country": "Laos"
     },
     {
         "icao": "VNSM",
@@ -67110,7 +67488,9 @@
                 "29.766633",
                 "80.348267"
             ]
-        ]
+        ],
+        "region": "Kathmandu ACC",
+        "country": "Nepal"
     },
     {
         "icao": "VRMF",
@@ -67153,7 +67533,9 @@
                 "6.000000",
                 "74.000000"
             ]
-        ]
+        ],
+        "region": "Male ACC",
+        "country": "Maldives"
     },
     {
         "icao": "VABF",
@@ -67280,7 +67662,9 @@
                 "-5.997292",
                 "60.001017"
             ]
-        ]
+        ],
+        "region": "Mumbai ACC",
+        "country": "India"
     },
     {
         "icao": "VABX",
@@ -68211,7 +68595,9 @@
                 "35.032733",
                 "77.081986"
             ]
-        ]
+        ],
+        "region": "Delhi ACC",
+        "country": "India"
     },
     {
         "icao": "VIDP",
@@ -69108,7 +69494,9 @@
                 "7.501800",
                 "71.999519"
             ]
-        ]
+        ],
+        "region": "Chennai ACC",
+        "country": "India"
     },
     {
         "icao": "VOMX",
@@ -70036,7 +70424,9 @@
                 "27.250000",
                 "83.666667"
             ]
-        ]
+        ],
+        "region": "Kolkata ACC",
+        "country": "India"
     },
     {
         "icao": "VECX",
@@ -71034,7 +71424,9 @@
                 "9.998000",
                 "102.253500"
             ]
-        ]
+        ],
+        "region": "Bangkok ACC",
+        "country": "Thailand"
     },
     {
         "icao": "VVTS",
@@ -71445,7 +71837,9 @@
                 "9.998000",
                 "102.253500"
             ]
-        ]
+        ],
+        "region": "Ho-Chi-Minh ACC",
+        "country": "Vietnam"
     },
     {
         "icao": "VVVV",
@@ -72016,7 +72410,9 @@
                 "21.533333",
                 "107.966667"
             ]
-        ]
+        ],
+        "region": "Hanoi ACC",
+        "country": "Vietnam"
     },
     {
         "icao": "VYYF",
@@ -72535,7 +72931,9 @@
                 "14.000000",
                 "92.000000"
             ]
-        ]
+        ],
+        "region": "Yangon ACC",
+        "country": "Myanmar"
     },
     {
         "icao": "WAAF",
@@ -72806,7 +73204,9 @@
                 "-9.333333",
                 "126.833333"
             ]
-        ]
+        ],
+        "region": "Ujung Pandang",
+        "country": "Indonesia"
     },
     {
         "icao": "WBFC",
@@ -73169,7 +73569,9 @@
                 "1.133333",
                 "108.950000"
             ]
-        ]
+        ],
+        "region": "Kota Kinabalu ACC",
+        "country": "Brunei / Malaysia"
     },
     {
         "icao": "WIIF",
@@ -73412,7 +73814,9 @@
                 "-2.000000",
                 "92.000000"
             ]
-        ]
+        ],
+        "region": "Jakarta",
+        "country": "Indonesia"
     },
     {
         "icao": "WMFC",
@@ -73639,7 +74043,9 @@
                 "6.249583",
                 "102.248467"
             ]
-        ]
+        ],
+        "region": "Kuala Lumpur ACC",
+        "country": "Malaysia"
     },
     {
         "icao": "WSJC",
@@ -73766,7 +74172,9 @@
                 "6.750000",
                 "102.666667"
             ]
-        ]
+        ],
+        "region": "Singapore ACC",
+        "country": "Singapore"
     },
     {
         "icao": "ZBPE",
@@ -74053,7 +74461,9 @@
                 "45.434694",
                 "114.763619"
             ]
-        ]
+        ],
+        "region": "Beijing ACC",
+        "country": "China"
     },
     {
         "icao": "ZGZU",
@@ -74552,7 +74962,9 @@
                 "23.166667",
                 "105.566667"
             ]
-        ]
+        ],
+        "region": "Guangzhou ACC",
+        "country": "China"
     },
     {
         "icao": "ZJSA",
@@ -74599,7 +75011,9 @@
                 "19.500000",
                 "111.500000"
             ]
-        ]
+        ],
+        "region": "Sanya ACC",
+        "country": "China"
     },
     {
         "icao": "ZHCC",
@@ -74744,7 +75158,9 @@
                 "36.066667",
                 "113.810000"
             ]
-        ]
+        ],
+        "region": "Wuhan ACC",
+        "country": "China"
     },
     {
         "icao": "ZKKP",
@@ -75187,7 +75603,9 @@
                 "38.002653",
                 "123.998169"
             ]
-        ]
+        ],
+        "region": "Pyongyang ACC",
+        "country": "North Korea"
     },
     {
         "icao": "ZLHW",
@@ -75358,7 +75776,9 @@
                 "41.550000",
                 "105.050000"
             ]
-        ]
+        ],
+        "region": "Lanzhou ACC",
+        "country": "China"
     },
     {
         "icao": "ZPKM",
@@ -76245,7 +76665,9 @@
                 "32.301667",
                 "84.055000"
             ]
-        ]
+        ],
+        "region": "Kunming ACC",
+        "country": "China"
     },
     {
         "icao": "ZSHA",
@@ -76344,7 +76766,9 @@
                 "35.000000",
                 "124.000000"
             ]
-        ]
+        ],
+        "region": "Shanghai ACC",
+        "country": "China"
     },
     {
         "icao": "ZWUQ",
@@ -77435,7 +77859,9 @@
                 "43.000000",
                 "96.166667"
             ]
-        ]
+        ],
+        "region": "Urumqi ACC",
+        "country": "China"
     },
     {
         "icao": "ZYSH",
@@ -79313,7 +79739,9 @@
                 "54.678333",
                 "170.000000"
             ]
-        ]
+        ],
+        "region": "Anchorage ACC",
+        "country": "USA"
     },
     {
         "icao": "PAZA",
@@ -79408,7 +79836,9 @@
                 "90.000000",
                 "-141.000000"
             ]
-        ]
+        ],
+        "region": "Anchorage ACC",
+        "country": "USA"
     },
     {
         "icao": "PGZU",
@@ -79738,7 +80168,9 @@
                 "-36.758333",
                 "-53.196389"
             ]
-        ]
+        ],
+        "region": "Montevideo ACC",
+        "country": "Uruguay"
     },
     {
         "icao": "SUEO",
@@ -79857,7 +80289,9 @@
                 "-31.383333",
                 "-57.983333"
             ]
-        ]
+        ],
+        "region": "Montevideo ACC",
+        "country": "Uruguay"
     },
     {
         "icao": "LUKK",
@@ -80151,7 +80585,9 @@
                 "21.904397",
                 "-103.60710"
             ]
-        ]
+        ],
+        "region": "Mexico ACC",
+        "country": "Mexico"
     },
     {
         "icao": "MMID",
@@ -80338,7 +80774,9 @@
                 "17.817375",
                 "-89.15005"
             ]
-        ]
+        ],
+        "region": "Merida ACC",
+        "country": "Mexico"
     },
     {
         "icao": "MMTY",
@@ -80625,7 +81063,9 @@
                 "31.333333",
                 "-108.50000"
             ]
-        ]
+        ],
+        "region": "Monterrey ACC/UIR",
+        "country": "Mexico"
     },
     {
         "icao": "MMZT",
@@ -80672,7 +81112,9 @@
                 "5.000000",
                 "-120.00000"
             ]
-        ]
+        ],
+        "region": "Mazatlan ACC/UIR",
+        "country": "Mexico"
     },
     {
         "icao": "MMZT",
@@ -80791,7 +81233,9 @@
                 "30.000000",
                 "-120.00000"
             ]
-        ]
+        ],
+        "region": "Mazatlan ACC/UIR",
+        "country": "Mexico"
     },
     {
         "icao": "ZMBZ",
@@ -84722,7 +85166,9 @@
                 "40.766667",
                 "45.883333"
             ]
-        ]
+        ],
+        "region": "Yerevan ACC",
+        "country": "Armenia"
     },
     {
         "icao": "UEEE",
@@ -85136,7 +85582,9 @@
                 "41.433333",
                 "41.833333"
             ]
-        ]
+        ],
+        "region": "Tbilisi ACC",
+        "country": "Georgia"
     },
     {
         "icao": "UHHH",
@@ -87622,7 +88070,9 @@
                 "51.242419",
                 "34.428728"
             ]
-        ]
+        ],
+        "region": "Kyiv ACC",
+        "country": "Ukraine"
     },
     {
         "icao": "UKFV",
@@ -87761,7 +88211,9 @@
                 "47.180000",
                 "35.675000"
             ]
-        ]
+        ],
+        "region": "Simferopol ACC",
+        "country": "Ukraine"
     },
     {
         "icao": "UKDV",
@@ -88316,7 +88768,9 @@
                 "47.216667",
                 "38.233333"
             ]
-        ]
+        ],
+        "region": "Dnepropetrovsk ACC",
+        "country": "Ukraine"
     },
     {
         "icao": "UKLV",
@@ -89059,7 +89513,9 @@
                 "51.500000",
                 "23.616667"
             ]
-        ]
+        ],
+        "region": "Lviv ACC",
+        "country": "Ukraine"
     },
     {
         "icao": "UKOV",
@@ -89202,7 +89658,9 @@
                 "47.766667",
                 "32.833333"
             ]
-        ]
+        ],
+        "region": "Odesa ACC",
+        "country": "Ukraine"
     },
     {
         "icao": "ULAA",
@@ -89902,7 +90360,9 @@
                 "64.133222",
                 "30.499172"
             ]
-        ]
+        ],
+        "region": "Sankt Peterburg ACC",
+        "country": "Russia"
     },
     {
         "icao": "ULMM",
@@ -91221,7 +91681,9 @@
                 "56.173333",
                 "28.146667"
             ]
-        ]
+        ],
+        "region": "Minsk ACC",
+        "country": "Belarus"
     },
     {
         "icao": "UNKL",
@@ -93070,7 +93532,9 @@
                 "49.381667",
                 "40.143333"
             ]
-        ]
+        ],
+        "region": "Rostov-Na-Donu ACC",
+        "country": "Russia"
     },
     {
         "icao": "USCC",
@@ -93479,7 +93943,9 @@
                 "70.833333",
                 "65.666667"
             ]
-        ]
+        ],
+        "region": "Mys Kamenny ACC",
+        "country": "Russia"
     },
     {
         "icao": "USDS",
@@ -94296,7 +94762,9 @@
                 "39.283333",
                 "55.566667"
             ]
-        ]
+        ],
+        "region": "Turkmenbashi ACC",
+        "country": "Turkmenistan"
     },
     {
         "icao": "UTAT",
@@ -94960,7 +95428,9 @@
                 "44.166667",
                 "61.300000"
             ]
-        ]
+        ],
+        "region": "Nukus ACC",
+        "country": "Uzbekistan"
     },
     {
         "icao": "UTSD",
@@ -95051,7 +95521,9 @@
                 "39.933333",
                 "62.583333"
             ]
-        ]
+        ],
+        "region": "Samarkand ACC",
+        "country": "Uzbekistan"
     },
     {
         "icao": "UTTR",
@@ -95182,7 +95654,9 @@
                 "42.500000",
                 "63.833333"
             ]
-        ]
+        ],
+        "region": "Tashkent ACC",
+        "country": "Uzbekistan"
     },
     {
         "icao": "UUWV",
@@ -96021,7 +96495,9 @@
                 "52.096675",
                 "31.821636"
             ]
-        ]
+        ],
+        "region": "Moscow ACC",
+        "country": "Russia"
     },
     {
         "icao": "UUYY",
@@ -96160,7 +96636,9 @@
                 "70.833333",
                 "65.666667"
             ]
-        ]
+        ],
+        "region": "Syktyvkar ACC",
+        "country": "Russia"
     },
     {
         "icao": "UWWW",

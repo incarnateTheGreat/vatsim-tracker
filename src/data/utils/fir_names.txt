@@ -1,0 +1,1550 @@
+|-
+| AGGG
+| FIR
+| Honiara ACC
+| Solomon Islands
+|-
+| ANAU
+| FIR
+| Nauru ACC
+| Nauru
+|-
+| AYPM
+| FIR
+| Port Moresby ACC
+| Papua New Guinea
+|-
+| BGGL
+| FIR
+| Nuuk ACC
+| Greenland
+|-
+| BIRD
+| FIR
+| Reykjavik ACC
+| Iceland
+|-
+| CZEG
+| FIR
+| Edmonton ACC
+| Canada
+|-
+| CZQM
+| FIR
+| Moncton Southern ACC
+| Canada
+|-
+| CZQX
+| FIR
+| Gander Domestic ACC
+| Canada
+|-
+| CZUL
+| FIR
+| Montreal ACC
+| Canada
+|-
+| CZVR
+| FIR
+| Vancouver ACC
+| Canada
+|-
+| CZWG
+| FIR
+| Winnipeg ACC
+| Canada
+|-
+| CZYZ
+| FIR
+| Toronto ACC
+| Canada
+|-
+| DAAA
+| FIR
+| Alger ACC
+| Algeria
+|-
+| DGAC
+| FIR
+| Accra ACC
+| Ghana
+|-
+| DIII
+| FIR
+| Abidjan ACC
+| Ivory Coast
+|-
+| DNKK
+| FIR
+| Kano ACC
+| Nigeria
+|-
+| DRRR
+| FIR
+| Niamey ACC
+| Niger
+|-
+| DTTC
+| FIR
+| Tunis ACC
+| Tunisia
+|-
+| EZZZ
+| FIR
+| Eurocontrol
+| Belgium
+|-
+| EBBU
+| FIR
+| Brussels ACC
+| Belgium
+|-
+| EDBB
+| FIR
+| Berlin ACC
+| Germany
+|-
+| EDGG
+| FIR
+| Langen ACC
+| Germany
+|-
+| EDLL
+| FIR
+| Düsseldorf ACC
+| Germany
+|-
+| EDMM
+| FIR
+| Munich ACC
+| Germany
+|-
+| EDUU
+| FIR
+| Rhein ACC
+| Germany
+|-
+| EDVV
+| FIR
+| Hannover ACC
+| Germany
+|-
+| EDWW
+| FIR
+| Bremen ACC
+| Germany
+|-
+| EDYY
+| FIR
+| Maastricht ACC
+| Germany
+|-
+| EETT
+| FIR
+| Tallinn ACC
+| Estonia
+|-
+| EFIN
+| FIR
+| Finland ACC
+| Finland
+|-
+| EGGX
+| FIR
+| Shanwick Oceanic OCA
+| UK
+|-
+| EGPX
+| FIR
+| Scottish ACC
+| UK
+|-
+| EGQQ
+| FIR
+| Scottish ACC (Mil)
+| UK
+|-
+| EGTT
+| FIR
+| London ACC
+| UK
+|-
+| EHAA
+| FIR
+| Amsterdam ACC
+| Netherlands
+|-
+| EISN
+| FIR
+| Shannon ACC
+| Ireland
+|-
+| EKDK
+| FIR
+| Copenhagen ACC
+| Denmark
+|-
+| ENOB
+| FIR
+| Bodo Oceanic OCA
+| Norway
+|-
+| ENOR
+| FIR
+| Norway ACC
+| Norway
+|-
+| EPWW
+| FIR
+| Warszawa ACC
+| Poland
+|-
+| ESAA
+| FIR
+| Sweden ACC
+| Sweden
+|-
+| ESMM
+| FIR
+| Malmo ACC
+| Sweden
+|-
+| ESOS
+| FIR
+| Stockholm ACC
+| Sweden
+|-
+| EVRR
+| FIR
+| Riga ACC
+| Latvia
+|-
+| EYVL
+| FIR
+| Vilnius ACC
+| Lithuania
+|-
+| FABL
+| FIR
+| Bloemfontein ACC
+| South Africa
+|-
+| FACA
+| FIR
+| Capetown ACC
+| South Africa
+|-
+| FACT
+| FIR
+| Capetown ACC
+| South Africa
+|-
+| FADN
+| FIR
+| Durban ACC
+| South Africa
+|-
+| FAJO
+| FIR
+| Johannesburg Oceanic ACC
+| South Africa
+|-
+| FAJX
+| FIR
+| Johannesburg ACC
+| South Africa
+|-
+| FAPX
+| FIR
+| Port Elizabeth ACC
+| South Africa
+|-
+| FBGR
+| FIR
+| Gaborone ACC
+| Botswana
+|-
+| FCCC
+| FIR
+| Brazzaville ACC
+| Congo Brazzaville
+|-
+| FIMM
+| FIR
+| Mauritius ACC
+| Mauritius
+|-
+| FKKK
+| FIR
+| Douala ACC
+| Cameroon
+|-
+| FLFI
+| FIR
+| Lusaka ACC
+| Zambia
+|-
+| FMCX
+| FIR
+| Comoros ACC
+| Comoros
+|-
+| FMMM
+| FIR
+| Antananarivo ACC
+| Madagascar
+|-
+| FNAN
+| FIR
+| Luanda ACC
+| Angola
+|-
+| FOOO
+| FIR
+| Libreville ACC
+| Gabon
+|-
+| FQBE
+| FIR
+| Beira ACC
+| Mozambique
+|-
+| FSSS
+| FIR
+| Seychelles ACC
+| Seychelles
+|-
+| FTTT
+| FIR
+| N'Djamena ACC
+| Chad
+|-
+| FVHF
+| FIR
+| Harare ACC
+| Zimbabwe
+|-
+| FWLL
+| FIR
+| Lilongwe ACC
+| Malawi
+|-
+| FYWH
+| FIR
+| Windhoek ACC
+| Namibia
+|-
+| FZZA
+| FIR
+| Kinshasa ACC
+| Congo DRC
+|-
+| GCCC
+| FIR
+| Canarias ACC
+| Spain
+|-
+| GLRX
+| FIR
+| Roberts ACC
+| Liberia
+|-
+| GMMM
+| FIR
+| Casablanca ACC
+| Morocco
+|-
+| GOOO
+| FIR
+| Dakar Oceanic ACC
+| Senegal
+|-
+| GVSC
+| FIR
+| Sal Oceanic ACC
+| Cape Verde
+|-
+| HAAA
+| FIR
+| Addis Ababa ACC
+| Ethiopia
+|-
+| HBBA
+| FIR
+| Bujumbura ACC
+| Burundi
+|-
+| HCSM
+| FIR
+| Mogadishu ACC
+| Somalia
+|-
+| HECC
+| FIR
+| Cairo ACC
+| Egypt
+|-
+| HHAA
+| FIR
+| Asmara ACC
+| Egypt
+|-
+| HKNA
+| FIR
+| Nairobi ACC
+| Kenya
+|-
+| HLLL
+| FIR
+| Tripoli ACC
+| Libya
+|-
+| HRYR
+| FIR
+| Kigali ACC
+| Rwanda
+|-
+| HSSX
+| FIR
+| Khartoum ACC
+| Sudan
+|-
+| HTDC
+| FIR
+| Dar Es Salaam ACC
+| Tanzania
+|-
+| HUEC
+| FIR
+| Entebbe ACC
+| Uganda
+|-
+| KZAB
+| FIR
+| Albuquerque ACC
+| USA
+|-
+| KZAK
+| FIR
+| Oakland ACC
+| USA
+|-
+| KZAU
+| FIR
+| Chicago ACC
+| USA
+|-
+| KZBW
+| FIR
+| Boston ACC
+| USA
+|-
+| KZDC
+| FIR
+| Washington ACC
+| USA
+|-
+| KZDV
+| FIR
+| Denver ACC
+| USA
+|-
+| KZFW
+| FIR
+| Ft Worth ACC
+| USA
+|-
+| KZHU
+| FIR
+| Houston ACC
+| USA
+|-
+| KZID
+| FIR
+| Indianapolis ACC
+| USA
+|-
+| KZJX
+| FIR
+| Jacksonville ACC
+| USA
+|-
+| KZKC
+| FIR
+| Kansas City ACC
+| USA
+|-
+| KZLA
+| FIR
+| Los Angeles ACC
+| USA
+|-
+| KZLC
+| FIR
+| Salt Lake ACC
+| USA
+|-
+| KZMA
+| FIR
+| Miami ACC
+| USA
+|-
+| KZME
+| FIR
+| Memphis ACC
+| USA
+|-
+| KZMP
+| FIR
+| Minneapolis ACC
+| USA
+|-
+| KZNY
+| FIR
+| New York Oceanic ACC
+| USA
+|-
+| KZOA
+| FIR
+| Oakland Oceanic ACC
+| USA
+|-
+| KZOB
+| FIR
+| Cleveland ACC
+| USA
+|-
+| KZSE
+| FIR
+| Seattle ACC
+| USA
+|-
+| KZTL
+| FIR
+| Atlanta ACC
+| USA
+|-
+| KZWY
+| FIR
+| New York ACC
+| USA
+|-
+| LAAA
+| FIR
+| Tirana ACC
+| Albania
+|-
+| LBSR
+| FIR
+| Sofia ACC
+| Bulgaria
+|-
+| LBWR
+| FIR
+| Varna ACC
+| Bulgaria
+|-
+| LCCC
+| FIR
+| Nicosia ACC
+| Cyprus
+|-
+| LDZO
+| FIR
+| Zagreb ACC
+| Croatia
+|-
+| LECB
+| FIR
+| Barcelona ACC
+| Spain
+|-
+| LECM
+| FIR
+| Madrid ACC
+| Spain
+|-
+| LECS
+| FIR
+| Sevilla ACC
+| Spain
+|-
+| LFBB
+| FIR
+| Bordeaux ACC
+| France
+|-
+| LFEE
+| FIR
+| Reims ACC
+| France
+|-
+| LFFF
+| FIR
+| Paris ACC
+| France
+|-
+| LFMM
+| FIR
+| Marseille ACC
+| France
+|-
+| LFRR
+| FIR
+| Brest ACC
+| France
+|-
+| LGGG
+| FIR
+| Athens ACC
+| Greece
+|-
+| LHCC
+| FIR
+| Budapest ACC
+| Hungary
+|-
+| LIBB
+| FIR
+| Brindisi ACC
+| Italy
+|-
+| LIMM
+| FIR
+| Milano ACC
+| Italy
+|-
+| LIRR
+| FIR
+| Roma ACC
+| Italy
+|-
+| LJLA
+| FIR
+| Ljubljana ACC
+| Slovenia
+|-
+| LKAA
+| FIR
+| Praha ACC
+| Czech Republic
+|-
+| LLLL
+| FIR
+| Tel-Aviv ACC
+| Israel
+|-
+| LMMM
+| FIR
+| Malta ACC
+| Malta
+|-
+| LOVV
+| FIR
+| Wien ACC
+| Austria
+|-
+| LPPC
+| FIR
+| Lisboa ACC
+| Portugal
+|-
+| LPPO
+| FIR
+| Santa Maria Oceanic ACC
+| Portugal
+|-
+| LQSB
+| FIR
+| Sarajevo ACC
+| Bosnia and Herzegovina
+|-
+| LRBB
+| FIR
+| Bucuresti ACC
+| Romania
+|-
+| LSAG
+| FIR
+| Geneve ACC
+| Switzerland
+|-
+| LSAS
+| FIR
+| Switzerland ACC
+| Switzerland
+|-
+| LSAZ
+| FIR
+| Zurich ACC
+| Switzerland
+|-
+| LTAA
+| FIR
+| Ankara ACC
+| Turkey
+|-
+| LTBB
+| FIR
+| Istanbul ACC
+| Turkey
+|-
+| LUUU
+| FIR
+| Chisinau ACC
+| Moldova
+|-
+| LWSS
+| FIR
+| Skopje ACC
+| Macedonia
+|-
+| LYBA
+| FIR
+| Beograd ACC
+| Serbia
+|-
+| LZBB
+| FIR
+| Bratislava ACC
+| Slovakia
+|-
+| MDCS
+| FIR
+| Santo Domingo ACC
+| Dominican Republic
+|-
+| MHTG
+| FIR
+| Central American ACC
+| Honduras
+|-
+| MKJK
+| FIR
+| Kingston ACC
+| Jamaica
+|-
+| MMEX
+| FIR
+| Mexico ACC
+| Mexico
+|-
+| MMFO
+| FIR
+| Mazatlan Oceanic ACC
+| Mexico
+|-
+| MMFR
+| FIR
+| Mexico ACC
+| Mexico
+|-
+| MMID
+| FIR
+| Merida ACC
+| Mexico
+|-
+| MMTY
+| FIR
+| Monterrey ACC/UIR
+| Mexico
+|-
+| MMZT
+| FIR
+| Mazatlan ACC/UIR
+| Mexico
+|-
+| MPZL
+| FIR
+| Panama ACC
+| Panama
+|-
+| MTEG
+| FIR
+| Port-Au-Prince ACC
+| Haiti
+|-
+| MUFH
+| FIR
+| Habana ACC
+| Cuba
+|-
+| MYNA
+| FIR
+| Nassau ACC
+| Bahamas
+|-
+| NFFF
+| FIR
+| Nadi ACC
+| Fiji
+|-
+| NTTT
+| FIR
+| Tahiti ACC
+| French Polynesia
+|-
+| NWWX
+| FIR
+| Noumea ACC
+| New Caledonia
+|-
+| NZZC
+| FIR
+| New Zealand ACC
+| New Zealand
+|-
+| NZZO
+| FIR
+| Auckland Oceanic ACC
+| New Zealand
+|-
+| OAKX
+| FIR
+| Kabul ACC
+| Afghanistan
+|-
+| OBBB
+| FIR
+| Bahrain ACC
+| Bahrain
+|-
+| OEJD
+| FIR
+| Jeddah ACC
+| Saudi Arabia
+|-
+| OIIX
+| FIR
+| Tehran ACC
+| Iran
+|-
+| OJAC
+| FIR
+| Amman ACC
+| Jordan
+|-
+| OKAC
+| FIR
+| Kuwait ACC
+| Kuwait
+|-
+| OLBB
+| FIR
+| Beirut ACC
+| Lebanon
+|-
+| OMAE
+| FIR
+| Emirates ACC
+| United Arab Emirates
+|-
+| OOMM
+| FIR
+| Muscat ACC
+| Oman
+|-
+| OPKR
+| FIR
+| Karachi ACC
+| Pakistan
+|-
+| OPLR
+| FIR
+| Lahore ACC
+| Pakistan
+|-
+| ORBB
+| FIR
+| Baghdad ACC
+| Iraq
+|-
+| ORMM
+| FIR
+| ORMM FIR
+| Iraq
+|-
+| OSTT
+| FIR
+| Damascus ACC
+| Syria
+|-
+| OYSC
+| FIR
+| Sanaa ACC
+| Yemen
+|-
+| PAZA
+| FIR
+| Anchorage ACC
+| USA
+|-
+| PAZN
+| FIR
+| Anchorage Oceanic ACC
+| USA
+|-
+| PHZH
+| FIR
+| Honolulu ACC
+| USA
+|-
+| RCAA
+| FIR
+| Taipei ACC
+| Republic of China
+|-
+| RJJJ
+| FIR
+| Fukuoka ACC
+| Japan
+|-
+| RKRR
+| FIR
+| Incheon ACC
+| South Korea
+|-
+| RPHI
+| FIR
+| Manila ACC
+| Philippines
+|-
+| SACF
+| FIR
+| Cordoba ACC
+| Argentina
+|-
+| SACU
+| FIR
+| Cordoba UIR
+| Argentina
+|-
+| SAEF
+| FIR
+| Ezeiza ACC
+| Argentina
+|-
+| SAEU
+| FIR
+| Ezeiza UIR
+| Argentina
+|-
+| SAMF
+| FIR
+| Mendoza ACC
+| Argentina
+|-
+| SAMV
+| FIR
+| Mendoza UIR
+| Argentina
+|-
+| SARR
+| FIR
+| Resistencia ACC
+| Argentina
+|-
+| SAVF
+| FIR
+| Comodoro Rivadavia ACC
+| Argentina
+|-
+| SAVU
+| FIR
+| Comodoro Rivadavia UIR
+| Argentina
+|-
+| SBAO
+| FIR
+| Atlantico ACC
+| Brazil
+|-
+| SBAZ
+| FIR
+| Amazonica ACC
+| Brazil
+|-
+| SBBS
+| FIR
+| Brasilia ACC
+| Brazil
+|-
+| SBCW
+| FIR
+| Curitiba ACC
+| Brazil
+|-
+| SBRE
+| FIR
+| Recife ACC
+| Brazil
+|-
+| SCCZ
+| FIR
+| Punta Arenas ACC
+| Chile
+|-
+| SCEZ
+| FIR
+| Santiago ACC
+| Chile
+|-
+| SCFZ
+| FIR
+| Antofagasta ACC
+| Chile
+|-
+| SCIZ
+| FIR
+| Easter I. ACC
+| Chile
+|-
+| SCTZ
+| FIR
+| Puerto Montt ACC
+| Chile
+|-
+| SEFG
+| FIR
+| Guayaquil ACC
+| Ecuador
+|-
+| SGFA
+| FIR
+| Asuncion ACC
+| Paraguay
+|-
+| SKEC
+| FIR
+| Barranquilla ACC
+| Colombia
+|-
+| SKED
+| FIR
+| Bogota ACC
+| Colombia
+|-
+| SLLF
+| FIR
+| La Paz ACC
+| Bolivia
+|-
+| SMPM
+| FIR
+| Paramaribo ACC
+| Suriname
+|-
+| SOOO
+| FIR
+| Rochambeau ACC
+| French Guiana
+|-
+| SPIM
+| FIR
+| Lima ACC
+| Peru
+|-
+| SUEO
+| FIR
+| Montevideo ACC
+| Uruguay
+|-
+| SVZM
+| FIR
+| Maiquetia ACC
+| Venezuela
+|-
+| SYGC
+| FIR
+| Georgetown ACC
+| Guyana
+|-
+| TJZS
+| FIR
+| San Juan ACC
+| USA
+|-
+| TNCF
+| FIR
+| Curacao ACC
+| Netherlands Antilles
+|-
+| TTZP
+| FIR
+| Piarco ACC
+| Trinidad and Tobago
+|-
+| UAAX
+| FIR
+| Almaty ACC
+| Kazakhstan
+|-
+| UACX
+| FIR
+| Astana ACC
+| Kazakhstan
+|-
+| UAFX
+| FIR
+| Bishkek ACC
+| Kyrgyzstan
+|-
+| UASS
+| FIR
+| Semipalatinsk ACC
+| Kazakhstan
+|-
+| UDDD
+| FIR
+| Yerevan ACC
+| Armenia
+|-
+| UEMH
+| FIR
+| Tyoply Klyuch ACC
+| Russia
+|-
+| UENN
+| FIR
+| Nyurba ACC
+| Russia
+|-
+| UESS
+| FIR
+| Chersky ACC
+| Russia
+|-
+| UESU
+| FIR
+| Zyryanka ACC
+| Russia
+|-
+| UEVV
+| FIR
+| Gigansk ACC
+| Russia
+|-
+| UGEE
+| FIR
+| Yerevan/Zvartnots ACC
+| Russia
+|-
+| UGGG
+| FIR
+| Tbilisi ACC
+| Georgia
+|-
+| UHBI
+| FIR
+| Magdagachi ACC
+| Russia
+|-
+| UHMI
+| FIR
+| Mys Shmidta ACC
+| Russia
+|-
+| UHMP
+| FIR
+| Pevek ACC
+| Russia
+|-
+| UHNN
+| FIR
+| Nikolayevsk-na-Amure ACC
+| Russia
+|-
+| UHPT
+| FIR
+| Tilichiki ACC
+| Russia
+|-
+| UHPU
+| FIR
+| Ust-Khairyozovo ACC
+| Russia
+|-
+| UHSH
+| FIR
+| Okha ACC
+| Russia
+|-
+| UIKB
+| FIR
+| Bodaybo ACC
+| Russia
+|-
+| UIKK
+| FIR
+| Kirensk ACC
+| Russia
+|-
+| UKBV
+| FIR
+| Kyiv ACC
+| Ukraine
+|-
+| UKCV
+| FIR
+| Donetsk ACC
+| Ukraine
+|-
+| UKDV
+| FIR
+| Dnepropetrovsk ACC
+| Ukraine
+|-
+| UKFV
+| FIR
+| Simferopol ACC
+| Ukraine
+|-
+| UKHV
+| FIR
+| Kharkiv ACC
+| Ukraine
+|-
+| UKLV
+| FIR
+| Lviv ACC
+| Ukraine
+|-
+| UKOV
+| FIR
+| Odesa ACC
+| Ukraine
+|-
+| ULLL
+| FIR
+| Sankt Peterburg ACC
+| Russia
+|-
+| ULOL
+| FIR
+| Velikiye Luki ACC
+| Russia
+|-
+| UMKD
+| FIR
+| Kazan ACC
+| Russia
+|-
+| UMMV
+| FIR
+| Minsk ACC
+| Belarus
+|-
+| UNLL
+| FIR
+| Kolpashevo ACC
+| Russia
+|-
+| UOTT
+| FIR
+| Turukhansk ACC
+| Russia
+|-
+| URRV
+| FIR
+| Rostov-Na-Donu ACC
+| Russia
+|-
+| USDK
+| FIR
+| Mys Kamenny ACC
+| Russia
+|-
+| USHB
+| FIR
+| Beryozovo ACC
+| Russia
+|-
+| USHH
+| FIR
+| Khanty-Mansiysk ACC
+| Russia
+|-
+| UTAK
+| FIR
+| Turkmenbashi ACC
+| Turkmenistan
+|-
+| UTNR
+| FIR
+| Nukus ACC
+| Uzbekistan
+|-
+| UTSD
+| FIR
+| Samarkand ACC
+| Uzbekistan
+|-
+| UTTR
+| FIR
+| Tashkent ACC
+| Uzbekistan
+|-
+| UUWV
+| FIR
+| Moscow ACC
+| Russia
+|-
+| UUYW
+| FIR
+| Vorkuta ACC
+| Russia
+|-
+| UUYY
+| FIR
+| Syktyvkar ACC
+| Russia
+|-
+| UWOO
+| FIR
+| Orenburg/Tsentralny ACC
+| Russia
+|-
+| VABF
+| FIR
+| Mumbai ACC
+| India
+|-
+| VCCC
+| FIR
+| Colombo ACC
+| Sri Lanka
+|-
+| VECF
+| FIR
+| Kolkata ACC
+| India
+|-
+| VGFR
+| FIR
+| Dhaka ACC
+| Bangladesh
+|-
+| VHHK
+| FIR
+| Hong Kong ACC
+| Hong Kong
+|-
+| VIDF
+| FIR
+| Delhi ACC
+| India
+|-
+| VLIV
+| FIR
+| Vientiane ACC
+| Laos
+|-
+| VLVT
+| FIR
+| Vientiane ACC
+| Laos
+|-
+| VNSM
+| FIR
+| Kathmandu ACC
+| Nepal
+|-
+| VOMF
+| FIR
+| Chennai ACC
+| India
+|-
+| VRMF
+| FIR
+| Male ACC
+| Maldives
+|-
+| VTBB
+| FIR
+| Bangkok ACC
+| Thailand
+|-
+| VVTS
+| FIR
+| Ho-Chi-Minh ACC
+| Vietnam
+|-
+| VVVV
+| FIR
+| Hanoi ACC
+| Vietnam
+|-
+| VYMD
+| FIR
+| 
+| Myanmar
+|-
+| VYYF
+| FIR
+| Yangon ACC
+| Myanmar
+|-
+| WAAF
+| FIR
+| Ujung Pandang
+| Indonesia
+|-
+| WAAZ
+| FIR
+| Ujung Pandang ACC
+| Indonesia
+|-
+| WABZ
+| FIR
+| Biak Sector
+| Indonesia
+|-
+| WADZ
+| FIR
+| Bali Sector
+| Indonesia
+|-
+| WAJZ
+| FIR
+| 
+| Indonesia
+|-
+| WAKZ
+| FIR
+| Merauke Sector
+| Indonesia
+|-
+| WALZ
+| FIR
+| Balikpapan Sector
+| Indonesia
+|-
+| WAMZ
+| FIR
+| Manado Sector
+| Indonesia
+|-
+| WAOZ
+| FIR
+| Banjarmasin Sector
+| Indonesia
+|-
+| WAPZ
+| FIR
+| Ambon Sector
+| Indonesia
+|-
+| WATZ
+| FIR
+| Kupang Sector
+| Indonesia
+|-
+| WBFC
+| FIR
+| Kota Kinabalu ACC
+| Brunei / Malaysia
+|-
+| WIIF
+| FIR
+| Jakarta
+| Indonesia
+|-
+| WIIZ
+| FIR
+| Jakarta ACC
+| Indonesia
+|-
+| WIMZ
+| FIR
+| Medan Sector
+| Indonesia
+|-
+| WIOZ
+| FIR
+| Pontianak Sector
+| Indonesia
+|-
+| WIPZ
+| FIR
+| Palembang Sector
+| Indonesia
+|-
+| WMFC
+| FIR
+| Kuala Lumpur ACC
+| Malaysia
+|-
+| WSJC
+| FIR
+| Singapore ACC
+| Singapore
+|-
+| YBBB
+| FIR
+| Brisbane ACC
+| Australia
+|-
+| YMMM
+| FIR
+| Melbourne ACC
+| Australia
+|-
+| ZBPE
+| FIR
+| Beijing ACC
+| China
+|-
+| ZGJD
+| FIR
+| Zhuhai ACC
+| China
+|-
+| ZGZU
+| FIR
+| Guangzhou ACC
+| China
+|-
+| ZHWH
+| FIR
+| Wuhan ACC
+| China
+|-
+| ZJSA
+| FIR
+| Sanya ACC
+| China
+|-
+| ZKKP
+| FIR
+| Pyongyang ACC
+| North Korea
+|-
+| ZLHW
+| FIR
+| Lanzhou ACC
+| China
+|-
+| ZMUB
+| FIR
+| Ulan Bator ACC
+| Mongolia
+|-
+| ZPKM
+| FIR
+| Kunming ACC
+| China
+|-
+| ZSHA
+| FIR
+| Shanghai ACC
+| China
+|-
+| ZWUQ
+| FIR
+| Urumqi ACC
+| China
+|-
+| ZYSH
+| FIR
+| Shenyang ACC
+| China
