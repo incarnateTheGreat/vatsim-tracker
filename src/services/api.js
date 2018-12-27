@@ -39,7 +39,7 @@ export const getFirBoundaries = async (listOfControllers) => {
     return await axios(`${SERVER_PATH}/graphql/fir`, {
         params: {
             icao: listOfControllers,
-            params: 'icao, points'
+            params: 'icao, points, region, country'
         }
     }).then(res => {
         try {

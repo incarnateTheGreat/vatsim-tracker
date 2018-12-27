@@ -5,6 +5,8 @@ const mongoose = require('mongoose'),
         isOceanic: Boolean,
         isExtension: Boolean,
         points: Object,
+        region: String,
+        country: String,
         done: Boolean
       })
 

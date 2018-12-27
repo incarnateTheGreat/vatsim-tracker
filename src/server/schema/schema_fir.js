@@ -28,7 +28,9 @@ const FirType = new GraphQLObjectType({
 		icao: { type: GraphQLString },
 		isOceanic: { type: GraphQLBoolean },
 		isExtension: { type: GraphQLBoolean },
-		points: { type: new GraphQLList(resolvers.Coordinates) }
+		points: { type: new GraphQLList(resolvers.Coordinates) },
+		region: { type: GraphQLString },
+		country: { type: GraphQLString },
 	})
 })
 
@@ -47,7 +49,7 @@ const RootQuery = new GraphQLObjectType({
 				
 				// Return results to GraphQL.					
 				if (db.readyState === 1) {
-					return FirSchema.find(query, params).then(res => res)
+					return FirSchema.find(query).then(res => res)
 				} else {
 					console.log('Error: not connected to the database.')
 				}

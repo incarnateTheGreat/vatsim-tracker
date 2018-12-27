@@ -39,11 +39,11 @@ app.route('/api/vatsim-data').get((req, res) => {
 
 	request(vatsim_path, (error, response, body) => {
 		if (body) {
-			const lines = body.split('\n'),
-						results = []
+			const lines = body.split('\n');
+			const results = []
 
-			let isRecording = false,
-					flights = []
+			let isRecording = false;
+			let flights = [];
 
 			// Go line by line to find CLIENTS data.
 			for(let line = 0; line < lines.length; line++) {

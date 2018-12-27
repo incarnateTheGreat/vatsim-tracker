@@ -235,13 +235,19 @@ export default class VatsimMap extends Component {
       for (let i = 0; i < data.length; i++) {
         // Prevent re-draws of FIR Boundaries to avoid FUAC on screen.
         if (!this.checkFIRBoundary(data[i].icao)) {
-          const { callsign, name, frequency } = availableControllers[data[i].icao];
+          const { callsign,
+                  name, 
+                  frequency } = availableControllers[data[i].icao];
+
+          const { country, region } = data[i];
 
           new Leaflet.polygon(data[i].points, 
                               { color: 'red', class: 'fir', fir_id: callsign })
                               .bindTooltip(`
                                 <div><strong>${callsign}</strong></div>
                                 <div>${name}</div>
+                                <div>${region}</div>
+                                <div>${country}</div>
                                 <div>${frequency}</div>
                               `)
                               .addTo(this.map);
