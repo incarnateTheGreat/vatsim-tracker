@@ -109,52 +109,59 @@ export default class VatsimMap extends Component {
 		this.interval = setInterval(() => {
 
 			this.getFlightData(() => {
-        // If there is a Selected Flight, re-draw its position and Polylines, if any.
+        // console.log(this.state.selected_flight);
+        // TODO: Find a flight without a flight plan or accessible routes. Test if the Polyline is being properly destroyed.
+        
+        // If there is a Selected Flight, re-draw its position and FlightRoute, if any.
         if (this.state.selected_flight) {
-          this.clearPolylines()
+          this.clearFlightRoute();
 
-          const latlngObject = {
-            lat1: this.state.selected_flight.coordinates[0],
-            lng1: this.state.selected_flight.coordinates[1],
-            lat2: this.state.selected_planned_route[this.state.selected_planned_route.length - 1][0],
-            lng2: this.state.selected_planned_route[this.state.selected_planned_route.length - 1][1]
-          }
+          if (this.state.selected_planned_route) {
+            const latlngObject = {
+              lat1: this.state.selected_flight.coordinates[0],
+              lng1: this.state.selected_flight.coordinates[1],
+              lat2: this.state.selected_planned_route[this.state.selected_planned_route.length - 1][0],
+              lng2: this.state.selected_planned_route[this.state.selected_planned_route.length - 1][1]
+            }
 
-          if (!this.isPlaneOnGround(this.state.selected_flight.groundspeed) && this.state.destination_data) {
-            this.drawFlightPath(this.state.selected_planned_route, latlngObject)
+            if (!this.isPlaneOnGround(this.state.selected_flight.groundspeed) && this.state.destination_data) {
+              this.drawFlightPath(this.state.selected_planned_route, latlngObject);              
+            } else {
+              // If there's no flight path drawn on the screen, then simply centre the viewpoint over the Selected flight.
+              this.viewNoRouteFlight([this.state.selected_flight.coordinates[0], this.state.selected_flight.coordinates[1]]);
+            }
           } else {
-            // If there's no flight path drawn on the screen, then simply centre the viewpoint over the Selected flight.
-            this.map.panTo(
-              [this.state.selected_flight.coordinates[0], this.state.selected_flight.coordinates[1]],
-              { animate: true, duration: 1.0, easeLinearity: 0.10 }
-            )
-
-            // TODO: Zoom in to Flight with no Flight Plan.
-
+            // Fallback for the above code.
+            this.viewNoRouteFlight([this.state.selected_flight.coordinates[0], this.state.selected_flight.coordinates[1]]);
           }
         }
 
         this.drawFIRBoundaries();
       })
 		}, REFRESH_TIME)
-	}
+  }
+  
+  viewNoRouteFlight = (coords) => {
+    const options = { animate: true, duration: 1.0, easeLinearity: 0.10 };
+    this.map.setView(coords, this.zoom, options);
+  }
 
   // Handlers & Functionality
 
   // Store Selected Flight Data in the State.
-  applySelectedFlightData = (flight) => {
+  applySelectedFlightData = (flight) => {    
     this.setState({
       callsign: flight.callsign,
       lat: flight.coordinates[0],
       lng: flight.coordinates[1],
       zoom: this.isPlaneOnGround(flight.groundspeed) ? 16 : this.state.zoom
-    }, () => {
+    }, () => {      
       this.unfollowBtnRef.current.disabled = false
     })
   }
 
-  // Clear all Polylines off of the Map.
-  clearPolylines = () => {
+  // Clear all Flight Routes off of the Map.
+  clearFlightRoute = () => {
     const layers = this.map._layers
 
     for(let i in layers) {
@@ -186,17 +193,17 @@ export default class VatsimMap extends Component {
 
   // Assign Lat/Lng values for Current Position and Arrival.
   drawFlightPath = (latlngs, startEndPoints) => {
-    const { lat1, lng1, lat2, lng2 } = startEndPoints    
+    const { lat1, lng1, lat2, lng2 } = startEndPoints;
 
     // To prevent any bad data from going into the Polyline, check if the LatLng data is valid.
     if(!this.isValidLatLng([...latlngs])) return;
 
     // Use collected data to assemble the Polyline.
-    const polyline = new Leaflet.polyline(latlngs, { color: 'green' }).addTo(this.map)
-    const oppDirectionHeading = this.getRadialOppDirection(lat1, lng1, lat2, lng2)
-    const distanceLatLngs = [[lat1, lng1],[lat2, lng2]]
-    const distanceKM = this.getDistanceToDestination(distanceLatLngs)
-    const distanceNMI = this.getNauticalMilesFromKM(distanceKM)
+    const polyline = new Leaflet.polyline(latlngs, { color: 'green' }).addTo(this.map);
+    const oppDirectionHeading = this.getRadialOppDirection(lat1, lng1, lat2, lng2);
+    const distanceLatLngs = [[lat1, lng1],[lat2, lng2]];
+    const distanceKM = this.getDistanceToDestination(distanceLatLngs);
+    const distanceNMI = this.getNauticalMilesFromKM(distanceKM);
 
     // Add 'Distance to Go' text to the Polyline in Kilometers.
     polyline.setText(`${distanceKM} KM to go (${distanceNMI} nmi)`, {
@@ -272,7 +279,7 @@ export default class VatsimMap extends Component {
     this.setState({
       ctr_controllers,
       isLoading: false
-    }, () => this.unfollowBtnRef.current.disabled = true)
+    });
   }
 
   errorToastMsg = (msg) => {
@@ -284,20 +291,20 @@ export default class VatsimMap extends Component {
     )
   }
 
-  // Get the necessary Flight Data to determine it's Position, Destination, and Route (if available).
+  // Get the necessary Flight Data to determine its Position, Destination, and Route (if available).
   findFlight = (flight) => {
-    this.clearPolylines()    
+    this.clearFlightRoute();
 
     Promise.all([
       getAirportData(flight.planned_destairport),
       getDecodedFlightRoute(flight.planned_depairport, flight.planned_route, flight.planned_destairport)
     ]).then(responses => {
-      const destination_data = responses[0]
-      const { encodedPolyline } = responses[1]
+      const destination_data = responses[0];
+      const { encodedPolyline } = responses[1];      
 
       if (destination_data) {
-        const lat1 = flight.coordinates[0]
-        const lng1 = flight.coordinates[1]
+        const lat1 = flight.coordinates[0];
+        const lng1 = flight.coordinates[1];
 
         let selected_planned_route = encodedPolyline ? polyUtil.decode(encodedPolyline) : null;
         let lat2 = null
@@ -317,7 +324,7 @@ export default class VatsimMap extends Component {
         }        
 
         // Comprise Departure and Destination Latitudes and Longitudes to assist in drawing the Route on the Map.
-        latlngObject = { lat1, lng1, lat2, lng2 }
+        latlngObject = { lat1, lng1, lat2, lng2 };
 
         this.setState({
           destination_data,
@@ -326,18 +333,24 @@ export default class VatsimMap extends Component {
           selected_flight: flight,
           selected_planned_route }, () => {
           if(!this.isPlaneOnGround(flight.groundspeed)) {
-            this.drawFlightPath(selected_planned_route, latlngObject)
+            this.drawFlightPath(selected_planned_route, latlngObject);
           }
 
           this.setState({ isLoading: false }, () => {
-            this.applySelectedFlightData(flight)
+            this.applySelectedFlightData(flight);
           })
         })
       } else {
         this.setState({ isLoading: false, selected_flight: flight }, () => {
-          this.applySelectedFlightData(flight)
+          this.applySelectedFlightData(flight);
+          this.viewNoRouteFlight([flight.coordinates[0], flight.coordinates[1]]);
         })
       }
+    }).catch(err => {
+      this.setState({ isLoading: false, selected_flight: flight }, () => {
+        this.applySelectedFlightData(flight);
+        this.viewNoRouteFlight([flight.coordinates[0], flight.coordinates[1]]);
+      })
     })
   }
 
@@ -588,7 +601,7 @@ export default class VatsimMap extends Component {
       zoom: 2
     }, () => {
       // Clear Progress Line, Popups, and Inputs.
-      this.clearPolylines()
+      this.clearFlightRoute()
       this.flightRef.current.inputRef.current.value = ''
       this.icaoRef.current.inputRef.current.value = ''
       this.metarRef.current.value = ''
@@ -609,9 +622,8 @@ export default class VatsimMap extends Component {
       selected_planned_route: null
     }, () => {
       // Clear Progress Line, Popups, and Inputs.
-      this.clearPolylines()
-      this.flightRef.current.inputRef.current.value = ''
-      this.unfollowBtnRef.current.disabled = true
+      this.clearFlightRoute()
+      this.flightRef.current.inputRef.current.value 
     })
   }
 
