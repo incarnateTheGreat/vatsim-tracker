@@ -223,7 +223,7 @@ export default class VatsimMap extends Component {
       return r
     }, []);
 
-    getFirBoundaries(ctr_controllers).then(data => {
+    getFirBoundaries(ctr_controllers).then(fir_data => {
       const availableControllers = {};
       
       // Map the list of Available Controllers for referencing in the FIR Call below.
@@ -232,16 +232,19 @@ export default class VatsimMap extends Component {
       }
 
       // Draw out active FIR Boundaries.
-      for (let i = 0; i < data.length; i++) {
+      for (let i = 0; i < fir_data.length; i++) {
+        const { country,
+                icao,
+                points,
+                region } = fir_data[i];                
+
         // Prevent re-draws of FIR Boundaries to avoid FUAC on screen.
-        if (!this.checkFIRBoundary(data[i].icao)) {
+        if (!this.checkFIRBoundary(icao)) {
           const { callsign,
                   name, 
-                  frequency } = availableControllers[data[i].icao];
+                  frequency } = availableControllers[icao];
 
-          const { country, region } = data[i];
-
-          new Leaflet.polygon(data[i].points, 
+          new Leaflet.polygon(points, 
                               { color: 'red', class: 'fir', fir_id: callsign })
                               .bindTooltip(`
                                 <div><strong>${callsign}</strong></div>
@@ -252,12 +255,12 @@ export default class VatsimMap extends Component {
                               `)
                               .addTo(this.map);
         } else {
-          // Find all existing FIRS on the map. Determine if they're in availableControllers. If they are not, remove them.
+          // Find all existing FIRs on the map. Determine if they're in availableControllers. If they are not, remove them.
           const layers = this.map._layers;
 
           for(let j in layers) {
             if (layers[j].options.fir_id) {
-              if (!layers[j].options.fir_id.includes(data[i].icao)) {
+              if (!layers[j].options.fir_id.includes(icao)) {
                 this.map.removeLayer(layers[j]);
               } 
             }
