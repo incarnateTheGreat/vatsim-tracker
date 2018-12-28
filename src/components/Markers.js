@@ -106,11 +106,11 @@ export class Markers extends Component {
 								heading,
 								planned_aircraft,
 								planned_depairport,
-								planned_destairport } = position,
-								coords = [position.coordinates[0], position.coordinates[1]]
+								planned_destairport } = position;
+        const coords = [position.coordinates[0], position.coordinates[1]];
 
-	      let icon = null,
-						plan = false
+        let icon = null;
+        let plan = false;
 
 	      if (isController) {
 	        icon = new Leaflet.Icon({

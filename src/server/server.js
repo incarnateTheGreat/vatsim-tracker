@@ -61,8 +61,8 @@ app.route('/api/vatsim-data').get((req, res) => {
 			}
 
 			for (let i = 0; i < results.length; i++) {
-				let clientInterface = {},
-					clientDataSplit = results[i].split(':');
+				let clientInterface = {};
+				let clientDataSplit = results[i].split(':');
 
 				// Using the CLIENT_LABELS Interface, assign each delimited element to its respective key.
 				for (let j = 0; j < CLIENT_LABELS.length; j++) {					
@@ -90,8 +90,8 @@ app.route('/api/vatsim-data').get((req, res) => {
 			}			
 
 			// Separate the Controllers & Destinations from the Flights.
-			const controllers = flights.filter(client => client.frequency !== ''),
-				  icaos = [];
+			const controllers = flights.filter(client => client.frequency !== '')
+			const icaos = [];
 
 			// Create Destinations Object.
 			const icaos_temp = flights.reduce((r, a) => {
@@ -109,7 +109,7 @@ app.route('/api/vatsim-data').get((req, res) => {
 				}
 
 				return r
-			}, {})
+			}, {});
 
 			// Put Departure & Destination ICAOs into Array.
 			for (let key in icaos_temp) icaos.push(key)
@@ -122,7 +122,7 @@ app.route('/api/vatsim-data').get((req, res) => {
 		} else {
 			console.log('Not working...');
 			
-			res.send(null)
+			res.send(null);
 		}
 	})
 })

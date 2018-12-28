@@ -108,10 +108,7 @@ export default class VatsimMap extends Component {
   startInterval = () => {
 		this.interval = setInterval(() => {
 
-			this.getFlightData(() => {
-        // console.log(this.state.selected_flight);
-        // TODO: Find a flight without a flight plan or accessible routes. Test if the Polyline is being properly destroyed.
-        
+			this.getFlightData(() => {        
         // If there is a Selected Flight, re-draw its position and FlightRoute, if any.
         if (this.state.selected_flight) {
           this.clearFlightRoute();
@@ -125,7 +122,7 @@ export default class VatsimMap extends Component {
             }
 
             if (!this.isPlaneOnGround(this.state.selected_flight.groundspeed) && this.state.destination_data) {
-              this.drawFlightPath(this.state.selected_planned_route, latlngObject);              
+              this.drawFlightPath(this.state.selected_planned_route, latlngObject);
             } else {
               // If there's no flight path drawn on the screen, then simply centre the viewpoint over the Selected flight.
               this.viewNoRouteFlight([this.state.selected_flight.coordinates[0], this.state.selected_flight.coordinates[1]]);
@@ -341,15 +338,31 @@ export default class VatsimMap extends Component {
           })
         })
       } else {
-        this.setState({ isLoading: false, selected_flight: flight }, () => {
-          this.applySelectedFlightData(flight);
-          this.viewNoRouteFlight([flight.coordinates[0], flight.coordinates[1]]);
+        this.setState({
+          destination_data: null, 
+          isLoading: false, 
+          selected_flight: flight,
+          selected_depairport: null,
+          selected_destairport: null,
+          selected_planned_route: null, 
+          zoom: 10 
+          }, () => {
+            this.applySelectedFlightData(flight);
+            this.viewNoRouteFlight([flight.coordinates[0], flight.coordinates[1]]);
         })
       }
     }).catch(err => {
-      this.setState({ isLoading: false, selected_flight: flight }, () => {
-        this.applySelectedFlightData(flight);
-        this.viewNoRouteFlight([flight.coordinates[0], flight.coordinates[1]]);
+      this.setState({ 
+        destination_data: null, 
+          isLoading: false, 
+          selected_flight: flight,
+          selected_depairport: null,
+          selected_destairport: null,
+          selected_planned_route: null, 
+          zoom: 10 
+        }, () => {
+          this.applySelectedFlightData(flight);
+          this.viewNoRouteFlight([flight.coordinates[0], flight.coordinates[1]]);
       })
     })
   }
@@ -426,20 +439,21 @@ export default class VatsimMap extends Component {
           this.serverToastMsg('No connection.', false)
         })
 
-        return
-      }
+        return;
+      }      
       
       const { flights,
               controllers,
-              icaos } = data
+              icaos } = data;
 
       // Depending if there were any environment issues or changes, display the 'Connected' Toast Pop-up.
-      if (toast.isActive(this.toastId)) this.serverToastMsg('Connected.', true)
+      if (toast.isActive(this.toastId)) this.serverToastMsg('Connected.', true);
 
       // Update State with User Data.
       this.setState({ flights,
                       controllers,
-                      icaos }, () => {
+                      icaos }, () => {        
+                        
         // Pass the Selected ICAO to the Modal Data if it's open to feed it persistant data.
         if (this.modalIcaoRef.current.state.isModalOpen && this.modalIcaoRef.current.state.icao) {
           this.modalData(this.state.selected_icao)
@@ -463,120 +477,6 @@ export default class VatsimMap extends Component {
 
   getNauticalMilesFromKM = (km) => {
     return Math.round(km * 0.5399568)
-  }
-
-  getWeather = () => {
-    const options = { opacity: 0.5 },
-          osm = Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
-          clouds = Leaflet.OWM.clouds(options),
-          precipitation = Leaflet.OWM.precipitation(options),
-          windrose = Leaflet.OWM.current({
-            appId: 'a22e7429bbe086045388e31142cd915f',
-            intervall: 15,
-            minZoom: 3,
-            lang: 'EN',
-            markerFunction: this.myWindroseMarker,
-            popup: false,
-            clusterSize: 50,
-            imageLoadingBgUrl: 'https://openweathermap.org/img/w0/iwind.png'
-          }),
-          overlayMaps = {
-            'Clouds': clouds,
-            'Precipitation': precipitation,
-            // 'Wind Rose': windrose
-          },
-          baseMaps = {}
-
-    // windrose.on('owmlayeradd', this.windroseAdded, windrose)
-
-    Leaflet.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(this.map)
-  }
-
-  myWindroseMarker = data => {
-    const content = '<canvas id="id_' + data.id + '" width="50" height="50" style="border: 1px solid red"></canvas>'
-    const icon = Leaflet.divIcon({html: content, iconSize: [50,50], className: 'owm-div-windrose'});
-
-  	return Leaflet.marker([data.coord.Lat, data.coord.Lon], {icon: icon, clickable: false});
-  }
-
-  windroseAdded = e => {
-  	for (var i in this.map._layers) {
-  		var m = this.map._layers[i];
-  		var cv = document.getElementById('id_' + m.options.owmId);
-  		for (var j in this._cache._cachedData.list) {
-  			var station = this._cache._cachedData.list[j];
-  			if (station.id === m.options.owmId) {
-  				this.myWindroseDrawCanvas(station, this);
-  			}
-  		}
-  	}
-  }
-
-  myWindroseDrawCanvas = (data, owm) => {
-    console.log('myWindroseDrawCanvas');
-  	var canvas = document.getElementById('id_' + data.id);
-  	canvas.title = data.name;
-  	var angle = 0;
-  	var speed = 0;
-  	var gust = 0;
-  	if (typeof data.wind !== 'undefined') {
-  		if (typeof data.wind.speed !== 'undefined') {
-  			canvas.title += ', ' + data.wind.speed + ' m/s';
-  			canvas.title += ', ' + owm._windMsToBft(data.wind.speed) + ' BFT';
-  			speed = data.wind.speed;
-  		}
-  		if (typeof data.wind.deg !== 'undefined') {
-  			canvas.title += ', ' + owm._directions[(data.wind.deg/22.5).toFixed(0)];
-  			angle = data.wind.deg;
-  		}
-  		if (typeof data.wind.gust !== 'undefined') {
-  			gust = data.wind.gust;
-  		}
-  	}
-  	if (canvas.getContext && speed > 0) {
-  		var red = 0;
-  		var green = 0;
-  		if (speed <= 10) {
-  			green = 10*speed+155;
-  			red = 255*speed/10.0;
-  		} else {
-  			red = 255;
-  			green = 255-(255*(Math.min(speed, 21)-10)/11.0);
-  		}
-  		var ctx = canvas.getContext('2d');
-  		ctx.translate(25, 25);
-  		ctx.rotate(angle*Math.PI/180);
-  		ctx.fillStyle = 'rgb(' + Math.floor(red) + ',' + Math.floor(green) + ',' + 0 + ')';
-  		ctx.beginPath();
-  		ctx.moveTo(-15, -25);
-  		ctx.lineTo(0, -10);
-  		ctx.lineTo(15, -25);
-  		ctx.lineTo(0, 25);
-  		ctx.fill();
-
-  		// draw inner arrow for gust
-  		if (gust > 0 && gust !== speed) {
-  			if (gust <= 10) {
-  				green = 10*gust+155;
-  				red = 255*gust/10.0;
-  			} else {
-  				red = 255;
-  				green = 255-(255*(Math.min(gust, 21)-10)/11.0);
-  			}
-  			canvas.title += ', gust ' + data.wind.gust + ' m/s';
-  			canvas.title += ', ' + owm._windMsToBft(data.wind.gust) + ' BFT';
-  			ctx.fillStyle = 'rgb(' + Math.floor(red) + ',' + Math.floor(green) + ',' + 0 + ')';
-  			ctx.beginPath();
-  			ctx.moveTo(-15, -25);
-  			ctx.lineTo(0, -10);
-  			ctx.lineTo(0, 25);
-  			ctx.fill();
-  		}
-  	} else {
-  		canvas.innerHTML = '<div>'
-  				+ (typeof data.wind !== 'undefined' && typeof data.wind.deg !== 'undefined' ? data.wind.deg + '°' : '')
-  				+ '</div>';
-  	}
   }
 
   handleEnterKey = (e) => {
@@ -704,8 +604,8 @@ export default class VatsimMap extends Component {
     this.setState({ isLoading: true }, () => {
 
       Promise.all([getAirportName(selected_metar), getMetarData(selected_metar)]).then(responses => {
-        const airport_name = responses[0]
-        const metar = responses[1]
+        const airport_name = responses[0];
+        const metar = responses[1];
 
         if (metar) {
           this.setState({
@@ -713,19 +613,19 @@ export default class VatsimMap extends Component {
             isLoading: false,
             metar,
             selected_metar_icao: selected_metar }, () => {
-            this.modalMetarRef.current.toggleModal()
+            this.modalMetarRef.current.toggleModal();
           })
         } else {
-          this.errorToastMsg('There is no METAR for this ICAO.')
+          this.errorToastMsg('There is no METAR for this ICAO.');
         }
       })
     })
   }
 
   searchFlight = () => {
-    const callsign = document.getElementsByName('flightSearch')[0].value
+    const callsign = document.getElementsByName('flightSearch')[0].value;
 
-    this.updateCallsign(callsign)
+    this.updateCallsign(callsign);
   }
 
   serverToastMsg = (msg, isConnected) => {
@@ -736,7 +636,7 @@ export default class VatsimMap extends Component {
           hideProgressBar: true,
           position: toast.POSITION.TOP_CENTER,
           type: isConnected ? toast.TYPE.SUCCESS : toast.TYPE.ERROR
-        })
+        });
     } else {
       toast.update(
         this.toastId,
@@ -746,7 +646,7 @@ export default class VatsimMap extends Component {
           render: msg,
           transition: Flip,
           type: isConnected ? toast.TYPE.SUCCESS : toast.TYPE.ERROR
-        })
+        });
     }
   }
 
@@ -761,7 +661,7 @@ export default class VatsimMap extends Component {
           this.findFlight(flight)
         })
       } else {
-        this.errorToastMsg(`${callsign} does not exist.`)
+        this.errorToastMsg(`${callsign} does not exist.`);
       }
     }
   }
