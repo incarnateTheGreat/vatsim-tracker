@@ -55,7 +55,7 @@ export default class VatsimMap extends Component {
     selected_metar_icao: null,
     selected_planned_route: null,
     width: 500,
-    zoom: 2,
+    zoom: 2
   }
 
   clusterRef = React.createRef()
@@ -731,7 +731,7 @@ export default class VatsimMap extends Component {
           />
           <MarkerClusterGroup
             chunkedLoading={true}
-            disableClusteringAtZoom="15"
+            disableClusteringAtZoom="7"
             maxClusterRadius="35"
             ref={this.clusterRef}
             showCoverageOnHover={false}
