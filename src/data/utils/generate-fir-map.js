@@ -1,3 +1,4 @@
+// Make sure you're using the latest version of Node for ES7 modules to work.
 // Collect Data
 const fs = require('fs');
 const util = require('util'); 
