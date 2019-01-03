@@ -1,14 +1,15 @@
 import React, { Component, Fragment } from 'react'
 import classNames from 'classnames'
-import Metar from 'metar'
 import { DEGREES_KEY, CURRENTLY_UNAVAILABLE } from '../constants/constants';
 
 class ModalMetar extends Component {
 	state = {
-		airport_name: null,
+    airport_name: null,
     icao: null,
 		isModalOpen: false,
-    metar: null
+    metar: null,
+    metar_current_weather: null,
+    metar_current_weather_title: null
   }
   
 	closeModal = () => {
@@ -47,52 +48,6 @@ class ModalMetar extends Component {
   // Get and Display the Temperature.
   getTemperature = (temperature) => {
     return temperature ? `${temperature}${String.fromCodePoint(176)}` : CURRENTLY_UNAVAILABLE
-  }
-
-  // Get and Display the Weather Icon.
-  getWeather = () => {
-    const weather = this.state.metar['weather']
-    const clouds = this.state.metar['clouds']
-
-    if (weather) {
-      return this.getWeatherIcon(weather[weather.length - 1].meaning)
-    } else if (clouds) {
-      if (clouds[0].abbreviation === 'NCD') {
-        return this.getWeatherIcon('clear-day')
-      } else {
-        return this.getWeatherIcon(clouds[0].meaning)
-      }
-    } else {
-      return this.getWeatherIcon()
-    }
-  }
-
-  getWeatherIcon = icon => {
-    switch (icon) {
-			case 'clear-night':
-				return 'wi-night-clear';
-      case 'few':
-        return 'wi-day-cloudy'
-      case 'scattered':
-      case 'broken':
-        return 'wi-day-sunny-overcast'
-			case 'cloudy':
-				return 'wi-cloudy';
-			case 'fog':
-				return 'wi-fog';
-			case 'rain':
-				return 'wi-rain';
-			case 'wind':
-				return 'wi-day-windy';
-			case 'snow':
-				return 'wi-snow';
-      case 'clear-day':
-        return 'wi-day-sunny'
-      case 'partly-cloudy-night':
-        return 'wi-night-partly-cloudy'
-      default:
-        return 'wi-na';
-    }
   }
 
   // Use the Degrees Key to approximate the Range of what direction the Wind is currently blowing.
@@ -134,7 +89,7 @@ class ModalMetar extends Component {
 
 		document.addEventListener('keydown', e => {
 			if (e.key === 'Escape') this.closeModal()
-		}, false);
+    }, false);
   }
   
 	static getDerivedStateFromProps(nextProps) {
@@ -142,10 +97,12 @@ class ModalMetar extends Component {
       return {
 				airport_name: nextProps.airport_name,
         icao: nextProps.icao.toUpperCase(),
-        metar: Metar(nextProps.metar)
+        metar: nextProps.metar,
+        metar_current_weather: nextProps.metar_current_weather,
+        metar_current_weather_title: nextProps.metar_current_weather_title
   		}
     } else {
-      return null
+      return null;
     }
 	}
 
@@ -155,13 +112,13 @@ class ModalMetar extends Component {
 			this.state.isModalOpen ? '--open' : ''
 		);
 
-    let weatherClasses = ''
+    let weatherClasses = '';    
 
     if (this.state.metar) {
       weatherClasses = classNames(
         'wi',
-        this.getWeather()
-      )
+        this.state.metar_current_weather
+      );
     }
 
 		return (
@@ -185,7 +142,7 @@ class ModalMetar extends Component {
               {this.state.metar && (
                 <Fragment>
                   <div className='Modal__weatherIcon'>
-                    <i className={weatherClasses}></i>
+                    <i title={this.state.metar_current_weather_title} className={weatherClasses}></i>
                   </div>
                   <div className='Modal__weatherData'>
                     <div className='Modal__weatherContainer'>

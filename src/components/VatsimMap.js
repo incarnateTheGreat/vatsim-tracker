@@ -6,6 +6,7 @@ import Leaflet from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-markercluster'
 import Control from 'react-leaflet-control'
 import { ToastContainer, toast, Flip } from 'react-toastify'
+import Metar from 'metar'
 
 // Components & Constants
 import Autocomplete from './Autocomplete'
@@ -46,6 +47,8 @@ export default class VatsimMap extends Component {
     lat: 43.862,
     lng: -79.369,
     metar: null,
+    metar_current_weather: null,
+    metar_current_weather_title: null,
     selected_depairport: null,
     selected_destairport: null,
     selected_flight: null,
@@ -444,7 +447,7 @@ export default class VatsimMap extends Component {
       
       const { flights,
               controllers,
-              icaos } = data;
+              icaos } = data;              
 
       // Depending if there were any environment issues or changes, display the 'Connected' Toast Pop-up.
       if (toast.isActive(this.toastId)) this.serverToastMsg('Connected.', true);
@@ -452,7 +455,7 @@ export default class VatsimMap extends Component {
       // Update State with User Data.
       this.setState({ flights,
                       controllers,
-                      icaos }, () => {        
+                      icaos }, () => {
                         
         // Pass the Selected ICAO to the Modal Data if it's open to feed it persistant data.
         if (this.modalIcaoRef.current.state.isModalOpen && this.modalIcaoRef.current.state.icao) {
@@ -467,9 +470,9 @@ export default class VatsimMap extends Component {
 
           this.setState({ selected_flight }, () => callback ? callback() : null)
         } else {
-          // this.handleUnfollow() // Why did we add this line?
+          this.handleUnfollow();
 
-          if (callback) callback()
+          if (callback) callback();
         }
       })
     })
@@ -553,7 +556,7 @@ export default class VatsimMap extends Component {
 
   openIcaoModal = (selected_icao) => {    
     this.setState({ isLoading: true, selected_icao }, () => {
-      this.modalData(selected_icao)
+      this.modalData(selected_icao);
     })
   }
 
@@ -605,21 +608,91 @@ export default class VatsimMap extends Component {
 
       Promise.all([getAirportName(selected_metar), getMetarData(selected_metar)]).then(responses => {
         const airport_name = responses[0];
-        const metar = responses[1];
+        const metar_response = responses[1];
 
-        if (metar) {
+        if (metar_response) {
+          const metar = Metar(metar_response);
+          const [metar_current_weather, metar_current_weather_title] = this.getWeather(metar);
+
           this.setState({
             airport_name,
             isLoading: false,
             metar,
+            metar_current_weather,
+            metar_current_weather_title,
             selected_metar_icao: selected_metar }, () => {
             this.modalMetarRef.current.toggleModal();
-          })
+          });
         } else {
-          this.errorToastMsg('There is no METAR for this ICAO.');
+          this.setState({ isLoading: false }, () => {
+            this.errorToastMsg('There is no METAR for this ICAO.');
+          });
         }
       })
     })
+  }
+
+  getWeather = (metar) => {
+    const weather = metar['weather'];
+    const clouds = metar['clouds'];
+
+    let metar_current_weather = null;
+    let metar_current_weather_title = null;    
+
+    // Use the Weather and Clouds data objects to return accurate data.
+    if (weather) {
+      metar_current_weather = this.getWeatherIcon(weather[weather.length - 1].meaning);
+    } else if (clouds) {
+      if (clouds[0].abbreviation === 'NCD') {
+        metar_current_weather = this.getWeatherIcon('clear-day');
+      } else {
+        metar_current_weather = this.getWeatherIcon(clouds[0].meaning);
+      }
+    } else {
+      metar_current_weather = this.getWeatherIcon();
+    }
+
+    // Update the readable title.
+    metar_current_weather_title = metar_current_weather.replace('wi-', '');
+
+    // Determine English result for Tooltip.
+    if (metar_current_weather_title.includes('na')) {
+      metar_current_weather_title = 'N/A';
+    } else {
+      metar_current_weather_title = metar_current_weather_title[0].toUpperCase() + metar_current_weather_title.slice(1);
+    }
+
+    return [metar_current_weather, metar_current_weather_title];
+  }
+
+  getWeatherIcon = icon => {
+    switch (icon) {
+			case 'clear-night':
+				return 'wi-night-clear';
+      case 'few':
+        return 'wi-cloudy'
+      case 'scattered':
+      case 'broken':
+        return 'wi-sunny-overcast'
+      case 'cloudy':
+      case 'overcast':
+				return 'wi-cloudy';
+      case 'fog':
+      case 'mist':
+				return 'wi-fog';
+			case 'rain':
+				return 'wi-rain';
+			case 'wind':
+				return 'wi-windy';
+			case 'snow':
+				return 'wi-snow';
+      case 'clear-day':
+        return 'wi-sunny'
+      case 'partly-cloudy-night':
+        return 'wi-night-partly-cloudy'
+      default:
+        return 'wi-na';
+    }
   }
 
   searchFlight = () => {
@@ -709,6 +782,8 @@ export default class VatsimMap extends Component {
           airport_name={this.state.airport_name}
           icao={this.state.selected_metar_icao}
           metar={this.state.metar}
+          metar_current_weather={this.state.metar_current_weather}
+          metar_current_weather_title={this.state.metar_current_weather_title}
           ref={this.modalMetarRef}
           returnICAO={e => this.getAirportPosition(e)}
           toggleModal={this.state.isModalMetarOpen}
