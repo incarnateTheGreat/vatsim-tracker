@@ -151,12 +151,13 @@ export class Markers extends Component {
 
 	      return (
 	         <RotatedMarker
+             callsign={callsign}
              icon={icon}
              key={`marker-${idx}`}
-             onClick={e => {
+             onClick={markerObj => {               
                if (!isController) {
-                 e.sourceTarget.setIcon(this.setSelected(planned_aircraft, callsign))
-                 updateCallsign(callsign)
+                markerObj.sourceTarget.setIcon(this.setSelected(planned_aircraft, callsign));
+                updateCallsign(callsign, markerObj);
                }}
              }
 	           position={coords}

@@ -216,7 +216,7 @@ export default class VatsimMap extends Component {
     // Draw the line on the screen.
     this.setState({ isLoading: false }, () => {
       setTimeout(() => {
-        this.map.fitBounds(polyline.getBounds(), { padding: [50, 50] })
+        // this.map.fitBounds(polyline.getBounds(), { padding: [50, 50] })
       }, 0);
     })
   }
@@ -307,24 +307,24 @@ export default class VatsimMap extends Component {
         const lng1 = flight.coordinates[1];
 
         let selected_planned_route = encodedPolyline ? polyUtil.decode(encodedPolyline) : null;
-        let lat2 = null
-        let lng2 = null
-        let latlngObject = {}
+        let lat2 = null;
+        let lng2 = null;
+        let latlngObject = {};
 
         // If the Flight Route returns nothing, or either of the ICAOs are not in North America, simply return the start and end points.
         // Otherwise, return the accepted LatLng data and store it as an Array in order to draw the Route on the Map.
         if (!encodedPolyline) {
-          lat2 = parseFloat(destination_data.lat)
-          lng2 = parseFloat(destination_data.lng)
+          lat2 = parseFloat(destination_data.lat);
+          lng2 = parseFloat(destination_data.lng);
 
-          selected_planned_route = [[lat1, lng1], [lat2, lng2]]
+          selected_planned_route = [[lat1, lng1], [lat2, lng2]];
         } else {          
-          lat2 = selected_planned_route[selected_planned_route.length - 1][0]
-          lng2 = selected_planned_route[selected_planned_route.length - 1][1]
+          lat2 = selected_planned_route[selected_planned_route.length - 1][0];
+          lng2 = selected_planned_route[selected_planned_route.length - 1][1];
         }        
 
         // Comprise Departure and Destination Latitudes and Longitudes to assist in drawing the Route on the Map.
-        latlngObject = { lat1, lng1, lat2, lng2 };
+        latlngObject = { lat1, lng1, lat2, lng2 };        
 
         this.setState({
           destination_data,
@@ -447,7 +447,7 @@ export default class VatsimMap extends Component {
       
       const { flights,
               controllers,
-              icaos } = data;              
+              icaos } = data;
 
       // Depending if there were any environment issues or changes, display the 'Connected' Toast Pop-up.
       if (toast.isActive(this.toastId)) this.serverToastMsg('Connected.', true);
@@ -466,7 +466,14 @@ export default class VatsimMap extends Component {
         if (this.state.selected_flight) {
           const selected_flight = this.state.flights.find(flight => {
             return flight.callsign.toUpperCase() === this.state.selected_flight.callsign.toUpperCase()
-          })
+          });          
+
+          console.log(this.state.selected_flight);
+          
+
+          if (this.state.selected_flight.leaflet_id) {
+            selected_flight.leaflet_id = this.state.selected_flight.leaflet_id; 
+          }
 
           this.setState({ selected_flight }, () => callback ? callback() : null)
         } else {
@@ -723,21 +730,112 @@ export default class VatsimMap extends Component {
     }
   }
 
-  updateCallsign = (callsign) => {
+  updateCallsign = (callsign, markerObj) => {
     if (this.state.flights.length > 0) {
+      // TODO: Find Leaflet ID via Text Input
+
+
       const flight = this.state.flights.find(flight => {
         return flight.callsign.toUpperCase() === callsign.toUpperCase()
-      })
+      });
+
+      // Assign Leaflet ID to the Flight Object.
+      if (markerObj) {
+        flight.leaflet_id = markerObj.target._leaflet_id;
+      }
 
       if (flight) {
         this.setState({ isLoading: true, callsign }, () => {
-          this.findFlight(flight)
-        })
+          this.findFlight(flight);
+        });
       } else {
         this.errorToastMsg(`${callsign} does not exist.`);
       }
     }
   }
+
+  createClusterCustomIcon = (cluster) => {
+    const count = cluster.getChildCount();
+    const clusters_children = cluster.getAllChildMarkers();
+    let selected_flight = null;
+    
+    // Assign the Selected Flight's Leaflet ID so its Cluster can be correctly color-identified.
+    if (this.state.selected_flight) {
+      for(let i = 0; i < clusters_children.length; i++) {
+        for (let j = 0; j < cluster._markers.length; j++) {
+          if (cluster._markers[j].options.callsign === this.state.selected_flight.callsign) {
+            selected_flight = cluster;
+            break;
+          }
+        }
+      }
+    }
+
+    if(selected_flight) {
+      console.log(selected_flight._markers);
+    }
+    
+
+    let size = 'LargeXL';
+
+    if (count < 10) {
+      size = 'Small';
+    }
+    else if (count >= 10 && count < 100) {
+      size = 'Medium';
+    }
+    else if (count >= 100 && count < 500) {
+      size = 'Large';
+    }
+    
+    const options = {
+      cluster: `markerCluster${size}`,
+      circle1: `markerCluster${size}DivOne`,
+      circle2: `markerCluster${size}DivTwo`,
+      circle3: `markerCluster${size}DivThree`,
+      circle4: `markerCluster${size}DivFour`,
+      label: `markerCluster${size}Label`,
+    };
+
+    const clusterColor = (selected_flight ? this.hexToRgb('#FF0000') : this.hexToRgb('#2E7E99'));
+    const circleStyle1 = `background-color: ${clusterColor.slice(0, -1)}, 0.05)`;
+    const circleStyle2 = `background-color: ${clusterColor.slice(0, -1)}, 0.15)`;
+    const circleStyle3 = `background-color: ${clusterColor.slice(0, -1)}, 0.25)`;
+    const circleStyle4 = `background-color: ${clusterColor.slice(0, -1)}, 0.65)`;
+
+    return Leaflet.divIcon({
+      html:
+        `<div style="${circleStyle1}" class="${options.circle1}">
+					<div style="${circleStyle2}" class="${options.circle2}">
+						<div style="${circleStyle3}" class="${options.circle3}">
+							<div style="${circleStyle4}" class="${options.circle4}">
+								<span class="${options.label}">${count}</span>
+							</div>
+						</div>
+					</div>
+				</div>`,
+      className: `${options.cluster}`,
+    });
+  };
+
+  hexToRgb = (hex, opacity) => {
+    if (!hex.startsWith('#')) return hex;
+    const hashless = hex.slice(1);
+    const num = parseInt(
+      hashless.length === 3
+        ? hashless.split('').map(c => c.repeat(2)).join('')
+        : hashless,
+      16,
+    );
+    const red = num >> 16;
+    const green = (num >> 8) & 255;
+    const blue = num & 255;
+  
+    if (opacity) {
+      return `rgba(${red}, ${green}, ${blue}, ${opacity})`;
+    }
+    return `rgb(${red}, ${green}, ${blue})`;
+  };
 
   // React Lifecycle Hooks
 
@@ -807,9 +905,10 @@ export default class VatsimMap extends Component {
           <MarkerClusterGroup
             chunkedLoading={true}
             disableClusteringAtZoom="7"
-            maxClusterRadius="35"
+            iconCreateFunction={cluster => this.createClusterCustomIcon(cluster)}
+            maxClusterRadius="30"
             ref={this.clusterRef}
-            showCoverageOnHover={false}
+            showCoverageOnHover={true}
             spiderfyOnMaxZoom={false}
           >
             <Markers
@@ -820,7 +919,7 @@ export default class VatsimMap extends Component {
           </MarkerClusterGroup>
           <Control position="topleft">
             <Fragment>
-              <div>
+              <Fragment>
                 <button onClick={this.handleReset.bind(this)}>
                   Reset View
                 </button>
@@ -828,7 +927,7 @@ export default class VatsimMap extends Component {
                   ref={this.unfollowBtnRef}
                   onClick={this.handleUnfollow.bind(this)}>Unfollow
                 </button>
-              </div>
+              </Fragment>
               <Autocomplete
                 items={this.state.flights}
                 onSelect={callsign => this.updateCallsign(callsign)}
