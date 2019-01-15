@@ -6900,7 +6900,7 @@
     "carriers": "39"
   },
   {
-    "code": "BLR",
+    "code": "",
     "lat": "12.9526",
     "lng": "77.6656",
     "name": "HAL Bangalore International Airport",
@@ -6918,6 +6918,20 @@
     "icao": "VOBG",
     "direct_flights": "37",
     "carriers": "33"
+  },
+  {
+    "code": "BLR",
+    "lat": "13.206944",
+    "lng": "77.704167",
+    "name": "Kempegowda International Airport",
+    "city": "Bangalore",
+    "state": "Karnataka",
+    "country": "India",
+    "tz": "Asia\/Kolkata",
+    "type": "Airports",
+    "email": "",
+    "url": "",
+    "icao": "VOBL"
   },
   {
     "code": "BLT",
@@ -25657,6 +25671,18 @@
     "icao": "LOWI",
     "direct_flights": "23",
     "carriers": "19"
+  },
+  {
+    "code": "SZG",
+    "lat": "47.794444",
+    "lng": "13.003333",
+    "name": "Salzburg Airport",
+    "city": "Salzburg",
+    "state": "Salzburg",
+    "country": "Austria",
+    "tz": "Europe\/Salzburg",
+    "type": "Airports",
+    "icao": "LOWS"
   },
   {
     "code": "INT",
