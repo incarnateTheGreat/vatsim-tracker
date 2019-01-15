@@ -46,7 +46,7 @@ app.route('/api/vatsim-data').get((req, res) => {
 			let flights = [];
 
 			// Go line by line to find CLIENTS data.
-			for(let line = 0; line < 500; line++) {
+			for(let line = 0; line < lines.length; line++) {
 				// When the '!CLIENTS:' line is found, begin recording data.
 				if (lines[line] === '!CLIENTS:\r') {
 					isRecording = true;

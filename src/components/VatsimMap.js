@@ -259,7 +259,7 @@ export default class VatsimMap extends Component {
                                 ${region && `<div>${region}</div>`}
                                 ${country && `<div>${country}</div>`}
                                 <div>${frequency}</div>
-                              `)
+                              `, { sticky: true })
                               .addTo(this.map);
         } else {
           // Find all existing FIRs on the map. Determine if they're in availableControllers. If they are not, remove them.
@@ -758,22 +758,66 @@ export default class VatsimMap extends Component {
     const count = cluster.getChildCount();
     const clusters_children = cluster.getAllChildMarkers();
     let selected_flight = null;
+
+    // console.log(Array.isArray(clusters_children));
+    
+    
+
+    const markers = new Leaflet.markerClusterGroup();
+
+    // TODO Get Markers from existing cluster group
+    
+
+    // console.log('Thing', thing);
+    // console.log('clusters_children', clusters_children);
+    
+
+    // const leafletID = cluster._leaflet_id
+
+    // const markers = L.markerClusterGroup();
+    
+    // console.log('--------------------');
+    
+    // console.log('Markers:', markers);
+    // console.log('Cluster:', cluster, cluster._childCount);
+
+    // console.log('--------------------');
+
+    // console.log(cluster._childCount, '/', clusters_children); 
     
     // Assign the Selected Flight's Leaflet ID so its Cluster can be correctly color-identified.
-    if (this.state.selected_flight) {
-      for(let i = 0; i < clusters_children.length; i++) {
-        for (let j = 0; j < cluster._markers.length; j++) {
-          if (cluster._markers[j].options.callsign === this.state.selected_flight.callsign) {
-            selected_flight = cluster;
-            break;
-          }
-        }
-      }
-    }
+    // if (this.state.selected_flight) {
+      selected_flight = clusters_children.find(flight => {        
+        return flight.options.callsign === 'CPA260'
+      });
+    //   selected_flight = cluster.find(elem => {
+    //     console.log(elem);
+        
+    //     // if (elem.options.callsign === this.state.selected_flight.callsign) {
+    //     //   return markers.getVisibleParent(elem);
+    //     // }
+        
+    //     // return elem.options.callsign === this.state.selected_flight.callsign
+    //   })
+    // //   for(let i = 0; i < clusters_children.length; i++) {
+    // //     for (let j = 0; j < cluster._markers.length; j++) {
+    // //       if (cluster._markers[j].options.callsign === this.state.selected_flight.callsign) {
+    // //         selected_flight = cluster;
+    // //         break;
+    // //       }
+    // //     }
+    // //   }
+    // }    
 
     if(selected_flight) {
-      console.log(selected_flight._markers);
-    }
+      console.log(markers);
+      
+      markers.refreshClusters(clusters_children);
+    } 
+    // else {
+    //   console.log('NADA');
+      
+    // }
     
 
     let size = 'LargeXL';
@@ -805,14 +849,9 @@ export default class VatsimMap extends Component {
 
     return Leaflet.divIcon({
       html:
-        `<div style="${circleStyle1}" class="${options.circle1}">
-					<div style="${circleStyle2}" class="${options.circle2}">
-						<div style="${circleStyle3}" class="${options.circle3}">
-							<div style="${circleStyle4}" class="${options.circle4}">
-								<span class="${options.label}">${count}</span>
-							</div>
-						</div>
-					</div>
+        `<div style="${circleStyle4}" class="${options.circle4}">
+          <span class="${options.label}">${count}</span>
+          </div>
 				</div>`,
       className: `${options.cluster}`,
     });

@@ -25673,6 +25673,18 @@
     "carriers": "19"
   },
   {
+    "code": "SZG",
+    "lat": "47.794444",
+    "lng": "13.003333",
+    "name": "Salzburg Airport",
+    "city": "Salzburg",
+    "state": "Salzburg",
+    "country": "Austria",
+    "tz": "Europe\/Salzburg",
+    "type": "Airports",
+    "icao": "LOWS"
+  },
+  {
     "code": "INT",
     "lat": "36.1361",
     "lng": "-80.2294",
