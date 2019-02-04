@@ -57,7 +57,9 @@ To download and set up MongoDB:
 
 1) Run `brew install mongodb` (and then `brew update mongodb`, if necessary).
 
-2) Prior to starting **MongoDB**, the `data/db` path needs access rights: run `sudo chmod -R go+w /data/db`.
+NOTE: If you do not have a `/data/db` path in your device, please create one: `sudo mkdir -p /data/db`. 
+
+2) Prior to starting **MongoDB**, the `/data/db` path needs access rights (NOT the local `data` path in the project): run `sudo chmod -R go+w /data/db`.
 
 3) Once the access rights have been granted, run `mongod`.
 
