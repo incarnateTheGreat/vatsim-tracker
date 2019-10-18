@@ -33624,6 +33624,26 @@
     "carriers": "1"
   },
   {
+    "code": "LRH",
+    "lat": "46.1765494",
+    "lng": "-1.1957567",
+    "name": "La Rochelle – Île de Ré Airport",
+    "city": "La Rochelle",
+    "state": "Nouvelle-Aquitaine",
+    "country": "France",
+    "woeid": "",
+    "tz": "Europe\/Paris",
+    "phone": "",
+    "type": "Airports",
+    "email": "",
+    "url": "",
+    "runway_length": "",
+    "elev": "74",
+    "icao": "LFBH",
+    "direct_flights": "1",
+    "carriers": "1"
+  },
+  {
     "code": "LDG",
     "lat": "64.9029",
     "lng": "45.708",
@@ -35546,26 +35566,6 @@
     "icao": "YLRE",
     "direct_flights": "2",
     "carriers": "2"
-  },
-  {
-    "code": "LRH",
-    "lat": "46.1766",
-    "lng": "-1.19372",
-    "name": "Laleu Airport",
-    "city": "La Rochelle",
-    "state": "Pays de la Loire",
-    "country": "France",
-    "woeid": "12512909",
-    "tz": "Europe\/Paris",
-    "phone": "",
-    "type": "Airports",
-    "email": "",
-    "url": "",
-    "runway_length": "7021",
-    "elev": "72",
-    "icao": "",
-    "direct_flights": "13",
-    "carriers": "6"
   },
   {
     "code": "LRM",

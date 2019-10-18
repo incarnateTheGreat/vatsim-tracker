@@ -66,9 +66,6 @@ class ModalIcao extends Component {
   gotoAirport = () => {
 		this.closeModal()
 
-		console.log('return:', this.state.icao);
-		
-
     return this.props.returnICAO(this.state.icao)
 	}
 	
