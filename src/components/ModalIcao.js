@@ -185,10 +185,12 @@ class ModalIcao extends Component {
 					<header>
             <div>
               <h1>{this.props.airport_name} ({this.props.icao})</h1>
-              <h5
-                className='Modal__gotoAirport'
-                onClick={() => this.gotoAirport()}>Go to Airport
-              </h5>
+							<div className="Modal__container__goTo">
+								<h5
+									className='Modal__gotoAirport'
+									onClick={() => this.gotoAirport()}>Go to Airport
+								</h5>
+              </div>
             </div>
 						<span
 							onClick={this.closeModal.bind(this)}

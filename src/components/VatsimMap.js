@@ -6,7 +6,8 @@ import Leaflet from "leaflet";
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import Control from "react-leaflet-control";
 import { ToastContainer, toast, Flip } from "react-toastify";
-import Metar from "metar";
+// import Metar from "metar";
+import MetarParser from "metar-parser";
 
 // Components & Constants
 import Autocomplete from "./Autocomplete";
@@ -151,6 +152,8 @@ export default class VatsimMap extends Component {
                 this.state.selected_flight.coordinates[0],
                 this.state.selected_flight.coordinates[1]
               ]);
+
+              this.applySelectedFlightData(this.state.selected_flight);
             }
           } else {
             // Fallback for the above code.
@@ -222,7 +225,7 @@ export default class VatsimMap extends Component {
   };
 
   // Assign Lat/Lng values for Current Position and Arrival.
-  drawFlightPath = (latlngs, startEndPoints) => {
+  drawFlightPath = (latlngs, startEndPoints, onInit) => {
     const { lat1, lng1, lat2, lng2 } = startEndPoints;
 
     // To prevent any bad data from going into the Polyline, check if the LatLng data is valid.
@@ -261,7 +264,9 @@ export default class VatsimMap extends Component {
     // Draw the line on the screen.
     this.setState({ isLoading: false }, () => {
       setTimeout(() => {
-        // this.map.fitBounds(polyline.getBounds(), { padding: [50, 50] })
+        if (onInit) {
+          this.map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
+        }
       }, 0);
     });
   };
@@ -369,6 +374,28 @@ export default class VatsimMap extends Component {
           let lng2 = null;
           let latlngObject = {};
 
+          // selected_planned_route = selected_planned_route.map(points => {
+          //   const [lat, lng] = points;
+          //   console.log(lat, lng);
+
+          //   let newPoints = [];
+
+          //   if (lng < 0) {
+          //     console.log("Convert:", lng);
+
+          //     newPoints = [lat, L.Util.wrapNum(lng, [0, 360], true)];
+          //     // newPoints = [lat, lng];
+          //   } else {
+          //     newPoints = [lat, lng];
+          //   }
+
+          //   console.log(...newPoints);
+
+          //   return new L.LatLng(...newPoints);
+          // });
+
+          // console.log(selected_planned_route);
+
           // If the Flight Route returns nothing, or either of the ICAOs are not in North America, simply return the start and end points.
           // Otherwise, return the accepted LatLng data and store it as an Array in order to draw the Route on the Map.
           if (!encodedPolyline) {
@@ -394,7 +421,7 @@ export default class VatsimMap extends Component {
             },
             () => {
               if (!this.isPlaneOnGround(flight.groundspeed)) {
-                this.drawFlightPath(selected_planned_route, latlngObject);
+                this.drawFlightPath(selected_planned_route, latlngObject, true);
               }
 
               this.setState({ isLoading: false }, () => {
@@ -536,9 +563,19 @@ export default class VatsimMap extends Component {
         );
 
         return;
+      } else if (Object.keys(data).length === 0) {
+        return;
       }
 
-      const { flights, controllers, icaos } = data;
+      // Declare the data vars if there's new data.
+      let { flights, controllers, icaos } = data;
+
+      // To prevent a FUAC. re-draw the Planes on the screen with the same data if no new data has downloaded.
+      if (Object.keys(data).length === 0) {
+        flights = this.state.flights;
+        controllers = this.state.flights;
+        icaos = this.state.flights;
+      }
 
       // Depending if there were any environment issues or changes, display the 'Connected' Toast Pop-up.
       if (toast.isActive(this.toastId)) this.serverToastMsg("Connected.", true);
@@ -733,11 +770,12 @@ export default class VatsimMap extends Component {
         getAirportName(selected_metar),
         getMetarData(selected_metar)
       ]).then(responses => {
-        const airport_name = responses[0];
-        const metar_response = responses[1];
+        const [airport_name, metar_response] = responses;
 
         if (metar_response) {
-          const metar = Metar(metar_response);
+          // const metar = Metar(metar_response);
+          const metar = MetarParser(metar_response);
+
           const [
             metar_current_weather,
             metar_current_weather_title
@@ -766,38 +804,39 @@ export default class VatsimMap extends Component {
   };
 
   getWeather = metar => {
-    const weather = metar["weather"];
-    const clouds = metar["clouds"];
+    const { clouds, weather } = metar;
 
-    let metar_current_weather = null;
-    let metar_current_weather_title = null;
+    let metar_current_weather = "";
+    let metar_current_weather_title = "";
 
-    // Use the Weather and Clouds data objects to return accurate data.
-    if (weather) {
-      metar_current_weather = this.getWeatherIcon(
-        weather[weather.length - 1].meaning
-      );
-    } else if (clouds) {
-      if (clouds[0].abbreviation === "NCD") {
-        metar_current_weather = this.getWeatherIcon("clear-day");
-      } else {
-        metar_current_weather = this.getWeatherIcon(clouds[0].meaning);
+    if (weather.length > 0) {
+      const weatherObj = weather[0];
+
+      // Get the Precipitation first. If there is none, then get the Obscuration if it is available.
+      if (weatherObj.precipitation) {
+        metar_current_weather = this.getWeatherIcon(weatherObj.precipitation);
+      } else if (weatherObj.obscuration) {
+        metar_current_weather = this.getWeatherIcon(weatherObj.obscuration);
       }
-    } else {
-      metar_current_weather = this.getWeatherIcon();
     }
+
+    console.log(metar);
+
+    console.log(metar_current_weather);
 
     // Update the readable title.
-    metar_current_weather_title = metar_current_weather.replace("wi-", "");
+    metar_current_weather_title = metar_current_weather
+      .replace("wi-", "")
+      .split(" ")[0];
 
     // Determine English result for Tooltip.
-    if (metar_current_weather_title.includes("na")) {
-      metar_current_weather_title = "N/A";
-    } else {
-      metar_current_weather_title =
-        metar_current_weather_title[0].toUpperCase() +
-        metar_current_weather_title.slice(1);
-    }
+    // if (metar_current_weather_title.includes("na")) {
+    //   metar_current_weather_title = "N/A";
+    // } else {
+    //   metar_current_weather_title =
+    //     metar_current_weather_title[0].toUpperCase() +
+    //     metar_current_weather_title.slice(1);
+    // }
 
     return [metar_current_weather, metar_current_weather_title];
   };
@@ -818,6 +857,7 @@ export default class VatsimMap extends Component {
       case "mist":
         return "wi-fog";
       case "rain":
+      case "drizzle":
         return "wi-rain";
       case "wind":
         return "wi-windy";
@@ -895,6 +935,40 @@ export default class VatsimMap extends Component {
     }, 0);
   };
 
+  createClusterCustomIcon = cluster => {
+    const childCount = cluster.getChildCount();
+    let markerClusterClass = "marker-cluster-";
+
+    if (childCount < 10) {
+      markerClusterClass += "small";
+    } else if (childCount < 100) {
+      markerClusterClass += "medium";
+    } else {
+      markerClusterClass += "large";
+    }
+
+    if (this.state.selected_flight) {
+      const selectedMarkerInCluster = cluster.getAllChildMarkers().find(x => {
+        return x.options.icon.options.selected;
+      });
+
+      // Return found Marker and then return divIcon below.
+      if (selectedMarkerInCluster) {
+        return L.divIcon({
+          html: `<span>${childCount}</span>`,
+          className: "marker-cluster-custom",
+          iconSize: L.point(40, 40, true)
+        });
+      }
+    }
+
+    return L.divIcon({
+      html: `<div><span>${childCount}</span></div>`,
+      className: `marker-cluster ${markerClusterClass}`,
+      iconSize: L.point(40, 40, true)
+    });
+  };
+
   render = () => {
     return (
       <Fragment>
@@ -952,6 +1026,7 @@ export default class VatsimMap extends Component {
             ref={this.clusterRef}
             showCoverageOnHover={false}
             spiderfyOnMaxZoom={false}
+            iconCreateFunction={this.createClusterCustomIcon}
           >
             <Markers
               flights={this.state.flights}

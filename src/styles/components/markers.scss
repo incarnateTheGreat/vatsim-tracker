@@ -1,4 +1,13 @@
 // Markers
-.airplane-icon {
-  &--selected {}
+.marker-cluster-custom {
+  background: darkred;
+  border: 3px solid #ededed;
+  border-radius: 50%;
+  color: #ededed;
+  font-size: 14px;
+  font-weight: bold;
+  height: 30px;
+  line-height: 37px;
+  text-align: center;
+  width: 30px;
 }

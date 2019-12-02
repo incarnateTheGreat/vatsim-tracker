@@ -1,199 +1,253 @@
-import React, { Component, Fragment } from 'react'
-import classNames from 'classnames'
-import { DEGREES_KEY, CURRENTLY_UNAVAILABLE } from '../constants/constants';
+import React, { Component, Fragment } from "react";
+import classNames from "classnames";
+import { DEGREES_KEY, CURRENTLY_UNAVAILABLE } from "../constants/constants";
 
 class ModalMetar extends Component {
-	state = {
+  state = {
     airport_name: null,
     icao: null,
-		isModalOpen: false,
+    isModalOpen: false,
     metar: null,
     metar_current_weather: null,
     metar_current_weather_title: null
-  }
-  
-	closeModal = () => {
-		this.setState({ isModalOpen: false })
-  }
-  
+  };
+
+  closeModal = () => {
+    this.setState({ isModalOpen: false });
+  };
+
   // Convert Statue Miles to Kilmetres.
   convertSMtoKM = sm => {
-    const conversion = Math.round(1.609344 * sm)
+    const conversion = Math.round(1.609344 * sm);
 
-    return `${conversion} KM`
-  }
-  
+    return `${conversion} KM`;
+  };
+
   // If the User wants to go to the currently-selected Airport on the Map, send back the data to the Container and pan to it.
   gotoAirport = () => {
-    this.closeModal()
-    return this.props.returnICAO(this.state.icao)
-  }
+    this.closeModal();
+    return this.props.returnICAO(this.state.icao);
+  };
 
-  // Determine the correct Atmospheric Pressure for the geographic area: 
+  getMETAR = () => {
+    this.closeModal();
+  };
+
+  // Determine the correct Atmospheric Pressure for the geographic area:
   // hPa (Europe and most of the world), or Hg (North America)
-  getQNH = () => {
-    const keys = Object.keys(this.state.metar)
-    const altimeter = keys.find(key => key.includes('altimeterIn'))
-
-    let altimeterType = null
+  getAltimeter = altimeter => {
+    const { inches, millibars } = altimeter;
 
     if (altimeter) {
-      altimeterType = altimeter.includes('Hpa') ? 'hPa' : 'Hg'
-      return `${this.state.metar[altimeter]} ${altimeterType}` || 'unavailable'
+      return `${inches} Hg | ${millibars} hPa` || "unavailable";
     } else {
-      return CURRENTLY_UNAVAILABLE
+      return CURRENTLY_UNAVAILABLE;
     }
-  }
+  };
 
   // Get and Display the Temperature.
-  getTemperature = (temperature) => {
-    return temperature ? `${temperature}${String.fromCodePoint(176)}` : CURRENTLY_UNAVAILABLE
-  }
+  getTemperature = temperature => {
+    if (temperature.hasOwnProperty("celsius")) {
+      return temperature
+        ? `${temperature.celsius}${String.fromCodePoint(176)}C | ${Math.round(
+            temperature.fahrenheit
+          )}${String.fromCodePoint(176)}F`
+        : CURRENTLY_UNAVAILABLE;
+    }
+  };
 
   // Use the Degrees Key to approximate the Range of what direction the Wind is currently blowing.
-  getWindDirection = (deg) => {
+  getWindDirection = deg => {
     for (let x in DEGREES_KEY) {
       if (deg >= DEGREES_KEY[x][0] && deg <= DEGREES_KEY[x][1]) {
         // Return North based on two different ranges.
-        if (x === 'N1' || x === 'N2') {
-          return 'North'
+        if (x === "N1" || x === "N2") {
+          return "North";
         } else {
           return x;
         }
       }
     }
-  }
+  };
+
+  // Return the Wind data.
+  getWind = () => {
+    return (
+      <span>
+        {`From the ${this.getWindDirection(
+          this.state.metar["wind"]["direction"]
+        )} at ${Math.round(
+          this.state.metar["wind"]["speedKt"]
+        )} kts | ${Math.round(this.state.metar["wind"]["speedMps"])} mph`}
+      </span>
+    );
+  };
 
   // Determine the Visibility based on the data available. Otherwise, show as 'Unavailable'.
   getVisibility = visibility => {
+    let visibilityData = "";
+
     if (visibility === 9999) {
-      return 9999
+      visibilityData = 9999;
     } else if (!visibility) {
-      return 'Unavailable'
+      visibilityData = "Unavailable";
     } else {
-      return `${visibility} SM (${this.convertSMtoKM(visibility)})`
+      visibilityData = `${visibility.miles} SM (${this.convertSMtoKM(
+        visibility.miles
+      )})`;
     }
-  }
 
-	toggleModal = () => {
-		this.setState({ isModalOpen: (this.state.isModalOpen ? false : true) })
-	}
-  
+    return visibilityData;
+  };
+
+  toggleModal = () => {
+    this.setState({ isModalOpen: this.state.isModalOpen ? false : true });
+  };
+
   // Create click and key events to support closing the modal.
-	componentDidMount = () => {
-		const modal = document.getElementById('Modal_Metar')
+  componentDidMount = () => {
+    const modal = document.getElementById("Modal_Metar");
 
-    modal.addEventListener('click', (e) => {
-      if (e.target.id === 'Modal_Metar') this.closeModal()
-    })
+    modal.addEventListener("click", e => {
+      if (e.target.id === "Modal_Metar") this.closeModal();
+    });
 
-		document.addEventListener('keydown', e => {
-			if (e.key === 'Escape') this.closeModal()
-    }, false);
-  }
-  
-	static getDerivedStateFromProps(nextProps) {
+    document.addEventListener(
+      "keydown",
+      e => {
+        if (e.key === "Escape") this.closeModal();
+      },
+      false
+    );
+  };
+
+  static getDerivedStateFromProps(nextProps) {
     if (nextProps.metar && nextProps.icao) {
       return {
-				airport_name: nextProps.airport_name,
+        airport_name: nextProps.airport_name,
         icao: nextProps.icao.toUpperCase(),
         metar: nextProps.metar,
         metar_current_weather: nextProps.metar_current_weather,
         metar_current_weather_title: nextProps.metar_current_weather_title
-  		}
+      };
     } else {
       return null;
     }
-	}
+  }
 
-	render() {
-		const modalClasses = classNames(
-			'Modal',
-			this.state.isModalOpen ? '--open' : ''
-		);
+  render() {
+    const modalClasses = classNames(
+      "Modal",
+      this.state.isModalOpen ? "--open" : ""
+    );
 
-    let weatherClasses = '';    
+    let weatherClasses = "";
 
     if (this.state.metar) {
-      weatherClasses = classNames(
-        'wi',
-        this.state.metar_current_weather
-      );
+      weatherClasses = classNames("wi", this.state.metar_current_weather);
     }
 
-		return (
-			<div id='Modal_Metar' className={modalClasses}>
-				<div className='Modal__container --weather'>
-					<header>
+    return (
+      <div id="Modal_Metar" className={modalClasses}>
+        <div className="Modal__container --weather">
+          <header>
             <div>
-              <h1>{this.state.icao} ({this.state.airport_name})</h1>
-              <h5
-                className='Modal__gotoAirport'
-                onClick={() => this.gotoAirport()}>Go to Airport
-              </h5>
+              <h1>
+                {this.state.icao} ({this.state.airport_name})
+              </h1>
+              <div className="Modal__container__goTo">
+                <h5
+                  className="Modal__gotoAirport"
+                  onClick={() => this.gotoAirport()}
+                >
+                  Go to Airport
+                </h5>
+                |
+                <h5
+                  className="Modal__gotoAirport"
+                  onClick={() => this.getMETAR()}
+                >
+                  Get METAR
+                </h5>
+              </div>
             </div>
-						<span
-							onClick={this.closeModal.bind(this)}
-							className='close'>X
-						</span>
-					</header>
-					<div className='Modal__sections --weather'>
-						<section className='Modal__section --weather'>
+            <span onClick={this.closeModal.bind(this)} className="close">
+              X
+            </span>
+          </header>
+          <div className="Modal__sections --weather">
+            <section className="Modal__section --weather">
               {this.state.metar && (
                 <Fragment>
-                  <div className='Modal__weatherIcon'>
-                    <i title={this.state.metar_current_weather_title} className={weatherClasses}></i>
+                  <div className="Modal__weatherIcon">
+                    <i
+                      title={this.state.metar_current_weather_title}
+                      className={weatherClasses}
+                    ></i>
                   </div>
-                  <div className='Modal__weatherData'>
-                    <div className='Modal__weatherContainer'>
-                      <div>Temperature</div>
-                      <div>{this.getTemperature(this.state.metar['temperature'])}</div>
+                  <div className="Modal__weatherData">
+                    <div className="Modal__weatherContainer">
+                      <span>Temperature</span>
+                      <span>
+                        {this.getTemperature(this.state.metar["temperature"])}
+                      </span>
                     </div>
-                    <div className='Modal__weatherContainer'>
-                      <div>Wind</div>
-                      <div>
-                        From the {this.getWindDirection(this.state.metar['wind']['direction'])} at {this.state.metar['wind']['speed']} {this.state.metar['wind']['unit']}
-                      </div>
+                    <div className="Modal__weatherContainer">
+                      <span>Wind</span>
+                      {this.getWind()}
                     </div>
-                    <div className='Modal__weatherContainer'>
-                      <div>Visibility</div>
-                      <div>{this.getVisibility(this.state.metar['visibility'])}</div>
+                    <div className="Modal__weatherContainer">
+                      <span>Visibility</span>
+                      <span>
+                        {this.getVisibility(this.state.metar["visibility"])}
+                      </span>
                     </div>
-                    <div className='Modal__weatherContainer'>
+                    <div className="Modal__weatherContainer">
                       <div>Clouds</div>
                       <div>
-                        <ul className='Modal__weatherContainer__list'>
-                          {this.state.metar['clouds'] ? this.state.metar['clouds'].map((metarData, i) =>
-                            metarData['abbreviation'] === 'NCD' ?
-                              <li key={i}>{metarData['meaning']}</li> :
-                              <li key={i}>{metarData['meaning']} at {metarData['altitude']} FT.</li>
-                          ) : (<li>{CURRENTLY_UNAVAILABLE}</li>)}
+                        <ul className="Modal__weatherContainer__list">
+                          {this.state.metar["clouds"] ? (
+                            this.state.metar["clouds"].map((metarData, i) =>
+                              metarData["abbreviation"] === "NCD" ? (
+                                <li key={i}>{metarData["meaning"]}</li>
+                              ) : (
+                                <li key={i}>
+                                  {metarData["meaning"]} at{" "}
+                                  {metarData["altitude"]} FT.
+                                </li>
+                              )
+                            )
+                          ) : (
+                            <li>{CURRENTLY_UNAVAILABLE}</li>
+                          )}
                         </ul>
                       </div>
                     </div>
-                    <div className='Modal__weatherContainer'>
-                      <div>QNH</div>
-                      <div>{this.getQNH()}</div>
+                    <div className="Modal__weatherContainer">
+                      <span>Altimeter</span>
+                      <span>
+                        {this.getAltimeter(this.state.metar["altimeter"])}
+                      </span>
                     </div>
-                    <div className='Modal__weatherContainer'>
+                    <div className="Modal__weatherContainer">
                       <div>Weather</div>
-                      <div>
-                        <ul className='Modal__weatherContainer__list'>
-                          {this.state.metar['weather'] ? this.state.metar['weather'].map((weatherData, i) =>
-                            <li key={i}>{weatherData['meaning']}</li>
-                          ) : (<span>Nothing to report.</span>)}
-                        </ul>
-                      </div>
+                      <span className="Modal__weatherContainer__title">
+                        {this.state.metar_current_weather_title ? (
+                          this.state.metar_current_weather_title
+                        ) : (
+                          <span>Nothing to report.</span>
+                        )}
+                      </span>
                     </div>
                   </div>
                 </Fragment>
               )}
-						</section>
-					</div>
-				</div>
-			</div>
-		);
-	}
+            </section>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default ModalMetar;

@@ -32,29 +32,33 @@ app.listen(8000, () => {
   mongoose.connect(`mongodb://127.0.0.1:27017/airports`);
 });
 
+let timestamp = "";
+let renderTimestamp = "";
+
 // Connect to the VATSIM Data, render all Flights/Controllers, and thend dispatch to the front-end.
 app.route("/api/vatsim-data").get((req, res) => {
-  console.log("------------------------------------------------------------");
-  console.log("Get VATSIM Data...");
-
   // Get random path to avoid hitting the same VATSIM server over and over.
   const vatsim_path =
     VATSIM_SERVERS[Math.floor(Math.random() * VATSIM_SERVERS.length)];
 
+  console.log("------------------------------------------------------------");
+  console.log("Get VATSIM Data...");
   console.log(vatsim_path);
 
   request(vatsim_path, (error, response, body) => {
     if (body) {
       const lines = body.split("\n");
       const results = [];
-
       let isRecording = false;
       let flights = [];
 
       // Go line by line to find CLIENTS data.
       for (let line = 0; line < lines.length; line++) {
         // When the '!CLIENTS:' line is found, begin recording data.
-        if (lines[line] === "!CLIENTS:\r") {
+        if (
+          lines[line] === "!CLIENTS:\r" ||
+          lines[line].includes("UPDATE = ")
+        ) {
           isRecording = true;
         } else if (lines[line] === ";\r") {
           isRecording = false;
@@ -64,70 +68,88 @@ app.route("/api/vatsim-data").get((req, res) => {
         if (isRecording && lines[line] !== "!CLIENTS:\r") {
           results.push(lines[line]);
         }
-      }
 
-      for (let i = 0; i < results.length; i++) {
-        let clientInterface = {};
-        let clientDataSplit = results[i].split(":");
-
-        // Using the CLIENT_LABELS Interface, assign each delimited element to its respective key.
-        for (let j = 0; j < CLIENT_LABELS.length; j++) {
-          clientInterface[CLIENT_LABELS[j]] = clientDataSplit[j];
-        }
-
-        // If the Flight doesn't have a recorded LAT/LNG, do not add it to the array.
-        if (!checkFlightPosition(clientInterface)) {
-          flights.push({
-            isController: clientInterface.frequency !== "" ? true : false,
-            name: clientInterface.realname,
-            callsign: clientInterface.callsign,
-            coordinates: [
-              parseFloat(clientInterface.latitude),
-              parseFloat(clientInterface.longitude)
-            ],
-            frequency: clientInterface.frequency,
-            altitude: clientInterface.altitude,
-            planned_aircraft: clientInterface.planned_aircraft,
-            heading: clientInterface.heading,
-            groundspeed: clientInterface.groundspeed,
-            transponder: clientInterface.transponder,
-            planned_depairport: clientInterface.planned_depairport,
-            planned_destairport: clientInterface.planned_destairport,
-            planned_route: clientInterface.planned_route
-          });
+        // Get the API-Generated Timestamp to avoid re-builds with the same data.
+        if (isRecording && lines[line].includes("UPDATE = ")) {
+          renderTimestamp = lines[line]
+            .split("=")
+            .pop()
+            .replace(/\s/g, "");
         }
       }
 
-      // Separate the Controllers & Destinations from the Flights.
-      const controllers = flights.filter(client => client.frequency !== "");
-      const icaos = [];
+      console.log("Timestamp:", timestamp);
+      console.log("Render Timestamp:", renderTimestamp);
 
-      // Create Destinations Object.
-      const icaos_temp = flights.reduce((r, a) => {
-        const icao_destination = a.planned_destairport.toUpperCase(),
-          icao_departure = a.planned_depairport.toUpperCase();
+      if (timestamp === renderTimestamp) {
+        res.send({});
+      } else if (timestamp !== renderTimestamp || timestamp.length === 0) {
+        for (let i = 0; i < results.length; i++) {
+          let clientInterface = {};
+          let clientDataSplit = results[i].split(":");
 
-        if (icao_destination !== "") {
-          r[icao_destination] = r[icao_destination] || [];
-          r[icao_destination].push(a);
+          // Using the CLIENT_LABELS Interface, assign each delimited element to its respective key.
+          for (let j = 0; j < CLIENT_LABELS.length; j++) {
+            clientInterface[CLIENT_LABELS[j]] = clientDataSplit[j];
+          }
+
+          // If the Flight doesn't have a recorded LAT/LNG, do not add it to the array.
+          if (!checkFlightPosition(clientInterface)) {
+            flights.push({
+              isController: clientInterface.frequency !== "" ? true : false,
+              name: clientInterface.realname,
+              callsign: clientInterface.callsign,
+              coordinates: [
+                parseFloat(clientInterface.latitude),
+                parseFloat(clientInterface.longitude)
+              ],
+              frequency: clientInterface.frequency,
+              altitude: clientInterface.altitude,
+              planned_aircraft: clientInterface.planned_aircraft,
+              heading: clientInterface.heading,
+              groundspeed: clientInterface.groundspeed,
+              transponder: clientInterface.transponder,
+              planned_depairport: clientInterface.planned_depairport,
+              planned_destairport: clientInterface.planned_destairport,
+              planned_route: clientInterface.planned_route
+            });
+          }
         }
 
-        if (icao_departure !== "") {
-          r[icao_departure] = r[icao_departure] || [];
-          r[icao_departure].push(a);
-        }
+        // Separate the Controllers & Destinations from the Flights.
+        const controllers = flights.filter(client => client.frequency !== "");
+        const icaos = [];
 
-        return r;
-      }, {});
+        // Create Destinations Object.
+        const icaos_temp = flights.reduce((r, a) => {
+          const icao_destination = a.planned_destairport.toUpperCase(),
+            icao_departure = a.planned_depairport.toUpperCase();
 
-      // Put Departure & Destination ICAOs into Array.
-      for (let key in icaos_temp) icaos.push(key);
+          if (icao_destination !== "") {
+            r[icao_destination] = r[icao_destination] || [];
+            r[icao_destination].push(a);
+          }
 
-      console.log("Number of Lines:", lines.length);
-      console.log("Number of results:", results.length);
-      console.log("Number of ICAOS:", icaos.length);
+          if (icao_departure !== "") {
+            r[icao_departure] = r[icao_departure] || [];
+            r[icao_departure].push(a);
+          }
 
-      res.send({ flights, controllers, icaos });
+          return r;
+        }, {});
+
+        // Put Departure & Destination ICAOs into Array.
+        for (let key in icaos_temp) icaos.push(key);
+
+        console.log("Number of Lines:", lines.length);
+        console.log("Number of results:", results.length);
+        console.log("Number of ICAOS:", icaos.length);
+
+        // Update the Timestamp;
+        timestamp = renderTimestamp;
+
+        res.send({ flights, controllers, icaos });
+      }
     } else {
       console.log("Not working...");
 
