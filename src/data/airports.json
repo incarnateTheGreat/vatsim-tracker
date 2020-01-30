@@ -4060,6 +4060,24 @@
     "carriers": "1"
   },
   {
+    "code": "GNB",
+    "lat": "45.363056",
+    "lng": "5.329444",
+    "name": "Aples-Isere Airport",
+    "city": "Grenoble",
+    "state": "Auvergne-Rhône-Alpes",
+    "country": "France",
+    "tz": "Europe\/Paris",
+    "phone": "",
+    "email": "",
+    "url": "",
+    "runway_length": "5577",
+    "elev": "1302",
+    "icao": "LFLS",
+    "direct_flights": "1",
+    "carriers": "1"
+  },
+  {
     "code": "AUR",
     "lat": "44.8984",
     "lng": "2.41982",

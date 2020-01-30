@@ -20,7 +20,7 @@ function checkFlightPosition(clientInterface) {
   return (
     isNaN(clientInterface.longitude) ||
     clientInterface.longitude === "" ||
-    (isNaN(clientInterface.latitude) || clientInterface.latitude === "")
+    isNaN(clientInterface.latitude) || clientInterface.latitude === ""
   );
 }
 
