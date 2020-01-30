@@ -66,34 +66,23 @@ NOTE: If you do not have a `/data/db` path in your device, please create one: `s
 
 4. To apply the **Airports** JSON data to the database, do the following:
 
-a) navigate to the `src/data` folder,
-b) make sure that you have the latest `airports.json` file,
-c) make sure Mongo is active and running (preferably executed in a separate Terminal window),
-c) and run: `mongoimport --db airports --collection airports --file airports.json --jsonArray`
+- navigate to the `src/data` folder,
+- make sure that you have the latest `airports.json` file,
+- make sure Mongo is active and running (preferably executed in a separate Terminal window),
+- and run: `mongoimport --db airports --collection airports --file airports.json --jsonArray`
 
-If this is successful, you will see the following:
-
-`connected to: localhost`
-`imported [number] documents`
+If this is successful, you will see the following: `connected to: localhost imported [number] documents`
 
 5. To apply the **FIR** JSON data to the database, do the following:
 
-a) navigate to the `src/data` folder,
-b) make sure that you have the latest `fir-boundaries.json` file,
-c) make sure Mongo is active and running (preferably executed in a separate Terminal window),
-c) and run: `mongoimport --db airports --collection fir --file fir-boundaries.json --jsonArray`
+- navigate to the `src/data` folder,
+- make sure that you have the latest `fir-boundaries.json` file,
+- make sure Mongo is active and running (preferably executed in a separate Terminal window),
+- and run: `mongoimport --db airports --collection fir --file fir-boundaries.json --jsonArray`
 
-If this is successful, you will see the following:
-
-`connected to: localhost`
-`imported [number] documents`
+If this is successful, you will see the following: `connected to: localhost imported [number] documents`
 
 6. An easy way to interface with the database is to use **Robo-3T** (formerly known as **RoboMongo**). Install the program and then apply the database.
-
-If this is successful, you will see the following:
-
-`connected to: localhost`
-`imported [number] documents`
 
 ## Tech Stack
 
