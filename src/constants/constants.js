@@ -66,7 +66,10 @@ const DEGREES_KEY = {
 
 const REFRESH_TIME = 15000;
 
-const MAX_BOUNDS = [[-90, -180], [90, 180]];
+const MAX_BOUNDS = [
+  [-90, -180],
+  [90, 180]
+];
 
 const SERVER_PATH = "http://localhost:8000";
 
@@ -85,8 +88,8 @@ const ICAO_LETTERS_SUPPORTED = [
 ];
 
 const VATSIM_SERVERS = [
-  "http://vatsim-data.hardern.net/vatsim-data.txt",
-  "http://info.vroute.net/vatsim-data.txt"
+  "http://us.data.vatsim.net/vatsim-data.txt",
+  "http://eu.data.vatsim.net/vatsim-data.txt"
 ];
 
 const FIR_REGEX = new RegExp("^([^_]*_)(CTR)");
