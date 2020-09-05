@@ -39,7 +39,7 @@
     "metar": "^1.0.0",
     "metar-parser": "^1.0.0",
     "mongodb": "^3.0.10",
-    "mongoose": "^5.1.6",
+    "mongoose": "^5.7.5",
     "node-rest-client": "^3.1.0",
     "node-sass": "^4.13.1",
     "object-assign": "4.1.1",
